@@ -9,6 +9,7 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import StaticDatePicker from "@mui/lab/StaticDatePicker";
 import Page from '../components/Page';
+import moment from 'moment';
 
 
 // ------------------------ADMIN Assignment and Calender---------------------------------------------- //
@@ -18,19 +19,23 @@ export default function AdminHome() {
     const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
-    const testValue = "Sat Jul 09 2022 00:49:57 GMT+0500 (Pakistan Standard Time)";
+    console.log(user.token, "TOKEN");
 
     const getAllAssignments = async() => {
         try {
-          const res = await axios.get(`${BackEndUrl}/assignment/getAllAssignmentsAdmin`, {
+          const res = await axios.get(`${BackEndUrl}/assignment/getAllAssignmentsAdmin`,
+        //   {
+        //     body:{
+        //         currentMonth: moment(value).format('MM'),
+        //         currentYear: moment(value).format('yyyy')    
+        //     }
+        //   },
+          {
             headers: {
               token: user.token
-            },
-            // body: {
-                
-            // }
+            }
           });
-          //console.log("assignments", res.data);
+        //   console.log(currentMonth, currentYear, "OkAy");
           if (res.data.status === "ok") {
             setAssignments(res.data.assignments);
             setLoading(false);
@@ -42,7 +47,7 @@ export default function AdminHome() {
       }
       useEffect(() => {
         getAllAssignments();
-      }, []);
+      }, [value]);
 
     return (
         <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
@@ -54,23 +59,21 @@ export default function AdminHome() {
                     <Container maxWidth="xl">
                         <Grid container>
                             <Grid item xs={12}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                               <LocalizationProvider   dateAdapter={AdapterDateFns}>
                                     <StaticDatePicker
                                         displayStaticWrapperAs="desktop"
                                         value={value}
-                                        sx={{ color: "red" }}
                                         onChange={(newValue) => {
                                             setValue(newValue);
                                             console.log(newValue, "ALL OKAY");
                                         }}
-                                        // renderInput={(params) => <TextField {...params} />}
                                     />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
-                                        13, May 2022       </Typography>
+                                        {moment(value).format('MMM DD YYYY')}      </Typography>
                                     <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6 }}>
                                         List of applications received       </Typography>
                                 </Stack>
@@ -117,6 +120,7 @@ export default function AdminHome() {
                                 color: "#4F433C",
                                 opacity: 0.7
                             }}>
+                                i need proper assignment according to my requirements which i have added bellow in aattched document. What type of requirements from me you need in this assignment?
                                 i need proper assignment according to my requirements which i have added bellow in aattched document. What type of requirements from me you need in this assignment?
                             </Typography>
 

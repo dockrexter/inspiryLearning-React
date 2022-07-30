@@ -59,7 +59,6 @@ export default function RegisterForm() {
 
           });
           if (res.data.status === "ok") {
-            console.log("Okay!!! Registered")
             setInValid(false)
             navigate("/login", { replace: true });
           }
@@ -68,7 +67,7 @@ export default function RegisterForm() {
           }
         } catch (error) {
           setInValid(true);
-          console.log(error);
+          //console.log(error);
         }
       }
       else {
