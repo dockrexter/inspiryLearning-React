@@ -3,19 +3,43 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Assignments from 'src/sections/assignments/Assignments';
 import { BackEndUrl } from '../url';
-import { Grid, Container, CircularProgress ,Typography, Stack, Card} from '@mui/material';
+import { Grid, Container, styled, CircularProgress ,Typography, Stack,TextField, Card} from '@mui/material';
 import Fab from '@mui/material/Fab';
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import {LocalizationProvider, StaticDatePicker, PickersDay} from "@mui/x-date-pickers";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import StaticDatePicker from "@mui/lab/StaticDatePicker";
+//import StaticDatePicker from "@mui/lab/StaticDatePicker";
 import Page from '../components/Page';
 import moment from 'moment';
+//import  PickersDay from '@mui/lab/PickersDay';
+import startOfDay from "date-fns/startOfDay";
+import { array } from 'prop-types';
+
+
+
+const CustomPickersDay = styled(PickersDay, {
+    shouldForwardProp: (prop) => prop !== "selected"
+  })(({ theme, selected }) => ({
+    ...(selected && {
+      backgroundColor: "red",
+      color: theme.palette.common.white,
+      "&:hover, &:focus": {
+        backgroundColor: theme.palette.primary.dark
+      },
+      borderTopLeftRadius: "50%",
+      borderBottomLeftRadius: "50%",
+      borderTopRightRadius: "50%",
+      borderBottomRightRadius: "50%"
+    })
+  }));
 
 
 // ------------------------ADMIN Assignment and Calender---------------------------------------------- //
 
 export default function AdminHome() {
-    const [value, setValue] = useState(new Date());
+    const [value, setValue] = useState([startOfDay(new Date())]);
+    console.log(value, "Current Date");
+    const [cDate, setCDate] = useState(startOfDay(new Date()));
+    console.log(value);
     const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
@@ -23,21 +47,20 @@ export default function AdminHome() {
 
     const getAllAssignments = async() => {
         try {
-          const res = await axios.get(`${BackEndUrl}/assignment/getAllAssignmentsAdmin`,
-        //   {
-        //     body:{
-        //         currentMonth: moment(value).format('MM'),
-        //         currentYear: moment(value).format('yyyy')    
-        //     }
-        //   },
+          console.log(user.token);
+          const res = await axios.post(`${BackEndUrl}/assignment/getCurrentMonthAssignments`, {
+            currentMonth: moment(cDate).format("MM"),
+            currentYear:  moment(cDate).format("yyyy"),
+          },
           {
             headers: {
               token: user.token
             }
-          });
-        //   console.log(currentMonth, currentYear, "OkAy");
+          },
+          );
           if (res.data.status === "ok") {
             setAssignments(res.data.assignments);
+            console.log(assignments);
             setLoading(false);
           }
         }
@@ -47,7 +70,42 @@ export default function AdminHome() {
       }
       useEffect(() => {
         getAllAssignments();
-      }, [value]);
+      }, [cDate]);
+
+      // const array = [...value];
+      // const index = findIndexDate(array, date);
+      // if (index >= 0) {
+      //   array.splice(index, 1);
+      // } else {
+      //   array.push(date);
+      // }
+      // setValue(array);
+      
+
+
+      const findIndexDate = (dates, date) => {
+        const dateTime = date.getTime();
+        return dates.findIndex((item) => item.getTime() === dateTime);
+      };
+      const findDate = (dates, date) => {
+        const dateTime = date.getTime();
+        return dates.find((item) => item.getTime() === dateTime);
+      };
+      const renderPickerDay = (date, selectedDates, pickersDayProps) => {
+        if (!value) {
+          return <PickersDay {...pickersDayProps} />;
+        }
+    
+        const selected = findDate(value, date);
+    
+        return (
+          <CustomPickersDay
+            {...pickersDayProps}
+            disableMargin
+            selected={selected}
+          />
+        );
+      };
 
     return (
         <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
@@ -61,19 +119,33 @@ export default function AdminHome() {
                             <Grid item xs={12}>
                                <LocalizationProvider   dateAdapter={AdapterDateFns}>
                                     <StaticDatePicker
-                                        displayStaticWrapperAs="desktop"
+                                        orientation="landscape"
+                                        openTo="day"
+                                        //displayStaticWrapperAs="desktop"
                                         value={value}
                                         onChange={(newValue) => {
-                                            setValue(newValue);
-                                            console.log(newValue, "ALL OKAY");
-                                        }}
+                                            //copying the values array 
+                                            const array = [...value];
+                                            const date = startOfDay(newValue);
+                                            setCDate(startOfDay(newValue));
+                                            const index = findIndexDate(array, date);
+                                            if (index >= 0) {
+                                              array.splice(index, 1);
+                                            } else {
+                                              array.push(date);
+                                            }
+                                            setValue(array);
+                                          }}
+                                        renderDay={renderPickerDay}
+                                        renderInput={(params) => <TextField {...params} />}
+                                        inputFormat="d MMM YYYY"
                                     />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
-                                        {moment(value).format('MMM DD YYYY')}      </Typography>
+                                        {moment(cDate).format('MMM YYYY')}      </Typography>
                                     <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6 }}>
                                         List of applications received       </Typography>
                                 </Stack>
