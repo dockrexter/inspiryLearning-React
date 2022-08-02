@@ -8,11 +8,9 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Page from '../components/Page';
-import Logo from '../components/Logo';
 
 // sections
 import { AssignmentForm } from '../sections/auth/assignmentsubmission';
-import AuthSocial from '../sections/auth/AuthSocial';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({

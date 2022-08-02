@@ -1,12 +1,43 @@
 import React from 'react'
-import { Grid, Typography, Stack, Button, Card, Checkbox } from '@mui/material';
+import { Grid, Typography, Stack,Card, Checkbox, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import moment from 'moment';
-
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { BackEndUrl } from '../../url';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 //Assignment Users
 
 const Assignments = ({ data }) => {
-    const [checked, setChecked] = React.useState(false);
+    const { user } = useSelector(state => state.user);
+    const [status, setStatus] = useState("");
+    const  handleStatusChange = (e) => {
+        setStatus(e.target.value);
+    }
+     const handleStatus = async () => {
+        try {
+            const res = await axios.post(`${BackEndUrl}/assignment/changeStatus`, {
+                id: "14" , 
+                status: status
+            },
+            {
+              headers: {
+                token: user.token
+              }
+            },
+            );
+            if (res.data.status === "ok") {
+              console.log("Status Has Been Updated..........!")
+            }
+          }
+          catch (error) {
+            console.log(error, "Status Update Failed........!");
+          }}
+        useEffect(()=>{
+            {user.role === "admin" ? handleStatus() : null};
+        },[status])
     console.log(data)
     return (
         <>
@@ -21,7 +52,7 @@ const Assignments = ({ data }) => {
                         background: "#E7F4F0",
                         boxShadow: "0px 7.69539px 7.69539px #195B48",
                         borderRadius: "15.3908px",
-                        marginTop: 1
+                        marginTop: 2
 
                     }}
                         key={i}
@@ -75,15 +106,31 @@ const Assignments = ({ data }) => {
                             </Grid>
 
                             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                                <Typography variant="caption" >
-                                    {d.status} </Typography>
+                                {user.role === "admin" ? <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
+                                    {/* <InputLabel id="Status">{d.status}</InputLabel> */}
+                                         <Select
+                                            labelId="select_status"
+                                            id="select_status"
+                                            value={d.status}
+                                            label="Status"
+                                            onChange={handleStatusChange}>
+                                                <MenuItem value="New Request">New Request</MenuItem>
+                                                <MenuItem value="Under Review">Under Review</MenuItem>
+                                                <MenuItem value="Pending Payment">Pending Payment</MenuItem>
+                                                <MenuItem value="Work in Progress">Work in Progress</MenuItem>
+                                                <MenuItem value="Work Completed">Work Completed</MenuItem>
+                                            </Select>
+                                        </FormControl> 
+                                    : 
+                                        <Typography variant="caption" >{d.status} </Typography> }
+                                
                             </Grid>
 
                             <Grid item xs={4} sx={{
                                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
                             }}>
 
-                                <Checkbox disabled icon={<CircleUnchecked  />}/>
+                               { d.status === "Work Completed"? <CheckCircleIcon /> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
                             </Grid>
                         </Grid>
                     </Card>

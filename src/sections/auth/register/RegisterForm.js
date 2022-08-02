@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'
 
 // material
 import { Stack, TextField, IconButton, InputAdornment, Alert } from '@mui/material';
@@ -20,6 +21,7 @@ import Iconify from '../../../components/Iconify';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
 
   const [showPassword, setShowPassword] = useState(false);
@@ -59,8 +61,16 @@ export default function RegisterForm() {
 
           });
           if (res.data.status === "ok") {
+            window.localStorage.setItem('token', JSON.stringify(res.data.user.token));
+            window.localStorage.setItem('firstname', JSON.stringify(res.data.user.firstname));
+            window.localStorage.setItem('lastname', JSON.stringify(res.data.user.lastname));
+            window.localStorage.setItem('phone', JSON.stringify(res.data.user.phone));
+            window.localStorage.setItem('email', JSON.stringify(res.data.user.email));
+            window.localStorage.setItem('role', JSON.stringify(res.data.user.role));
+            window.localStorage.setItem('user_id', JSON.stringify(res.data.user.user_id));
+            dispatch(update(res.data.user));
             setInValid(false)
-            navigate("/login", { replace: true });
+            navigate("/dashboard/app", { replace: true });
           }
           else {
             setInValid(true);

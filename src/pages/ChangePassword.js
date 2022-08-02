@@ -1,4 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography, Box } from '@mui/material';
@@ -6,10 +6,10 @@ import { Card, Link, Container, Typography, Box } from '@mui/material';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Page from '../components/Page';
-import Logo from '../components/Logo';
+//import Logo from '../components/Logo';
 // sections
 import { ChangePasswordForm } from '../sections/auth/changepassword';
-import AuthSocial from '../sections/auth/AuthSocial';
+//import AuthSocial from '../sections/auth/AuthSocial';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ export default function Login() {
 
                         <Typography variant="h2" gutterBottom sx={{
                             textAlign: "center", color: "#4F433C", lineHeight: "90px"
-                        }}>
+                         }}>
                             Change Password
 
                         </Typography>

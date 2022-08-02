@@ -1,18 +1,20 @@
 import React from 'react'
-import { Stack, Button,Fab, TextField, Box,styled, alpha } from '@mui/material';
+import { Stack,Fab, TextField, Box,styled,IconButton } from '@mui/material';
 import io from 'socket.io-client'
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
 import SendIcon from '@mui/icons-material/Send'
 import ReactScrollToBottom from 'react-scroll-to-bottom'
 import MessageC from 'src/components/MessageC';
-import { current } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
+import { blueGrey } from '@mui/material/colors'
 
 
 
 const ChatBoxT = styled(ReactScrollToBottom)(({theme}) => ({
-    height: "72vh",
+    height: "70vh",
     boxSizing: "border-box",
     backgroundColor: "white",
     overflowY: "auto",
@@ -32,38 +34,37 @@ const ChatBoxT = styled(ReactScrollToBottom)(({theme}) => ({
 
 const MainBox = styled(Box)(({theme})=>({
     width: "100%", 
-    height: "100%", 
+    height: "70vh", 
     boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)"
 
 }))
-
-// const MsgBoxright = styled(Box)(({theme}) => ({
-//     float: "right",
-//     backgroundColor: "#E7F4F0",
-//     color: "black"
-// }))
-
-// const ChatBox=styled(Box)(({theme}) => ({
-//     width: '50%',
-//     float: 'right',
-//     padding: '1vmax',
-//     margin: '1vmax',
-//     display: 'inline-block',
-//     clear: 'both'
-// }));
-// const RightMessage = styled(Paper)(({theme})=>({
-//     background: "#E7F4F0",
-//     boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
-//     borderRadius: "8.03922px", width: "80%", padding: 2, 
-// }))
-
 const Chat = () => {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
+    const [chatMsg, setchatMsg] = useState();
     const socket = io("https://inspirylearning-web.herokuapp.com")
-    const socketRef = useRef(socket); 
+    const socketRef = useRef(socket);
+    const hiddenInputField = useRef(null); 
+    const chattime = moment(new Date()).format('YYYY MM DD HH:MM: SS.US+TZ');
+    const d = new Date();
+    let day = d.getUTCDate();
+    console.log(day, "THIS IS UTC FORMATE");
 
-    const [stat, setStat] = useState({text: ''});
+
+
+
+//........................INPUT REF.......................//
+
+
+    const handleUploadClick = event => {
+        hiddenInputField.current.click();
+      };
+    const handleInputChange = event => {
+        const fileUploaded = event.target.files[0];
+      };
+
+
+    const [stat, setStat] = useState({message: '', user_id:'', });
     useEffect(
 		() => {
 			socketRef.current.on("connect", () => {
@@ -73,62 +74,77 @@ const Chat = () => {
                 })
                 
               });
-		},[]);
-        useEffect(()=>{
-            socketRef.current.on("message", (message)=>{
-                console.log(messageT, "arry before");
-                setMessageT([...messageT, message]);
-                console.log(message, "DATA");
-                console.log(messageT, "arry arry after");
-                
-            })
-        })
+             socketRef.current.on("getChat",(chat)=>{
+                setMessageT(chat.data);
+                //  console.log(chat,"HELLOOOO ARRAY");
+                //  for (var i = 0; i < chat.data.length; i++) {
+                //     var data1 = chat.data[i];
+                //     setMessageT([...messageT, data1])
+                //     console.log(data1.message, "THIS MESSAGE");
+                // }
+             })
+		},[messageT]);
+        // useEffect(()=>{
+        //     // socketRef.current.on("getChat",(chat)=>{
+        //     //     setMessageT([...messageT, chat]);
+        //     //     console.log(chat, "DATA");
+        //     // })
+        // })
         const onTextChange = e =>{
             e.preventDefault();
             setStat({[e.target.name]: e.target.value })
-            console.log(stat.text);
+            console.log(stat.message,"helllllllo");
         }
             const onMessageSubmit = (e) => {
             e.preventDefault();
-            const {text} = stat
+            const {message} = stat
+            console.log(messageT, "HELLO !@#");
             socketRef.current.emit("sendMessage", {
-                "message": text
+                message: message,
+                user_type: 0,
+                time_stamp: chattime ,
+                attachment: null,
+                ammount: 10,
+                type: 0,
+                status:0,
+                assignment_id: 14  
+
             })
-            // setMessageT([...messageT, text])
+            setMessageT([...messageT, {message}]);
             setStat({ text: "",})
             
         }
-        console.log(messageT, "HELLO WORLD!!");
 
     return (
         <>
         <MainBox>
             <ChatBoxT>
-                {messageT.map((item,i) => <MessageC key={i} message={item.text} />)}
+                {messageT.map((item,i) => <MessageC key={i} data={item} />)}
             </ChatBoxT>
         </MainBox>
         <Fab variant="extended" size="large" color="primary" aria-label="add" sx={{
-            marginRight: "25px",
-            position: 'absolute',
-            bottom: 16,
-            right: 70,
+            marginLeft: "20%",
             padding: 4,
-
+            marginTop: "5%"
         }}>
             <form onSubmit={onMessageSubmit}>
                 <Stack direction="row" spacing={2} sx={{
                     display: "flex", justifyContent: "center", alignItems: "center"
                     }}>
-                    <img alt="camera" src="/static/camera.svg" width={30} height={30} />
+                        <>
+                        <IconButton onClick={handleUploadClick} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
+      
+                        <input type="file" ref={hiddenInputField} onChange={handleInputChange} style={{display: "none"}}/>
+                        </>
                
-                    <TextField label="Type Your Message"  variant="filled" name="text" onChange={e => onTextChange(e)}
+                    <TextField label="Type Your Message"  variant="filled" name="message" onChange={e => onTextChange(e)}
                     value={stat.text}
                     sx={{
+                        color: "white",
                         opacity: 0.8
                         }}> </TextField>
-                        {stat.text ? <Button type='submit'><SendIcon/></Button> : null}
-                       
-            </Stack>
+                        {stat.message ? <IconButton type='submit'><SendIcon sx={{color: blueGrey[50] }}/></IconButton> : <IconButton> <SendIcon disabled/></IconButton>}   
+                </Stack>
             </form>
         </Fab>
         </>

@@ -41,21 +41,21 @@ export default function Router() {
   return useRoutes([
     {
       path: '/dashboard',
-      element: user?.token ? <DashboardLayout /> : <Navigate to="/login" replace />,
+      element: user?.token ? <DashboardLayout /> : <Navigate to="/home" replace />,
       children: [
-        { path: 'app', element: user?.token && decoded.role === "user" ? <DashboardApp /> : <Navigate to="/login" replace /> },
-        { path: 'changepassword', element: user?.token ? <ChangePassword /> : <Navigate to="/login" replace />},
-        { path: 'accountsettings', element: user?.token ? <Settings /> : <Navigate to="/login" replace /> },
-        { path: 'assignmentform', element: user?.token ? <Assignment /> : <Navigate to="/login" replace /> },
-        { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/login" replace /> }
+        { path: 'app', element: user?.token && decoded.role === "user" ? <DashboardApp /> : <Navigate to="/home" replace /> },
+        { path: 'changepassword', element: user?.token ? <ChangePassword /> : <Navigate to="/home" replace />},
+        { path: 'accountsettings', element: user?.token ? <Settings /> : <Navigate to="/home" replace /> },
+        { path: 'assignmentform', element: user?.token && decoded.role === "user" ? <Assignment /> : <Navigate to="/home" replace /> },
+        { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> }
 
       ],
     },
     {
     path: '/auth',
-    element: user?.token  && decoded.role === "admin" ? <AdminMainHome /> : <Navigate to= "/login" replace/>,
+    element: user?.token  && decoded.role === "admin" ? <AdminMainHome /> : <Navigate to= "/home" replace/>,
     children: [
-      { path: 'admin', element: user?.token && decoded.role === "admin" ? <AdminHome /> : <Navigate to="/login" replace /> },
+      { path: 'admin', element: user?.token && decoded.role === "admin" ? <AdminHome /> : <Navigate to="/home" replace /> },
     ],
   },
     {

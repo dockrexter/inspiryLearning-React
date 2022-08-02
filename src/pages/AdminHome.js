@@ -12,7 +12,7 @@ import Page from '../components/Page';
 import moment from 'moment';
 //import  PickersDay from '@mui/lab/PickersDay';
 import startOfDay from "date-fns/startOfDay";
-import { array } from 'prop-types';
+import Chat from '../sections/assignments/Chat'
 
 
 
@@ -108,20 +108,31 @@ export default function AdminHome() {
       };
 
     return (
-        <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
-            <Grid container sx={{ width: "100%", height: "100%" }}>
-                <Grid item xs={6} sx={{
+      <Page title="Dashboard" style={{ width: "100%", height: "80%", borderTop: "1.02801px solid #C0C0C2" }}>
+          <Grid container sx={{ width: "100%", height: "100%" }}>
+              <Grid item xs={6} sx={{
+                    overflow: "auto",
                     borderRight: "1.02801px solid #C0C0C2",
-                    paddingTop: 2
+                    paddingTop: 2,
+                    height: "80vh",
+                    '*::-webkit-scrollbar': {
+                      width: '0.4em',
+                      height: '0.5em'
+                    },
+                    '*::-webkit-scrollbar-track': {
+                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+                      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+                    },
+                    '*::-webkit-scrollbar-thumb': {
+                      backgroundColor: '#38A585',
+                    }
                 }}>
                     <Container maxWidth="xl">
                         <Grid container>
                             <Grid item xs={12}>
-                               <LocalizationProvider   dateAdapter={AdapterDateFns}>
+                              <LocalizationProvider   dateAdapter={AdapterDateFns}>
                                     <StaticDatePicker
-                                        orientation="landscape"
-                                        openTo="day"
-                                        //displayStaticWrapperAs="desktop"
+                                        displayStaticWrapperAs="desktop"
                                         value={value}
                                         onChange={(newValue) => {
                                             //copying the values array 
@@ -141,15 +152,15 @@ export default function AdminHome() {
                                         inputFormat="d MMM YYYY"
                                     />
                                 </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
-                                    <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
+                        </Grid>
+                          <Grid item xs={12}>
+                              <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
+                                  <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
                                         {moment(cDate).format('MMM YYYY')}      </Typography>
                                     <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6 }}>
                                         List of applications received       </Typography>
                                 </Stack>
-                            </Grid>
+                          </Grid>
                                 {assignments && assignments.length > 0 ?
                                 <Assignments data={assignments} />
                                 :
@@ -159,128 +170,22 @@ export default function AdminHome() {
                                     <img src="/static/nodata.png" alt="No data" />
                                 </Box>}
                                 </>}
-                            </Grid>
-
+                        </Grid>
                     </Container>
-                </Grid >
-                <Grid item xs={6} sx={{ background: "#F5F1F5", height: "100%", width: "100%" }}>
 
-                    <Stack direction="column" spacing={2} sx={{ display: "flex", width: "100%", alignItems: "flex-end", padding: 2 }}>
-                        <Typography variant='body1' sx={{
-                            fontFamily: 'Poppins',
-                            fontStyle: "normal",
-                            fontWeight: 500,
-                            fontSize: "18.902px",
-                            lineHeight: "21px",
-                            color: "#1E1100",
-                            opacity: 0.5,
-
-                        }}>
-                            Yesterday
-                        </Typography>
-                        <Card sx={{
-                            background: "#E7F4F0",
-                            boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
-                            borderRadius: "8.03922px", width: "80%", padding: 2
-                        }}>
-                            <Typography variant='body2' sx={{
-                                fontFamily: 'Poppins',
-                                fontStyle: "normal",
-                                fontWeight: 500,
-                                fontSize: "14.0784px",
-                                lineHeight: "21px",
-                                color: "#4F433C",
-                                opacity: 0.7
-                            }}>
-                                i need proper assignment according to my requirements which i have added bellow in aattched document. What type of requirements from me you need in this assignment?
-                                i need proper assignment according to my requirements which i have added bellow in aattched document. What type of requirements from me you need in this assignment?
-                            </Typography>
-
-
-                        </Card>
-                        <Typography variant='caption' sx={{
-                            fontFamily: 'Poppins',
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            fontSize: "10.8628px",
-                            lineHeight: "21px",
-                            color: "#1E1100",
-                            opacity: 0.5
-                        }}>
-                            Yesterday 13:37 PM                </Typography>
-                    </Stack>
-
-                    <Stack direction="column" spacing={2} sx={{ display: "flex", width: "100%", alignItems: "flex-start", padding: 2 }}>
-                        {/* <Typography variant='body1' sx={{
-                fontFamily: 'Poppins',
-                fontStyle: "normal",
-                fontWeight: "500",
-                fontSize: "18.902px",
-                lineHeight: "21px",
-                color: "#1E1100",
-                opacity: 0.5,
-
-              }}>
-                Yesterday
-              </Typography> */}
-                        <Card sx={{
-                            background: "#FFFFFF",
-                            boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
-                            borderRadius: "8.03922px", width: "80%", padding: 2
-                        }}>
-                            <Typography variant='body2' sx={{
-                                fontFamily: 'Poppins',
-                                fontStyle: "normal",
-                                fontWeight: 500,
-                                fontSize: "14.0784px",
-                                lineHeight: "21px",
-                                color: "#4F433C",
-                                opacity: 0.7
-                            }}>
-                                Hello Marley, everything is ok? What type of help you needin this assignment?                </Typography>
-
-
-
-                        </Card>
-
-                        <Typography variant='caption' sx={{
-                            fontFamily: 'Poppins',
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            fontSize: "10.8628px",
-                            lineHeight: "21px",
-                            color: "#1E1100",
-                            opacity: 0.5
-                        }}>
-                            Yesterday 13:37 PM                </Typography>
-                    </Stack>
-
-                    <Fab variant="extended" size="large" color="primary" aria-label="add" sx={{
-                        position: 'absolute',
-                        bottom: 16,
-                        right: 16,
-                        padding: 4,
-
-                    }}>
-                        <Stack direction="row" spacing={2} sx={{
-                            display: "flex", justifyContent: "center", alignItems: "center"
-                        }}>
-                            <img alt="camera" src="/static/camera.svg" width={30} height={30} />
-                            <Typography variant="body2" sx={{
-                                color: "#FFFFFF",
-                                opacity: 0.8
-                            }}> Type Your Message </Typography>
-                            <img alt="attachment" src="/static/attachment.svg" width={30} height={30} />
-                            <img alt="send" src="/static/send.svg" width={35} height={35} />
-
-                        </Stack>
-
-
-                    </Fab>
-
+                  </Grid >
+                <Grid item xs={6} sx={{position: "sticky", height: "100%", width: "100%", paddingTop: 2 }}>
+                  <Chat />
                 </Grid>
-
-            </Grid >
-        </Page >
+              </Grid>
+            </Page>
     );
 }
+
+
+/*
+<Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
+            <Grid container sx={{ width: "100%", height: "100%" }}> 
+            </Grid >
+        </Page >
+        */

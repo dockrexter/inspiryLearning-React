@@ -61,6 +61,7 @@ export default function ChangePasswordForm() {
             setInValid(false);
 
             alert("Password changed successfully");
+            navigate("/", { replace: true });
 
           }
           else {

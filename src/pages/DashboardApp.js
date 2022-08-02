@@ -47,11 +47,10 @@ export default function DashboardApp() {
     getAssignments();
   }, []);
   return (
-    <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
+    <Page title="Dashboard" style={{width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
       <Grid container sx={{ width: "100%", height: "100%" }}>
         <Grid item xs={6} sx={{
-          borderRight: "1.02801px solid #C0C0C2",
-          paddingTop: 2
+          paddingTop: 3
         }}>
           <Container maxWidth="xl">
             <Grid container>
@@ -61,6 +60,24 @@ export default function DashboardApp() {
                   Submit New Assignment Form
                 </Button>
               </Grid>
+              <Grid sx={{
+                    overflow: "scroll",
+                    borderRight: "1.02801px solid #C0C0C2",
+                    paddingTop: 2,
+                    height: "80vh",
+                    '*::-webkit-scrollbar': {
+                      width: '0.4em',
+                      height: '0.5em'
+                    },
+                    '*::-webkit-scrollbar-track': {
+                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+                      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+                    },
+                    '*::-webkit-scrollbar-thumb': {
+                      backgroundColor: '#38A585',
+                    },
+                    padding: 2,
+                }}>
               {assignments && assignments.length > 0 ?
 
 
@@ -72,14 +89,15 @@ export default function DashboardApp() {
                       <img src="/static/nodata.png" alt="No data" />
                     </Box>
                   }
-                </>
+                </> 
               }
+              </Grid>
             </Grid>
 
           </Container>
         </Grid>
 
-        <Grid item xs={6} sx={{ background: "#F5F1F5", height: "100%", width: "100%" }}>
+        <Grid item xs={6} sx={{ height: "100%", width: "100%" }}>
           <Chat />
         </Grid>
 
