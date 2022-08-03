@@ -22,6 +22,11 @@ export default function DashboardApp() {
   const [loading, setLoading] = useState(true);
   const { user } = useSelector(state => state.user);
 
+  ///.......................................//
+  const onFileChange = (files) => {
+   // console.log(files);
+}
+
  // Calling Assignment Api For User
   const getAssignments = async () => {
     try {
@@ -98,7 +103,7 @@ export default function DashboardApp() {
           </Container>
         </Grid>
         <Grid item xs={6} sx={{ height: "100%", width: "100%" }}>
-          <Chat />
+          <Chat onFileChange={(files) => onFileChange(files)} />
         </Grid>
       </Grid >
     </Page >
