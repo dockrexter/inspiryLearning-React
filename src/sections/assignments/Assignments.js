@@ -1,22 +1,33 @@
 import React from 'react'
-import { Grid, Typography, Stack,Card, Checkbox, MenuItem, Select, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
+import { Grid, Typography, Stack,Card, Checkbox, MenuItem, Select, FormControl, CardActionArea} from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { useEffect } from 'react';
 import { useState } from 'react';
 import { BackEndUrl } from '../../url';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useEffect } from 'react';
+
+
 //Assignment Users
 
 const Assignments = ({ data }) => {
+    const [assginId, setAssignID] = useState();
     const { user } = useSelector(state => state.user);
     const [status, setStatus] = useState("");
-    const  handleStatusChange = (e) => {
-        setStatus(e.target.value);
+    const handleCard =(e) =>{
+        setAssignID(e.target.value);
+        console.log("CHECK ASSIGN ID",e.target.value);
     }
-     const handleStatus = async () => {
+    useEffect(()=>{
+        console.log(assginId);
+    },[assginId])
+    // const  handleStatusChange = (e) => {
+        
+    // }
+     const handleStatus = async (e) => {
+        setStatus(e.target.value);
         try {
             const res = await axios.post(`${BackEndUrl}/assignment/changeStatus`, {
                 id: "14" , 
@@ -33,11 +44,8 @@ const Assignments = ({ data }) => {
             }
           }
           catch (error) {
-            console.log(error, "Status Update Failed........!");
+            console.error("Status Update Failed:", error);
           }}
-        useEffect(()=>{
-            {user.role === "admin" ? handleStatus() : null};
-        },[status])
     console.log(data)
     return (
         <>
@@ -52,11 +60,16 @@ const Assignments = ({ data }) => {
                         background: "#E7F4F0",
                         boxShadow: "0px 7.69539px 7.69539px #195B48",
                         borderRadius: "15.3908px",
-                        marginTop: 2
+                        marginTop: 2,
+                        transition: '0.2s',
+                        '&:hover': {
+                            transform: 'scale(1.06)'
+                            },
 
                     }}
                         key={i}
                     >
+                        <CardActionArea onClick={e=>{setAssignID(d.id)}}>
                         <Grid container sx={{ padding: 2 }} spacing={1}>
                             <Grid item xs={4}>
                                 <Stack direction="column">
@@ -113,7 +126,7 @@ const Assignments = ({ data }) => {
                                             id="select_status"
                                             value={d.status}
                                             label="Status"
-                                            onChange={handleStatusChange}>
+                                            onChange={handleStatus}>
                                                 <MenuItem value="New Request">New Request</MenuItem>
                                                 <MenuItem value="Under Review">Under Review</MenuItem>
                                                 <MenuItem value="Pending Payment">Pending Payment</MenuItem>
@@ -130,9 +143,10 @@ const Assignments = ({ data }) => {
                                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
                             }}>
 
-                               { d.status === "Work Completed"? <CheckCircleIcon /> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+                               { d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
                             </Grid>
                         </Grid>
+                        </CardActionArea>
                     </Card>
                 )}
             </Grid>

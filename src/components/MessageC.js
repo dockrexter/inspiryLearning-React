@@ -1,10 +1,11 @@
 import React from 'react'
 import { Box, styled } from '@mui/material'
 import { useSelector } from 'react-redux';
+import Typography from 'src/theme/overrides/Typography';
 
 
 
-
+//.............CHAT STYLING............//
 
 const MsgBoxRight = styled(Box)(({theme})=> ({
     backgroundColor: "#E7F4F0",
@@ -29,11 +30,17 @@ const MsgBoxLeft = styled(Box)(({theme})=>({
     wordWrap:"break-word"
 
 }))
+
+//.................MAIN FUCTION..............//
+
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
+  console.log(user.user_id, "This is user id");
+  console.log(data.user_id,"This is Database User ID")
+  console.log(user.firstname, "User Name");
   return (
     <>
-    {user.user_id === data.user_id ? <MsgBoxLeft>{data.message}</MsgBoxLeft> : <MsgBoxRight>{data.message}</MsgBoxRight> }
+    {user.user_id === data.user_id ? <MsgBoxRight>{data.message}</MsgBoxRight> : <MsgBoxLeft>{data.message}</MsgBoxLeft>  }
     </>
   )
 }

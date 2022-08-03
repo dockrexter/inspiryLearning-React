@@ -61,10 +61,11 @@ export default function DashboardApp() {
                 </Button>
               </Grid>
               <Grid sx={{
-                    overflow: "scroll",
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
                     height: "80vh",
+                    marginBottom: "10px",
+                    overflowY: "auto",
                     '*::-webkit-scrollbar': {
                       width: '0.4em',
                       height: '0.5em'
@@ -96,11 +97,9 @@ export default function DashboardApp() {
 
           </Container>
         </Grid>
-
         <Grid item xs={6} sx={{ height: "100%", width: "100%" }}>
           <Chat />
         </Grid>
-
       </Grid >
     </Page >
   );

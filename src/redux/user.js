@@ -10,14 +10,15 @@ export const userSlice = createSlice({
             lastname: JSON.parse(window.localStorage.getItem("lastname")),
             email: JSON.parse(window.localStorage.getItem("email")),
             phone: JSON.parse(window.localStorage.getItem("phone")),
-            role: JSON.parse(window.localStorage.getItem("role"))
+            role: JSON.parse(window.localStorage.getItem("role")),
+            //assign_id: JSON.parse(window.localStorage.getItem("assign_id")),
 
         }
 
     },
     reducers: {
         update: (state, action) => {
-            console.log("cahanged", action, state)
+            console.log("changed", action, state)
             state.user = action.payload;
         },
         clear: (state) => {

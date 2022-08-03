@@ -14,6 +14,8 @@ import NavSection from '../../components/NavSection';
 import {navConfigUser, navConfigAdmin} from './NavConfig';
 import user from 'src/redux/user';
 import { useSelector } from 'react-redux';
+import IconButton from 'src/theme/overrides/IconButton';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // ----------------------------------------------------------------------
 
@@ -36,16 +38,20 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { user } = useSelector(state => state.user);
-  const { pathname } = useLocation();
+  const [ pathname,setpathName ] = useState(useLocation());
 
   const isDesktop = useResponsive('up', 'lg');
 
-  useEffect(() => {
-    if (isOpenSidebar) {
-      onCloseSidebar();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (isOpenSidebar) {
+  //     onCloseSidebar();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pathname]);
+
+  // useEffect(()=>{
+
+  // },[])
 
   const renderContent = (
     <Scrollbar
@@ -78,9 +84,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link> */}
       </Box>
         {user.role === "admin" ? <NavSection navConfig={navConfigAdmin} /> : <NavSection navConfig={navConfigUser} /> }
-      <Box sx={{ flexGrow: 1 }} />
-
-
+      <Box sx={{ flexGrow: 1 }}/>
+      
     </Scrollbar>
   );
 

@@ -22,6 +22,7 @@ import AdminHome from "./pages/AdminHome"
 import Home from './pages/Home';
 import jwt_decode from 'jwt-decode'
 import AdminMainHome from './pages/adminMainHome';
+import Logout from './pages/Logout';
 let decoded="";
 // ----------------------------------------------------------------------  //
 
@@ -47,7 +48,8 @@ export default function Router() {
         { path: 'changepassword', element: user?.token ? <ChangePassword /> : <Navigate to="/home" replace />},
         { path: 'accountsettings', element: user?.token ? <Settings /> : <Navigate to="/home" replace /> },
         { path: 'assignmentform', element: user?.token && decoded.role === "user" ? <Assignment /> : <Navigate to="/home" replace /> },
-        { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> }
+        { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> },
+        { path: 'logout', element: user?.token ? <Logout/> : <Navigate to="/home" replace />},
 
       ],
     },
@@ -68,7 +70,7 @@ export default function Router() {
         { path: 'register', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Register/> },
         { path: 'forget', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Forget /> },
         { path: 'newpassword', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Password /> },
-        { path: '/', element: user?.token && decoded.role === "admin" ? <Navigate to="/auth/admin" /> : <Navigate to="/home" replace /> },
+        { path: '/', element: user?.token && decoded.role === "admin" ? <Navigate to="/auth/admin" /> : <Home/> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
