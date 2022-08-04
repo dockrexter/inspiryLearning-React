@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Typography, Stack,Card, Checkbox, MenuItem, Select, FormControl, CardActionArea} from '@mui/material';
+import { Grid, Typography, Stack,Card, Box, Checkbox, CardActionArea} from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -46,24 +46,22 @@ const Assignments = ({ data }) => {
           catch (error) {
             console.error("Status Update Failed:", error);
           }}
-    console.log(data)
+   // console.log(data)
     return (
-        <>
-            <Grid item xs={12}>
-                <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6 }}>
-                    List of Submmited Assignments      </Typography>
-            </Grid>
-
+        <Box sx={{
+            width: "100%",
+            padding:2
+          }}>
             <Grid item xs={12}>
                 {data.map((d, i) =>
                     <Card sx={{
                         background: "#E7F4F0",
                         boxShadow: "0px 7.69539px 7.69539px #195B48",
                         borderRadius: "15.3908px",
-                        marginTop: 2,
-                        transition: '0.2s',
+                        marginTop: 3,
+                        transition: '0.3s',
                         '&:hover': {
-                            transform: 'scale(1.06)'
+                            transform: 'scale(1.03)'
                             },
 
                     }}
@@ -119,38 +117,20 @@ const Assignments = ({ data }) => {
                             </Grid>
 
                             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                                {user.role === "admin" ? <FormControl sx={{ m: 1, minWidth: 250 }} size="small">
-                                    {/* <InputLabel id="Status">{d.status}</InputLabel> */}
-                                         <Select
-                                            labelId="select_status"
-                                            id="select_status"
-                                            value={d.status}
-                                            label="Status"
-                                            onChange={handleStatus}>
-                                                <MenuItem value="New Request">New Request</MenuItem>
-                                                <MenuItem value="Under Review">Under Review</MenuItem>
-                                                <MenuItem value="Pending Payment">Pending Payment</MenuItem>
-                                                <MenuItem value="Work in Progress">Work in Progress</MenuItem>
-                                                <MenuItem value="Work Completed">Work Completed</MenuItem>
-                                            </Select>
-                                        </FormControl> 
-                                    : 
-                                        <Typography variant="caption" >{d.status} </Typography> }
-                                
+                                        <Typography variant="caption" >{d.status} </Typography> 
                             </Grid>
 
                             <Grid item xs={4} sx={{
                                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
                             }}>
-
-                               { d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+                               {d.status === "Work Completed" && user.user_id === "user" ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
                             </Grid>
                         </Grid>
                         </CardActionArea>
                     </Card>
                 )}
             </Grid>
-        </>
+        </Box>
     );
 
 }

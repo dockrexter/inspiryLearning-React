@@ -62,7 +62,6 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 export default function Home() {
     const smUp = useResponsive('up', 'sm');
-
     const mdUp = useResponsive('up', 'md');
 
     return (
@@ -80,7 +79,6 @@ export default function Home() {
                         <Typography variant="subtitle1" sx={{
                             px: 5, mb: 5,
                         }}>
-
                             Inspiry Learning is an affordable online homework service portal dedicated to delivering high-quality academic results. With our team of experts, we consistently deliver more than is expected. Whatever your academic level and background, we are here to help!
                         </Typography>
 
@@ -101,8 +99,6 @@ export default function Home() {
 
 
                         <HomeForm />
-
-
                     </ContentStyle>
                 </Container>
             </RootStyle>

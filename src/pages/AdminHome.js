@@ -3,14 +3,11 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Assignments from 'src/sections/assignments/Assignments';
 import { BackEndUrl } from '../url';
-import { Grid, Container, styled, CircularProgress ,Typography, Stack,TextField, Card} from '@mui/material';
-import Fab from '@mui/material/Fab';
+import { Grid, Container, Box, styled, CircularProgress ,Typography, Stack,TextField, Card} from '@mui/material';
 import {LocalizationProvider, StaticDatePicker, PickersDay} from "@mui/x-date-pickers";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-//import StaticDatePicker from "@mui/lab/StaticDatePicker";
-import Page from '../components/Page';
+import DashboardPage from '../components/dashboardPage';
 import moment from 'moment';
-//import  PickersDay from '@mui/lab/PickersDay';
 import startOfDay from "date-fns/startOfDay";
 import Chat from '../sections/assignments/Chat'
 
@@ -37,20 +34,27 @@ const CustomPickersDay = styled(PickersDay, {
 
 export default function AdminHome() {
     const [value, setValue] = useState([startOfDay(new Date())]);
-    console.log(value, "Current Date");
+    console.log("CHECKING START DATE on start:",value);
     const [cDate, setCDate] = useState(startOfDay(new Date()));
-    console.log(value);
-    const [assignments, setAssignments] = useState([]);
+    //console.log(value);
+    const [assignmentsUp, setAssignmentsUp] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
-    console.log(user.token, "TOKEN");
+    const [month, setMonth] = useState(moment(new Date()).format('MM'));
+    const [year, setYear] = useState(moment(new Date()).format('YYYY'));
+   // console.log(user.token, "TOKEN");
+
+   //................PIcker Date................//
+   
+
+  //.......................................................//
 
     const getAllAssignments = async() => {
         try {
-          console.log(user.token);
+         // console.log(user.token);
           const res = await axios.post(`${BackEndUrl}/assignment/getCurrentMonthAssignments`, {
-            currentMonth: moment(cDate).format("MM"),
-            currentYear:  moment(cDate).format("yyyy"),
+            currentMonth: month,
+            currentYear:  year,
           },
           {
             headers: {
@@ -59,43 +63,32 @@ export default function AdminHome() {
           },
           );
           if (res.data.status === "ok") {
-            setAssignments(res.data.assignments);
-            console.log(assignments);
-            setLoading(false);
-          }
+            setAssignmentsUp(res.data.assignments);
+             for(var i=0; i < res.data.assignments.length; i++){
+               const date = startOfDay(new Date(res.data.assignments[i].deadline));
+               console.log("CHECKING DATES With new Date: ",date);
+              setValue([...value, date]);
+            }
+           setLoading(false);  
+        }
         }
         catch (error) {
-          console.log(error);
+          console.error("falied to Fetch Assignments: ",error);
         }
       }
-      useEffect(() => {
-        getAllAssignments();
-      }, [cDate]);
-
-      // const array = [...value];
-      // const index = findIndexDate(array, date);
-      // if (index >= 0) {
-      //   array.splice(index, 1);
-      // } else {
-      //   array.push(date);
-      // }
-      // setValue(array);
-      
-
-
-      const findIndexDate = (dates, date) => {
-        const dateTime = date.getTime();
-        return dates.findIndex((item) => item.getTime() === dateTime);
-      };
+      // const findIndexDate = (dates, date) => {
+      //   const dateTime = date.getTime();
+      //   return dates.findIndex((item) => item.getTime() === dateTime);
+      // };
       const findDate = (dates, date) => {
         const dateTime = date.getTime();
+        console.log("CHECKING on findDate Function DATE:",dateTime);
         return dates.find((item) => item.getTime() === dateTime);
       };
       const renderPickerDay = (date, selectedDates, pickersDayProps) => {
-        if (!value) {
-          return <PickersDay {...pickersDayProps} />;
-        }
-    
+         if (!value) {
+           return <PickersDay {...pickersDayProps} />;
+         }
         const selected = findDate(value, date);
     
         return (
@@ -107,50 +100,45 @@ export default function AdminHome() {
         );
       };
 
+      useEffect(() => {
+        getAllAssignments();
+        console.log("CHECK THIS Assignments OUT:",assignmentsUp);
+        console.log("CHECK OUT COMPLETE ARRAY:",value);
+      }, [month, year]);
+  
+
     return (
-      <Page title="Dashboard" style={{ width: "100%", height: "80%", borderTop: "1.02801px solid #C0C0C2" }}>
-          <Grid container sx={{ width: "100%", height: "100%" }}>
+      <DashboardPage title="Dashboard" style={{
+        marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
+          <Grid container sx={{ width: "100%" }}>
               <Grid item xs={6} sx={{
-                    overflow: "auto",
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
-                    height: "80vh",
-                    '*::-webkit-scrollbar': {
-                      width: '0.4em',
-                      height: '0.5em'
+                    overflowY: "auto",
+                    '&::-webkit-scrollbar': {
+                    display: "none",
                     },
-                    '*::-webkit-scrollbar-track': {
-                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-                      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-                    },
-                    '*::-webkit-scrollbar-thumb': {
-                      backgroundColor: '#38A585',
-                    }
                 }}>
                     <Container maxWidth="xl">
-                        <Grid container>
+                        <Grid container sx={{height: "80vh"}}>
                             <Grid item xs={12}>
                               <LocalizationProvider   dateAdapter={AdapterDateFns}>
-                                    <StaticDatePicker
+                                    <StaticDatePicker sx={{width: "100%", color: "white"}}
                                         displayStaticWrapperAs="desktop"
                                         value={value}
-                                        onChange={(newValue) => {
-                                            //copying the values array 
-                                            const array = [...value];
-                                            const date = startOfDay(newValue);
-                                            setCDate(startOfDay(newValue));
-                                            const index = findIndexDate(array, date);
-                                            if (index >= 0) {
-                                              array.splice(index, 1);
-                                            } else {
-                                              array.push(date);
-                                            }
-                                            setValue(array);
+                                        onMonthChange={(value)=>{
+                                          setMonth(moment(value).format("MM"));
+                                        }}
+                                        onYearChange={(value)=>{
+                                          setYear(moment(value).format("YYYY"));
+                                        }}
+                                        onChange={(newValue) => {  
+                                          console.log("CHANGED VALUE from function: ",newValue);
                                           }}
                                         renderDay={renderPickerDay}
                                         renderInput={(params) => <TextField {...params} />}
-                                        inputFormat="d MMM YYYY"
-                                    />
+                                        inputFormat="d MMM YYYY"    
+                                  />
                                 </LocalizationProvider>
                         </Grid>
                           <Grid item xs={12}>
@@ -161,24 +149,23 @@ export default function AdminHome() {
                                         List of applications received       </Typography>
                                 </Stack>
                           </Grid>
-                                {assignments && assignments.length > 0 ?
-                                <Assignments data={assignments} />
+                                {assignmentsUp && assignmentsUp.length > 0 ?
+                                <Assignments data={assignmentsUp}/>
                                 :
                                 <>
-                                {loading ? <CircularProgress />
+                                {loading ?  <CircularProgress />
                                  : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%",      marginTop: 2 }}>
                                     <img src="/static/nodata.png" alt="No data" />
                                 </Box>}
                                 </>}
                         </Grid>
                     </Container>
-
                   </Grid >
-                <Grid item xs={6} sx={{position: "sticky", height: "100%", width: "100%", paddingTop: 2 }}>
+                <Grid item xs={6} sx={{height: "100%", width: "100%"}}>
                   <Chat />
                 </Grid>
               </Grid>
-            </Page>
+            </DashboardPage>
     );
 }
 

@@ -66,11 +66,15 @@ export default function Router() {
       children: [
         { path: '/', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Navigate to="/home" replace /> },
         { path: 'home', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Home /> },
-        { path: 'login', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Login /> },
-        { path: 'register', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Register/> },
-        { path: 'forget', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Forget /> },
-        { path: 'newpassword', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : <Password /> },
+        { path: 'login', element: user?.token && decoded.role === "user" ? <Navigate to="/dashboard/app" /> : user.role? <Login/> 
+        :
+        <Navigate to="/home" replace /> },
+        { path: 'register', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Register/> },
+        { path: 'forget', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Forget /> },
+        { path: 'newpassword', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Password /> },
         { path: '/', element: user?.token && decoded.role === "admin" ? <Navigate to="/auth/admin" /> : <Home/> },
+        { path: 'newpassword', element: user?.token && decoded.role === "admin"? <Navigate to="/auth/admin" /> : <Password /> },
+        { path: 'forget', element: user?.token && decoded.role === "admin"? <Navigate to="/auth/admin" /> : <Forget /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

@@ -29,8 +29,6 @@ export default function LoginForm() {
   const { user } = useSelector(
     state => state.user
   );
-  console.log("loginFrom user", user);
-
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -54,7 +52,6 @@ export default function LoginForm() {
           role: user.role
 
         });
-        console.log("token recevied", res.data);
         if (res.data.status === "ok") {
 
 
@@ -75,7 +72,7 @@ export default function LoginForm() {
         }
       } catch (error) {
         setInValid(true);
-        console.log(error);
+        console.error("Failed to LogIn: ",error);
       }
     },
   });

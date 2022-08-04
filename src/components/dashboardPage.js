@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-const Page = forwardRef(({ children, title = '', meta, ...other }, ref) => (
+const DashboardPage = forwardRef(({ children, title = '', meta, ...other }, ref) => (
   <>
     <Helmet>
       <title>{`${title}`}</title>
@@ -14,6 +14,8 @@ const Page = forwardRef(({ children, title = '', meta, ...other }, ref) => (
     </Helmet>
 
     <Box ref={ref} {...other} sx={{
+            position: "fixed",
+            marginTop: "10px",
             overflowY: "auto",
             '&::-webkit-scrollbar': {
             display: "none",
@@ -24,10 +26,10 @@ const Page = forwardRef(({ children, title = '', meta, ...other }, ref) => (
   </>
 ));
 
-Page.propTypes = {
+DashboardPage.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   meta: PropTypes.node,
 };
 
-export default Page;
+export default DashboardPage;

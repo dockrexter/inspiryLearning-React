@@ -12,21 +12,17 @@ export const userSlice = createSlice({
             phone: JSON.parse(window.localStorage.getItem("phone")),
             role: JSON.parse(window.localStorage.getItem("role")),
             //assign_id: JSON.parse(window.localStorage.getItem("assign_id")),
-
         }
 
     },
     reducers: {
         update: (state, action) => {
-            console.log("changed", action, state)
+            //console.log("changed", action, state)
             state.user = action.payload;
         },
         clear: (state) => {
-            console.log("called clear", state)
-            state = '';
+            state.user = '';
         }
-
-
 
     }
 });

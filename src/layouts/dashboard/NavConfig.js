@@ -46,4 +46,9 @@ export const navConfigAdmin = [
     path: '/dashboard/changepassword',
     icon: getIcon('ri:lock-password-line'),
   },
+  {
+    title: 'Logout',
+    path: '/dashboard/logout',
+    icon: getIcon('mdi-light:login')
+   }
 ];

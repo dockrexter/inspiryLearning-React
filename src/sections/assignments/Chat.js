@@ -15,34 +15,24 @@ import { BackEndUrl } from 'src/url';
 import Draggable from 'react-draggable'
 import { ImageConfig } from '../../../src/ImageConfig';
 import PropTypes from 'prop-types';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 
 
 const ChatBoxT = styled(ReactScrollToBottom)(({theme}) => ({
     height: "70vh",
     boxSizing: "border-box",
-    backgroundColor: "white",
+    backgroundColor: "#F5F1F5",
     overflowY: "auto",
-    scrollbarWidth: "thin",
     '*::-webkit-scrollbar': {
-        width: '0.4em',
-        height: '0.5em'
-      },
-      '*::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-      },
-      '*::-webkit-scrollbar-thumb': {
-        backgroundColor: '#38A585',
+        display: "none",
       }
-
 }));
 
 const MainBox = styled(Box)(({theme})=>({
     width: "100%", 
     height: "70vh", 
-    boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
-    margin: "0 10px"
+    margin: "0 auto"
 
 }))
 
@@ -66,12 +56,13 @@ const FilePreviewItem = styled(Box)(({theme})=>({
     display: "flex",
     marginBottom: "10px",
     padding: "15px",
-    borderRadius: "20px"
+    borderRadius: "20px",
+    flexDirection: "column",
 }))
 const FilePreviewInfo = styled(Box)(({theme})=>({
     display: "flex",
-    flexDirection: "column",
     justifyContent: "space-between",
+    alignItems: "center"
 }))
  //.........................................................//
 
@@ -94,17 +85,19 @@ const Chat = (props) => {
     const socket = io("http://inspirylearning-web.herokuapp.com")
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null); 
-    const [selectedFile, setSelectedFile] = useState();
 	const [isFilePicked, setIsFilePicked] = useState(false);
     const [open, setOpen] = useState(false);
     const [offer, setOffer] = useState(0);
     const [offerSummary, setOfferSummary] = useState("");
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
+   
+
     useEffect(()=>{
         console.log("Offer Amount:", offer);
         console.log("Offer Summary", offerSummary);
-    },[offerSummary])
+        console.log("File List Check", fileList);
+    },[fileList])
 
 //................Payment Popup handles....................//
 const handleClickOpen = () => {
@@ -119,6 +112,7 @@ const handleClickOpen = () => {
   };
   const handleAttachClose = () => {
     setAttachOpen(false);
+    setFileList([]);
   };
 
 
@@ -128,12 +122,6 @@ const offerHandle= () =>{
 }
 //........................INPUT INPUT AND HANDLE SUBMITS.......................//
 
-    // const changeFileHandler = (e) => {
-    // console.log("EVENT CALL INPUT",e.target.files[0]);
-    // setSelectedFile(e.target.files[0]);
-    // console.log("File upload Check", selectedFile);
-    // setIsFilePicked(true);
-    // }
 
     const handleUploadClick = event => {
         hiddenInputField.current.click();
@@ -141,30 +129,36 @@ const offerHandle= () =>{
     const onFileDrop = (e) => {
         const newFile = e.target.files[0];
         if (newFile) {
-            const updatedList =  newFile;
+            console.log("Testing on new file",newFile);
+            const updatedList = [...fileList, newFile];
             setFileList(updatedList);
             setIsFilePicked(true);
             props.onFileChange(updatedList);
         }
     }
-    const fileRemove = () => {
-        const updatedList = [];
+    const fileRemove = (file) => {
+        const updatedList = [...fileList];
+        updatedList.splice(fileList.indexOf(file), 1);
         setFileList(updatedList);
         props.onFileChange(updatedList);
+        if(updatedList.length === 0){
+            setIsFilePicked(false);
+        }
     }
 
 //....................AXIOS REQUEST FOR FILE UPLOAD............................//
 
 
 const handleFile = async () => {
+    if(fileList.length > 0){
+    for(var i=0; i<fileList.length; i++){
     const formData = new FormData();
     formData.append( 
         "file", 
-        selectedFile, 
-        selectedFile.name 
+        fileList[i], 
+        fileList[i].name 
       );
-      console.log("FILE CHECK in FORMDATA", selectedFile);
-    // try {
+      console.log("FILE CHECK in FORMDATA", fileList);
         const res = await axios.post(`${BackEndUrl}/api/upload`, formData
         );
         if (res.data.status === "ok") {
@@ -172,13 +166,12 @@ const handleFile = async () => {
           setIsFilePicked(false);
         }
         console.log(res)
-    }
-    //   }
-    //   catch (error) {
-    //     console.error("Failed Upload", error);
-    //   }}
+    }}
+    setAttachOpen(false);
+    setFileList([]);
 
-
+}
+   
 //..................SOCKET.IO........................//
 
 
@@ -188,7 +181,7 @@ const handleFile = async () => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
                     user_id: user.user_id,
-                    assignment_id: "14"
+                    assignment_id: 14
                 })
                 
               });
@@ -233,25 +226,35 @@ const handleFile = async () => {
         }
 
     return (
-        <>
+        <Box sx={{
+            backgroundColor: "#F5F1F5",
+            width: "100%",
+            height: "100%",
+            margin: "0 auto" }}>
         {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
+
         <MainBox>
             <ChatBoxT>
-            <Typography>Select Assignment to Chat</Typography>
+            {/* <Typography>Select Assignment to Chat</Typography> */}
+
                 {messageT.map((item,i) => <MessageC key={i} data={item} />)}
+
             </ChatBoxT>
         </MainBox>
 
-        {/*...........FLOAT BUTTON FOR TEXT,ATTACHMENTS and MONEY...............*/}
+        {/*...........BOX FOR TEXT,ATTACHMENTS and MONEY...............*/}
 
-        <Fab variant="extended" size="large" color="primary" aria-label="add" sx={{
-            marginLeft: "15%",
-            padding: 4,
-            marginTop: "1px"
+
+         <Box sx={{ 
+            margin: "1px auto",
+            backgroundColor: "#38A585",
+            width: "80%",
+            borderRadius: "20px",
+            padding: 1,
         }}>
             <form onSubmit={onMessageSubmit}>
                 <Stack direction="row" spacing={2} sx={{
-                    display: "flex", justifyContent: "center", alignItems: "center"
+                    display: "flex", justifyContent: "space-between", alignItems: "center"
                     }}>
                         <>
                         
@@ -285,7 +288,7 @@ const handleFile = async () => {
                             </Dialog>
                             </> 
                             :
-                             <AttachMoneyIcon disabled/>}
+                             null}
 
                              {/*....................ATTACHMENTS OVER HERE....................*/}
 
@@ -293,26 +296,33 @@ const handleFile = async () => {
                         <Dialog
                             open={attachOpen}
                             onClose={handleAttachClose}
-                            PaperComponent={PaperComponent}
-                            aria-labelledby="draggable-dialog-title">
-                            <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                            PaperComponent={PaperComponent}>
+                            <DialogTitle style={{ cursor: 'move' }}>
                                 Upload Your File
                             </DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    <Box sx={{display: "flex", alignItems: "center", margin:"10px 0"  }}>
+                                {
+                                    fileList.length > 0 ? (
+                                    <Box sx={{display: "flex", alignItems: "center", margin:"10px 0", flexDirection:"column"  }}>
                                         <FilePreview>
-                                            <FilePreviewItem>
-                                               {/* <img src={ImageConfig[fileList.type.split('/')[1]] || ImageConfig['default']} alt="" />*/}
-                                            <FilePreviewInfo>
-                                                <Typography variant='span'>{fileList.name}</Typography>
-                                                <Typography variant='span'>{fileList.size}</Typography>
-                                            </FilePreviewInfo>
-                                            <span className="drop-file-preview__item__del" onClick={() => fileRemove}>x</span>
+                                        {
+                                        fileList.map((item, index) => (
+                                            <FilePreviewItem key={index}>
+                                                 <img src={ImageConfig[item.type.split('/')[1]] || ImageConfig['default']} alt="" />
+                                                <FilePreviewInfo>
+                                                    
+                                                    <Typography variant='span'>{fileList.name}</Typography>
+                                                    <Typography variant='span'>{fileList.size}</Typography>
+                                                    <IconButton onClick={() => fileRemove(item)}><CancelIcon/></IconButton>
+                                                </FilePreviewInfo>
                                             </FilePreviewItem>
+                                            ))
+                                        }
                                         </FilePreview>
-                                    <input type="file" ref={hiddenInputField} onChange={onFileDrop} style={{display: "none"}}/>
                                     </Box>
+                                    ) : null}
+                                    <input type="file" ref={hiddenInputField} onChange={onFileDrop} style={{display: "none"}}/>
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
@@ -325,17 +335,19 @@ const handleFile = async () => {
                             </Dialog>
                         </>
                
-                    <TextField label="Type Your Message"  variant="filled" name="message" onChange={e => onTextChange(e)}
+                    <TextField label="Type Your Message" name="message" onChange={e => onTextChange(e)}
                     value={stat.text}
                     sx={{
                         input: { color: "white" },
+                        floatingLabelFocusStyle: { color: "white" },
+                        width: "70%",
                         opacity: 0.8
                         }}> </TextField>
-                        {stat.message ? <IconButton type='submit'><SendIcon sx={{color: blueGrey[50] }}/></IconButton> : <IconButton> <SendIcon disabled/></IconButton>} 
+                        {stat.message ? <IconButton type='submit'><SendIcon sx={{color: blueGrey[50], fontSize:30 }}/></IconButton> : <IconButton> <SendIcon disabled sx={{ fontSize:30 }}/></IconButton>} 
                 </Stack>
             </form>
-        </Fab>
-        </>
+        </Box>
+        </Box>
     );
 
 

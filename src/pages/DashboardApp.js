@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 // @mui
-import { Grid, Container, Button, Box, CircularProgress } from '@mui/material';
+import { Grid, Container,Typography, Button, Box, CircularProgress } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 // components
-import Page from '../components/Page';
+import DashboardPage from '../components/dashboardPage';
 // sections
 import Assignments from '../sections/assignments/Assignments';
 import Chat from '../sections/assignments/Chat';
@@ -52,42 +52,30 @@ export default function DashboardApp() {
     getAssignments();
   }, []);
   return (
-    <Page title="Dashboard" style={{width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
-      <Grid container sx={{ width: "100%", height: "100%" }}>
-        <Grid item xs={6} sx={{
-          paddingTop: 3
-        }}>
-          <Container maxWidth="xl">
-            <Grid container>
-              <Grid item xs={12} sx={{ textAlign: "right" }}>
-                {/*Submit New Assignment Here*/}
-                <Button size="medium" color="secondary" variant='contained' component={RouterLink} to="/dashboard/assignmentform" >
-                  Submit New Assignment Form
-                </Button>
-              </Grid>
-              <Grid sx={{
+    <DashboardPage title="Dashboard" style={{
+      marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
+      <Grid container sx={{ width: "100%"}}>
+      <Grid item xs={6} sx={{
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
-                    height: "80vh",
-                    marginBottom: "10px",
-                    overflowY: "auto",
-                    '*::-webkit-scrollbar': {
-                      width: '0.4em',
-                      height: '0.5em'
+                    overflowY: "scroll",
+                    '&::-webkit-scrollbar': {
+                    display: "none",
                     },
-                    '*::-webkit-scrollbar-track': {
-                      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-                      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-                    },
-                    '*::-webkit-scrollbar-thumb': {
-                      backgroundColor: '#38A585',
-                    },
-                    padding: 2,
                 }}>
+          <Container maxWidth="xl">
+            <Grid container sx={{height: "80vh"}}>
+              <Grid item xs={12} sx={{ display:"flex", justifyContent:"space-between" }}>
+                {/*Submit New Assignment Here*/}
+                <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6, padding: 1 }}>
+                  Submmited Assignments      </Typography>
+                <Button size="medium" color="secondary" variant='contained' component={RouterLink} to="/dashboard/assignmentform" >
+                  New Assignment
+                </Button>
+                
+              </Grid>
               {assignments && assignments.length > 0 ?
-
-
-                <Assignments data={assignments} />
+                <Assignments data={assignments}/>
                 :
                 <>
                   {loading ? <CircularProgress /> :
@@ -97,15 +85,14 @@ export default function DashboardApp() {
                   }
                 </> 
               }
-              </Grid>
             </Grid>
 
           </Container>
         </Grid>
-        <Grid item xs={6} sx={{ height: "100%", width: "100%" }}>
+        <Grid item xs={6} sx={{ height: "100%", width: "100%" , backgroundColor: "#F5F1F5"}}>
           <Chat onFileChange={(files) => onFileChange(files)} />
         </Grid>
       </Grid >
-    </Page >
+    </DashboardPage>
   );
 }

@@ -27,7 +27,8 @@ export default function HomeForm() {
       <Button variant="contained" size="large" color="primary" onClick={() => {
         window.localStorage.setItem('role', JSON.stringify("user"));
         dispatch(update({
-          role: "user", firstname: "",
+          role: "user", 
+          firstname: "",
           lastname: "",
           email: "",
           phone: "",

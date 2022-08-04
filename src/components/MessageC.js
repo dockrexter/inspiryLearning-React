@@ -11,23 +11,26 @@ const MsgBoxRight = styled(Box)(({theme})=> ({
     backgroundColor: "#E7F4F0",
     padding: "1vmax",
     margin: "1vmax",
-    borderRadius: "0.5vmax",
+    borderRadius: "8.03922px",
     display: "inline-block",
     width: "70%",
     clear: "both",
     float: "right",
-    wordWrap:"break-word"
+    wordWrap:"break-word",
+    boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
+    background: "#E7F4F0",
 }))
 const MsgBoxLeft = styled(Box)(({theme})=>({
-  backgroundColor: "#D3D3D3",
+  backgroundColor: "#FFFFFF",
     padding: "1vmax",
     margin: "1vmax",
-    borderRadius: "0.5vmax",
+    borderRadius: "8.03922px",
     display: "inline-block",
     width: "70%",
     clear: "both",
     float: "left",
-    wordWrap:"break-word"
+    wordWrap:"break-word",
+    boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
 
 }))
 

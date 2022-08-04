@@ -1,73 +1,61 @@
 import React from 'react'
-import { Box, Container, styled, Typography, Button } from '@mui/material';
+import { Box, Container, styled, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import Page from '../components/Page'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch} from 'react-redux';
+import user, { clear } from 'src/redux/user';
+import { useState } from "react"
 
-const LogoutStyled = styled(Box)(({theme})=> ({
-    width: "400px",
-    height: "300px",
-    boxSizing: "border-box",
-    backgroundColor: 'white',
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-    borderRadius: "10px",
-    textAlign: "center" 
-
-}));
-const RootStyle = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.up('md')]: {
-      display: 'flex',
-  },
-}));
-const ContentStyle = styled(Box)(({ theme }) => ({
-  maxWidth: 550,
-  margin: 'auto',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  // padding: theme.spacing(12, 0),
-
-
-}));
 
 const Logout = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("HELLO FROM LOGOUT");
-  const handleLogout = (e) => {
-    window.localStorage.clear();
-    setTimeout(navigate("/", { replace: true }),5000);
-    // navigate("/home", { replace: true });
+  const [open, setOpen] = useState(true);
+
+  const handleClose = () => {
+    setOpen(false);
+    navigate("/", {replace: true});
+  };
+
+  const handleLogout = async(e) => {
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('user_id');
+    window.localStorage.removeItem('lastname');
+    window.localStorage.removeItem('phone');
+    window.localStorage.removeItem('email');
+    window.localStorage.removeItem('role');
+    window.localStorage.removeItem('firstname');
+    dispatch(clear());
+    console.log("LOGGED OUT");
+    navigate("/", { replace: true });
   }
-  const handleDashboard = (e) => {
-    setTimeout(navigate("/", {replace: true}), 5000)
-  }
-    //window.localStorage.clear();   
   return (
-    <Page title="Logout">
-      <RootStyle>
+    <Page title="Logout" sx={{width: "100%", height: "100%"}}>
         <Container sx={{ width: "100%"}}>
-          <ContentStyle>
-            <LogoutStyled>
-              <>
-                <Typography variant="h3" gutterBottom sx={{
-                    textAlign: "center", color: "#4F433C", lineHeight: "90px"
-                    }}>
-                      Logout?
-                </Typography>
-              </>
-              <>
-                <LogoutIcon sx={{ fontSize: 80, display: 'inline-block',
-                  width: '100%', color: "#2196f3",
-                }}/>
-              </>
-              <Box>
-                <Button variant="contained" onClick={handleLogout} sx={{margin:"30px"}}>Logout</Button>
-                <Button variant="contained" onClick={handleDashboard} sx={{margin:"30px"}}>Cancel</Button>
-              </Box>
-            </LogoutStyled>
-          </ContentStyle>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          <Typography variant="h5">LOGOUT</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center'}}>
+            <LogoutIcon/>
+            Are you sure you want to logout?
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={handleClose}>Cancle</Button>
+          <Button variant='contained' onClick={handleLogout}>
+            LogOut
+          </Button>
+        </DialogActions>
+      </Dialog>
         </Container>
-      </RootStyle>
     </Page>
   )
 }
