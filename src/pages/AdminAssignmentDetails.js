@@ -1,36 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { faker } from '@faker-js/faker';
-// @mui
-import { Grid, Container, Typography, Stack, Button, Card, Checkbox, TextField } from '@mui/material';
-import CircleCheckedFilled from '@mui/icons-material/CheckCircle';
+import { Grid, Container, Typography, Stack, Button, Card, Checkbox} from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
-import { Link as RouterLink } from 'react-router-dom';
-import NavigationIcon from '@mui/icons-material/Navigation';
-import Fab from '@mui/material/Fab';
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import StaticDatePicker from "@mui/lab/StaticDatePicker";
-// components
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
-// sections
+import moment from 'moment';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Navigate } from 'react-router-dom';
 
-
-const data = [{
-    due: "10-6-22",
-    start: "10-6-22",
-    title: "History of Graphic Design",
-    status: "Work in progress"
-
-},
-
-]
 
 
 // ----------------------------------------------------------------------
 
-export default function AdminAssignmentDetails() {
-    const [value, setValue] = useState(new Date());
+export default function AdminAssignmentDetails({assignData,assginId}) {
+    console.log(assginId, "This is Assignment ID");
+
+    const handleDone = () => {
+
+        Navigate("/");
+    }
+
+
+
+
+
     return (
         <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
             <Grid container sx={{ width: "100%", height: "100%" }} >
@@ -40,8 +30,8 @@ export default function AdminAssignmentDetails() {
                     <Container maxWidth="xl">
                         <Grid container>
                             <Grid item xs={12}>
-                                {data.map(d =>
-                                    <Card sx={{
+                                {assignData.filter(opt => opt.id === assginId).map((d ,i) =>
+                                    <Card key={i} sx={{
                                         background: "#E7F4F0",
                                         boxShadow: "0px 7.69539px 7.69539px #195B48",
                                         borderRadius: "15.3908px",
@@ -61,7 +51,7 @@ export default function AdminAssignmentDetails() {
                                                     }}>
                                                         Due Today     </Typography>
                                                     <Typography variant="body2" >
-                                                        {d.due}   </Typography>
+                                                    {moment(d.deadline).format("MMMM Do YYYY")}   </Typography>
 
                                                 </Stack>
                                             </Grid>
@@ -73,7 +63,7 @@ export default function AdminAssignmentDetails() {
                                                     fontSize: "20.9339px",
                                                     lineHeight: "27px"
                                                 }}>
-                                                    {d.title}   </Typography>
+                                                    {d.subject}   </Typography>
 
                                             </Grid>
 
@@ -89,7 +79,7 @@ export default function AdminAssignmentDetails() {
                                                         Starting Date
                                                     </Typography>
                                                     <Typography variant="body2" >
-                                                        {d.start}     </Typography>
+                                                    {moment(d.created_date).format("MMMM Do YYYY")}     </Typography>
                                                 </Stack>
                                             </Grid>
                                             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
@@ -101,11 +91,7 @@ export default function AdminAssignmentDetails() {
                                                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
                                             }}>
 
-                                                <Checkbox
-                                                    icon={<CircleUnchecked />}
-                                                    checkedIcon={<CircleCheckedFilled />}
-
-                                                />
+                                                {d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
                                             </Grid>
                                         </Grid>
                                     </Card>
@@ -113,22 +99,21 @@ export default function AdminAssignmentDetails() {
                             </Grid>
 
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
+                            {assignData.filter(opt => opt.id === assginId).map(d =>
                                 <Stack direction="column" spacing={2} >
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
-                                        Discription       </Typography>
+                                        Discription      </Typography>
                                     <Typography variant="body2" sx={{ color: "#202323", opacity: 0.6 }}>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                                        molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
-                                        numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
-                                        optio, eaque rerum! Provident similique accusantium nemo autem.       </Typography>
+                                        {d.summary}     </Typography>
 
                                     <Typography variant="h6" sx={{ color: "#6ABBA3", fontWeight: 700 }}>
                                         Attachments       </Typography>
 
-                                    <Button variant="contained" color="primary" size="large" sx={{ width: "200px" }}>
+                                    <Button variant="contained" color="primary" size="large"  onClick={handleDone} sx={{ width: "200px" }}>
                                         Done
                                     </Button>
                                 </Stack>
+                            )}
                             </Grid>
                         </Grid>
 

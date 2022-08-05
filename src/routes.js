@@ -31,11 +31,7 @@ export default function Router() {
     state => state.user
   );
   const checkTokken=()=>{
-    decoded = jwt_decode(user.token);
-    // console.log("Decoded Token ",decoded);
-    // console.log("Decoded Token ",decoded.role);
-    // console.log("is token", user?.token)
-  }
+    decoded = jwt_decode(user.token);}
   user.token ? checkTokken() : null
   
 
@@ -50,6 +46,7 @@ export default function Router() {
         { path: 'assignmentform', element: user?.token && decoded.role === "user" ? <Assignment /> : <Navigate to="/home" replace /> },
         { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> },
         { path: 'logout', element: user?.token ? <Logout/> : <Navigate to="/home" replace />},
+        { path: 'newpassword', element: user?.token? <Password/> : <Navigate to="/home" replace />},
 
       ],
     },
@@ -58,6 +55,11 @@ export default function Router() {
     element: user?.token  && decoded.role === "admin" ? <AdminMainHome /> : <Navigate to= "/home" replace/>,
     children: [
       { path: 'admin', element: user?.token && decoded.role === "admin" ? <AdminHome /> : <Navigate to="/home" replace /> },
+      { path: 'changepassword', element: user?.token ? <ChangePassword /> : <Navigate to="/home" replace />},
+      { path: 'accountsettings', element: user?.token ? <Settings /> : <Navigate to="/home" replace /> },
+      { path: 'adminassigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> },
+      { path: 'logout', element: user?.token ? <Logout/> : <Navigate to="/home" replace />},
+      { path: 'newpassword', element: user?.token? <Password/> : <Navigate to="/home" replace />},
     ],
   },
     {
@@ -71,9 +73,7 @@ export default function Router() {
         <Navigate to="/home" replace /> },
         { path: 'register', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Register/> },
         { path: 'forget', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Forget /> },
-        { path: 'newpassword', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/app" /> : <Password /> },
         { path: '/', element: user?.token && decoded.role === "admin" ? <Navigate to="/auth/admin" /> : <Home/> },
-        { path: 'newpassword', element: user?.token && decoded.role === "admin"? <Navigate to="/auth/admin" /> : <Password /> },
         { path: 'forget', element: user?.token && decoded.role === "admin"? <Navigate to="/auth/admin" /> : <Forget /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },

@@ -1,31 +1,34 @@
 import React from 'react'
 import { Grid, Typography, Stack,Card, Box, Checkbox, CardActionArea} from '@mui/material';
-import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useState } from 'react';
 import { BackEndUrl } from '../../url';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { useEffect } from 'react';
 
 
 //Assignment Users
 
-const Assignments = ({ data }) => {
-    const [assginId, setAssignID] = useState();
+const Assignments = ({data}) => {
+    
+    const [assginId, setAssignID] = useState(0);
     const { user } = useSelector(state => state.user);
     const [status, setStatus] = useState("");
+    //...............................................//
+    useEffect(()=>{
+        console.log(assginId, "At Assignment Component");
+    },[assginId]);
+
+    //assignmentChange(assginId);
+
+    //................................................//
     const handleCard =(e) =>{
         setAssignID(e.target.value);
         console.log("CHECK ASSIGN ID",e.target.value);
     }
-    useEffect(()=>{
-        console.log(assginId);
-    },[assginId])
-    // const  handleStatusChange = (e) => {
-        
-    // }
      const handleStatus = async (e) => {
         setStatus(e.target.value);
         try {
@@ -40,11 +43,9 @@ const Assignments = ({ data }) => {
             },
             );
             if (res.data.status === "ok") {
-              console.log("Status Has Been Updated..........!")
             }
           }
           catch (error) {
-            console.error("Status Update Failed:", error);
           }}
    // console.log(data)
     return (
@@ -67,7 +68,7 @@ const Assignments = ({ data }) => {
                     }}
                         key={i}
                     >
-                        <CardActionArea onClick={e=>{setAssignID(d.id)}}>
+                        <CardActionArea onClick={event => setAssignID(d.id)}>
                         <Grid container sx={{ padding: 2 }} spacing={1}>
                             <Grid item xs={4}>
                                 <Stack direction="column">
@@ -111,11 +112,8 @@ const Assignments = ({ data }) => {
                                     </Typography>
                                     <Typography variant="body2" sx={{color: "black"}} >
                                     {moment(d.deadline).format("MMMM Do YYYY")}</Typography>
-
                                 </Stack>
-
                             </Grid>
-
                             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
                                         <Typography variant="caption" >{d.status} </Typography> 
                             </Grid>
@@ -123,7 +121,7 @@ const Assignments = ({ data }) => {
                             <Grid item xs={4} sx={{
                                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
                             }}>
-                               {d.status === "Work Completed" && user.user_id === "user" ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+                               {d.status === "Work Completed" ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
                             </Grid>
                         </Grid>
                         </CardActionArea>

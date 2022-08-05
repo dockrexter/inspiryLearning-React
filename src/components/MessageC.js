@@ -1,11 +1,21 @@
 import React from 'react'
 import { Box, styled } from '@mui/material'
 import { useSelector } from 'react-redux';
-import Typography from 'src/theme/overrides/Typography';
 
 
 
 //.............CHAT STYLING............//
+const AttachmentBoxRight = styled(Box)(({theme})=> ({
+  backgroundColor: "#E7F4F0",
+  padding: "1vmax",
+  margin: "1vmax",
+  borderRadius: "0.5vmax",
+  display: "inline-block",
+  width: "70%",
+  clear: "both",
+  float: "right",
+  wordWrap:"break-word"
+}))
 
 const MsgBoxRight = styled(Box)(({theme})=> ({
     backgroundColor: "#E7F4F0",
@@ -38,12 +48,13 @@ const MsgBoxLeft = styled(Box)(({theme})=>({
 
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
-  console.log(user.user_id, "This is user id");
-  console.log(data.user_id,"This is Database User ID")
-  console.log(user.firstname, "User Name");
+  // console.log(user.user_id, "This is user id");
+  // console.log(data.user_id,"This is Database User ID");
+  // console.log(data.admin_id,"This is Message");
+  //  console.log(data, "Message Format");
   return (
     <>
-    {user.user_id === data.user_id ? <MsgBoxRight>{data.message}</MsgBoxRight> : <MsgBoxLeft>{data.message}</MsgBoxLeft>  }
+    {data.message? user.user_id === data.user_id ||  user.user_id === data.admin_id ? <MsgBoxRight>{data.message}</MsgBoxRight> : <MsgBoxLeft>{data.message}</MsgBoxLeft>  : null}
     </>
   )
 }

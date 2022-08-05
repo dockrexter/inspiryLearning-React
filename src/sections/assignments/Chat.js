@@ -36,17 +36,7 @@ const MainBox = styled(Box)(({theme})=>({
 
 }))
 
-const AttachmentBoxRight = styled(Box)(({theme})=> ({
-    backgroundColor: "#E7F4F0",
-    padding: "1vmax",
-    margin: "1vmax",
-    borderRadius: "0.5vmax",
-    display: "inline-block",
-    width: "70%",
-    clear: "both",
-    float: "right",
-    wordWrap:"break-word"
-}))
+
 const FilePreview = styled(Box)(({theme})=>({
     marginTop: "30px"
 }))
@@ -94,8 +84,8 @@ const Chat = (props) => {
    
 
     useEffect(()=>{
-        console.log("Offer Amount:", offer);
-        console.log("Offer Summary", offerSummary);
+        // console.log("Offer Amount:", offer);
+        // console.log("Offer Summary", offerSummary);
         console.log("File List Check", fileList);
     },[fileList])
 
@@ -117,8 +107,32 @@ const handleClickOpen = () => {
 
 
 //........................Offer Handle..................//
-const offerHandle= () =>{
-
+const handleOffer= async() =>{
+    const res = await axios.post(`${BackEndUrl}/payment/pay`, 
+        offer,
+    {
+      headers: {
+        token: user.token
+      }
+    },
+        );
+        if (res) {
+            console.log("Payment Success");
+            socketRef.current.emit("sendMessage", {
+              message: offerSummary,
+              user_type: 0,
+              time_stamp: "2022-06-27 12:07:50.234Z",
+              attachment: null,
+              ammount: offer,
+              type: 1,
+              status:0,
+              assignment_id: 24,  
+          
+              })
+              const user_id = user.user_id;
+          setMessageT([...messageT, {message: `Amount: $${offer} || ${offerSummary}`, user_id ,type: 2, time_stamp: new Date()}]);
+            setOffer(0);
+          }   
 }
 //........................INPUT INPUT AND HANDLE SUBMITS.......................//
 
@@ -133,14 +147,14 @@ const offerHandle= () =>{
             const updatedList = [...fileList, newFile];
             setFileList(updatedList);
             setIsFilePicked(true);
-            props.onFileChange(updatedList);
+            // props.onFileChange(updatedList);
         }
     }
     const fileRemove = (file) => {
         const updatedList = [...fileList];
         updatedList.splice(fileList.indexOf(file), 1);
         setFileList(updatedList);
-        props.onFileChange(updatedList);
+        // props.onFileChange(updatedList);
         if(updatedList.length === 0){
             setIsFilePicked(false);
         }
@@ -150,6 +164,7 @@ const offerHandle= () =>{
 
 
 const handleFile = async () => {
+    console.log("File List Submitted", fileList);
     if(fileList.length > 0){
     for(var i=0; i<fileList.length; i++){
     const formData = new FormData();
@@ -162,10 +177,22 @@ const handleFile = async () => {
         const res = await axios.post(`${BackEndUrl}/api/upload`, formData
         );
         if (res.data.status === "ok") {
-          console.log("File Upload Success")
+          console.log("File Upload Success");
+          socketRef.current.emit("sendMessage", {
+            message: "Attachment",
+            user_type: 0,
+            time_stamp: "2022-06-27 12:07:50.234Z",
+            attachment: `${BackEndUrl}/${res.data.url}`,
+            ammount: offer,
+            type: 2,
+            status:0,
+            assignment_id: 24,  
+        
+            })
+            const user_id = user.user_id;
+        setMessageT([...messageT, {message: "Attachment", user_id ,type: 2, time_stamp: new Date()}]);
           setIsFilePicked(false);
         }
-        console.log(res)
     }}
     setAttachOpen(false);
     setFileList([]);
@@ -181,15 +208,15 @@ const handleFile = async () => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
                     user_id: user.user_id,
-                    assignment_id: 14
+                    assignment_id: 24
                 })
                 
               });
              socketRef.current.on("getChat",(chat)=>{
                 setMessageT(chat.data);
              })
-             socketRef.current.on("message",(chat)=>{
-                setMessageT([...messageT],chat);
+             socketRef.current.on("message",(data)=>{
+                setMessageT([...messageT,data]);
              })
 
 		},[messageT]);
@@ -210,21 +237,20 @@ const handleFile = async () => {
             socketRef.current.emit("sendMessage", {
                 message: message,
                 user_type: 0,
-                time_stamp: "2022-06-27 12:07:50.234Z " ,
+                time_stamp: "2022-06-27 12:07:50.234Z" ,
                 attachment: null,
                 ammount: offer,
                 type: 0,
                 status:0,
-                assignment_id: 14  
+                assignment_id: 47  
 
             })
             const user_id = user.user_id;
             console.log("User iddd",user.user_id)
             setMessageT([...messageT, {message, user_id}]);
-            setStat({ text: "",})
+            setStat({ message: ""})
             
         }
-
     return (
         <Box sx={{
             backgroundColor: "#F5F1F5",
@@ -235,10 +261,7 @@ const handleFile = async () => {
 
         <MainBox>
             <ChatBoxT>
-            {/* <Typography>Select Assignment to Chat</Typography> */}
-
                 {messageT.map((item,i) => <MessageC key={i} data={item} />)}
-
             </ChatBoxT>
         </MainBox>
 
@@ -273,17 +296,17 @@ const handleFile = async () => {
                                 <DialogContentText>
                                     <Box sx={{display: "flex", alignItems: "center", margin:"10px 0"  }}>
                                         <Typography variant='h4'>$</Typography>
-                                        <Input type="number" onChange={(e) => setOffer(e.target.value)} sx={{width:"50px", height: "50px"}}/>
+                                        <Input type="number" min="0" onChange={(e) => setOffer(e.target.value)} sx={{width:"50px", height: "50px"}}/>
                                     </Box>
                                     <Typography>Summary</Typography>
                                     <TextField multiline={true} rows={3} onChange={(e) => setOfferSummary(e.target.value)} sx={{ width: "300px"}}></TextField>
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                            <Button autoFocus onClick={handleClose}>
+                            <Button onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button>Send</Button>
+                            <Button onClick={handleOffer}>Send</Button>
                             </DialogActions>
                             </Dialog>
                             </> 

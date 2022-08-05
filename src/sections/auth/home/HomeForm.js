@@ -54,7 +54,7 @@ export default function HomeForm() {
 
         navigate('/login')
       }}>
-        Login as Admin
+        Login as Professional
       </Button>
     </Stack>
 

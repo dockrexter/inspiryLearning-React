@@ -108,11 +108,16 @@ export default function Login() {
             }}>
               Need an Assignment Help?
             </Typography>
-            <Typography variant="h2" gutterBottom sx={{
+            {user.role === "admin"? <Typography variant="h2" gutterBottom sx={{
+              textAlign: "center", color: "#4F433C", lineHeight: "90px"
+            }}>
+              Login as Professional
+            </Typography> : <Typography variant="h2" gutterBottom sx={{
               textAlign: "center", color: "#4F433C", lineHeight: "90px"
             }}>
               Login as {user.role}
-            </Typography>
+            </Typography>}
+            
             <LoginForm />
             {user.role === "user" ?
               <Typography variant="body2" align="center" sx={{ mt: 1 }}>
