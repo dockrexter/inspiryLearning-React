@@ -1,21 +1,23 @@
 import React from 'react'
-import { Box, Container, styled, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Box, Container,Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import Page from '../components/Page'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch} from 'react-redux';
 import user, { clear } from 'src/redux/user';
 import { useState } from "react"
+import { useSelector } from 'react-redux';
 
 
 const Logout = () => {
+  const { user } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
     setOpen(false);
-    navigate("/", {replace: true});
+    user.role === "admin" ? navigate("/auth/admin") : navigate("/dashboard/app");
   };
 
   const handleLogout = async(e) => {
@@ -27,8 +29,7 @@ const Logout = () => {
     window.localStorage.removeItem('role');
     window.localStorage.removeItem('firstname');
     dispatch(clear());
-    console.log("LOGGED OUT");
-    navigate("/", { replace: true });
+    navigate("/home", { replace: true });
   }
   return (
     <Page title="Logout" sx={{width: "100%", height: "100%"}}>

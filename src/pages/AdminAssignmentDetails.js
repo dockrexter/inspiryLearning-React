@@ -3,24 +3,21 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import Page from '../components/Page';
 import moment from 'moment';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Navigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { useSelector } from 'react-redux'
+
 
 
 
 // ----------------------------------------------------------------------
 
 export default function AdminAssignmentDetails({assignData,assginId}) {
-    console.log(assginId, "This is Assignment ID");
-
-    const handleDone = () => {
-
-        Navigate("/");
+    const { user } = useSelector(state => state.user);
+    let navigate = useNavigate(); 
+   
+    const handleClickDone = (e) => { 
+        user.role === "admin" ? navigate("/auth/admin") : navigate("/dashboard/app");
     }
-
-
-
-
-
     return (
         <Page title="Dashboard" style={{ width: "100%", height: "100%", borderTop: "1.02801px solid #C0C0C2" }}>
             <Grid container sx={{ width: "100%", height: "100%" }} >
@@ -99,8 +96,8 @@ export default function AdminAssignmentDetails({assignData,assginId}) {
                             </Grid>
 
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
-                            {assignData.filter(opt => opt.id === assginId).map(d =>
-                                <Stack direction="column" spacing={2} >
+                            {assignData.filter(opt => opt.id === assginId).map((d,i) =>
+                                <Stack key={i} direction="column" spacing={2}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
                                         Discription      </Typography>
                                     <Typography variant="body2" sx={{ color: "#202323", opacity: 0.6 }}>
@@ -108,14 +105,14 @@ export default function AdminAssignmentDetails({assignData,assginId}) {
 
                                     <Typography variant="h6" sx={{ color: "#6ABBA3", fontWeight: 700 }}>
                                         Attachments       </Typography>
-
-                                    <Button variant="contained" color="primary" size="large"  onClick={handleDone} sx={{ width: "200px" }}>
-                                        Done
-                                    </Button>
                                 </Stack>
                             )}
+                            
                             </Grid>
                         </Grid>
+                        <Button variant="contained"  size='large' onClick={handleClickDone} sx={{ width: "200px" }}>
+                                 Done
+                        </Button>
 
                     </Container>
                 </Grid >

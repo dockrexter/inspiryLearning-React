@@ -13,7 +13,6 @@ import Chat from '../sections/assignments/Chat';
 import {Checkbox, CardActionArea} from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Navigate } from 'react-router-dom';
 import AdminAssignmentDetails from './AdminAssignmentDetails';
 
 
@@ -39,9 +38,7 @@ const CustomPickersDay = styled(PickersDay, {
 
 export default function AdminHome() {
     const [value, setValue] = useState([startOfDay(new Date())]);
-    console.log("CHECKING START DATE on start:",value);
     const [cDate, setCDate] = useState(startOfDay(new Date()));
-    //console.log(value);
     const [assignmentsUp, setAssignmentsUp] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
@@ -129,9 +126,7 @@ export default function AdminHome() {
 
       useEffect(() => {
         getAllAssignments();
-        console.log("CHECK THIS Assignments OUT:",assignmentsUp);
-        console.log("CHECK OUT COMPLETE ARRAY:",value);
-      }, [month, year]);
+      }, [month, year, value]);
 
     return (
       <>
@@ -183,7 +178,7 @@ export default function AdminHome() {
                                   padding:2
                                 }}>
                                   <Grid item xs={12}>
-                                      {assignmentsUp.map((d, i) =>
+                                      {assignmentsUp.map((d ,i)=>
                                           <Card sx={{
                                               background: "#E7F4F0",
                                               boxShadow: "0px 7.69539px 7.69539px #195B48",

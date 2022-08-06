@@ -117,7 +117,6 @@ const handleOffer= async() =>{
     },
         );
         if (res) {
-            console.log("Payment Success");
             socketRef.current.emit("sendMessage", {
               message: offerSummary,
               user_type: 0,
@@ -126,12 +125,13 @@ const handleOffer= async() =>{
               ammount: offer,
               type: 1,
               status:0,
-              assignment_id: 24,  
+              assignment_id: 82,  
           
               })
               const user_id = user.user_id;
-          setMessageT([...messageT, {message: `Amount: $${offer} || ${offerSummary}`, user_id ,type: 2, time_stamp: new Date()}]);
+          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: 82}]);
             setOffer(0);
+            setOpen(false);
           }   
 }
 //........................INPUT INPUT AND HANDLE SUBMITS.......................//
@@ -179,18 +179,22 @@ const handleFile = async () => {
         if (res.data.status === "ok") {
           console.log("File Upload Success");
           socketRef.current.emit("sendMessage", {
-            message: "Attachment",
+            message:null,
             user_type: 0,
-            time_stamp: "2022-06-27 12:07:50.234Z",
-            attachment: `${BackEndUrl}/${res.data.url}`,
-            ammount: offer,
+            time_stamp: "2022-08-06 11:12:17.171259Z",
+            attachment: "1",
+            download_url: `${res.data.url}`,
+            file_name: fileList[i].name,
+            file_size: fileList[i].size,
+            ammount: null,
             type: 2,
-            status:0,
-            assignment_id: 24,  
+            status:null,
+            assignment_id: 82,  
         
             })
             const user_id = user.user_id;
-        setMessageT([...messageT, {message: "Attachment", user_id ,type: 2, time_stamp: new Date()}]);
+        setMessageT([...messageT, {message:null, download_url:`${BackEndUrl}/${res.data.url}` , user_id ,type: 2, time_stamp: new Date(), attachment: "1",file_name: fileList[i].name,
+        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: 82}]);
           setIsFilePicked(false);
         }
     }}
@@ -208,7 +212,7 @@ const handleFile = async () => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
                     user_id: user.user_id,
-                    assignment_id: 24
+                    assignment_id: 82
                 })
                 
               });
@@ -228,6 +232,18 @@ const handleFile = async () => {
         const onTextChange = e =>{
             e.preventDefault();
             setStat({[e.target.name]: e.target.value })
+            socketRef.current.emit("typing", {
+                typing: true,
+                message:user.firstname,
+                
+            })
+            setTimeout(() => {
+                socketRef.current.emit("typing", {
+                    typing: false,
+                    message:"",
+                    
+                })
+            }, 2000);
             //console.log(stat.message,"helllllllo");
         }
             const onMessageSubmit = (e) => {
@@ -242,12 +258,12 @@ const handleFile = async () => {
                 ammount: offer,
                 type: 0,
                 status:0,
-                assignment_id: 47  
+                assignment_id: 82  
 
             })
             const user_id = user.user_id;
             console.log("User iddd",user.user_id)
-            setMessageT([...messageT, {message, user_id}]);
+            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: 24}]);
             setStat({ message: ""})
             
         }
@@ -324,19 +340,21 @@ const handleFile = async () => {
                                 Upload Your File
                             </DialogTitle>
                             <DialogContent>
-                                <DialogContentText>
                                 {
                                     fileList.length > 0 ? (
-                                    <Box sx={{display: "flex", alignItems: "center", margin:"10px 0", flexDirection:"column"  }}>
+                                    <Box sx={{display: "flex", alignItems: "center", margin:"auto", flexDirection:"column"  }}>
                                         <FilePreview>
                                         {
                                         fileList.map((item, index) => (
                                             <FilePreviewItem key={index}>
-                                                 <img src={ImageConfig[item.type.split('/')[1]] || ImageConfig['default']} alt="" />
+                                                <Box sx={{width:"50px", height: "75px"}}>
+                                                    <img src={ImageConfig[item.type.split('/')[1]] || ImageConfig['default']} alt="" />
+                                                </Box>
                                                 <FilePreviewInfo>
                                                     
-                                                    <Typography variant='span'>{fileList.name}</Typography>
-                                                    <Typography variant='span'>{fileList.size}</Typography>
+                                                    <Typography sx={{marginLeft:"auto"}}>{item.name}</Typography>
+                                                    {console.log(fileList, "Checking file name")}
+                                                    <Typography sx={{marginLeft:"10px"}}>{`${Math.round(item.size/1025)} kB`}</Typography>
                                                     <IconButton onClick={() => fileRemove(item)}><CancelIcon/></IconButton>
                                                 </FilePreviewInfo>
                                             </FilePreviewItem>
@@ -346,7 +364,6 @@ const handleFile = async () => {
                                     </Box>
                                     ) : null}
                                     <input type="file" ref={hiddenInputField} onChange={onFileDrop} style={{display: "none"}}/>
-                                </DialogContentText>
                             </DialogContent>
                             <DialogActions>
                             <Button autoFocus onClick={handleAttachClose}>
@@ -363,6 +380,9 @@ const handleFile = async () => {
                     sx={{
                         input: { color: "white" },
                         floatingLabelFocusStyle: { color: "white" },
+                        notchedOutline: {
+                            borderColor: 'white !important'
+                          },
                         width: "70%",
                         opacity: 0.8
                         }}> </TextField>

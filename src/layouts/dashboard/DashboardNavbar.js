@@ -2,13 +2,14 @@
 import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton,Button, Typography } from '@mui/material';
 // components
 import SettingsIcon from '@mui/icons-material/Settings';
-
 import Iconify from '../../components/Iconify';
 import { useSelector } from 'react-redux';
 import NotificationsPopover from './NotificationsPopover';
+import Popover from '@mui/material/Popover';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 // ----------------------------------------------------------------------
 
@@ -54,9 +55,31 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <NotificationsPopover />
-          <IconButton>
+          <PopupState variant="popover" popupId="demo-popup-popover">
+      {(popupState) => (
+        <div>
+          <IconButton {...bindTrigger(popupState)}>
             <SettingsIcon sx={{ width: 30, height: 30 }} />
           </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Box sx={{display: "flex", flexDirection: "column", padding:1}}>
+              <Button>Dashboard</Button>
+              <Button>Logout</Button>
+            </Box>
+          </Popover>
+        </div>
+      )}
+    </PopupState>
         </Stack>
       </ToolbarStyle>
     </RootStyle>
