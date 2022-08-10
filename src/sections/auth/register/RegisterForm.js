@@ -70,7 +70,7 @@ export default function RegisterForm() {
             window.localStorage.setItem('user_id', JSON.stringify(res.data.user.user_id));
             dispatch(update(res.data.user));
             setInValid(false)
-            navigate("/dashboard/app", { replace: true });
+            navigate("/dashboard/user", { replace: true });
           }
           else {
             setInValid(true);

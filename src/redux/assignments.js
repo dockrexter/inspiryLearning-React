@@ -1,27 +1,27 @@
-// import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-// export const assignmentSlice = createSlice({
-//     name: 'assignment',
-//     initialState: {
-//         assignment: {
-//             assign_id: JSON.parse(window.localStorage.getItem("assign_id")),
-//             assign_title: JSON.parse(window.localStorage.getItem("assign_title")),
-//         }
 
-//     },
-//     reducers: {
-//         update: (state, action) => {
-//             state.assignment = action.payload;
-//         },
-//         clear: (state) => {
-//             state.assignment = '';
-//         }
+const assignmentSlice = createSlice({
+  name: 'assignment',
+  initialState: {
+    assignment: {
+        token: JSON.parse(window.localStorage.getItem("assignmentID")),
+    }
+  },
+  reducers: {
+    update: (state, action) => {
+        //console.log("changed", action, state)
+        state.assignment = action.payload;
+    },
+    clear: (state) => {
+        state.assignment = '';
+    }
 
-//     }
-// });
+}
+});
 
-// export const { update, clear } = assignmentSlice.actions;
-
+export const { update, clear } = assignmentSlice.actions;
+export default assignmentSlice.reducer
 
 
 // export default assignmentSlice.reducer;

@@ -67,7 +67,7 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     );
   }
 
-const Chat = (props) => {
+  export default function Chat({assignId}) {
 //.......................HOOKS DECALRATION....................//
 
     const [messageT, setMessageT] = useState([]);
@@ -81,14 +81,10 @@ const Chat = (props) => {
     const [offerSummary, setOfferSummary] = useState("");
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
-   
 
-    useEffect(()=>{
-        // console.log("Offer Amount:", offer);
-        // console.log("Offer Summary", offerSummary);
-        console.log("File List Check", fileList);
-    },[fileList])
 
+
+    
 //................Payment Popup handles....................//
 const handleClickOpen = () => {
     setOpen(true);
@@ -125,11 +121,11 @@ const handleOffer= async() =>{
               ammount: offer,
               type: 1,
               status:0,
-              assignment_id: 82,  
+              assignment_id: assignId,  
           
               })
               const user_id = user.user_id;
-          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: 82}]);
+          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: assignId}]);
             setOffer(0);
             setOpen(false);
           }   
@@ -143,18 +139,15 @@ const handleOffer= async() =>{
     const onFileDrop = (e) => {
         const newFile = e.target.files[0];
         if (newFile) {
-            console.log("Testing on new file",newFile);
             const updatedList = [...fileList, newFile];
             setFileList(updatedList);
             setIsFilePicked(true);
-            // props.onFileChange(updatedList);
         }
     }
     const fileRemove = (file) => {
         const updatedList = [...fileList];
         updatedList.splice(fileList.indexOf(file), 1);
         setFileList(updatedList);
-        // props.onFileChange(updatedList);
         if(updatedList.length === 0){
             setIsFilePicked(false);
         }
@@ -164,7 +157,6 @@ const handleOffer= async() =>{
 
 
 const handleFile = async () => {
-    console.log("File List Submitted", fileList);
     if(fileList.length > 0){
     for(var i=0; i<fileList.length; i++){
     const formData = new FormData();
@@ -173,11 +165,9 @@ const handleFile = async () => {
         fileList[i], 
         fileList[i].name 
       );
-      console.log("FILE CHECK in FORMDATA", fileList);
         const res = await axios.post(`${BackEndUrl}/api/upload`, formData
         );
         if (res.data.status === "ok") {
-          console.log("File Upload Success");
           socketRef.current.emit("sendMessage", {
             message:null,
             user_type: 0,
@@ -189,12 +179,12 @@ const handleFile = async () => {
             ammount: null,
             type: 2,
             status:null,
-            assignment_id: 82,  
+            assignment_id: assignId,  
         
             })
             const user_id = user.user_id;
         setMessageT([...messageT, {message:null, download_url:`${BackEndUrl}/${res.data.url}` , user_id ,type: 2, time_stamp: new Date(), attachment: "1",file_name: fileList[i].name,
-        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: 82}]);
+        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: assignId}]);
           setIsFilePicked(false);
         }
     }}
@@ -212,7 +202,7 @@ const handleFile = async () => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
                     user_id: user.user_id,
-                    assignment_id: 82
+                    assignment_id: assignId
                 })
                 
               });
@@ -244,12 +234,10 @@ const handleFile = async () => {
                     
                 })
             }, 2000);
-            //console.log(stat.message,"helllllllo");
         }
             const onMessageSubmit = (e) => {
             e.preventDefault();
             const {message} = stat
-           // console.log(messageT, "HELLO !@#");
             socketRef.current.emit("sendMessage", {
                 message: message,
                 user_type: 0,
@@ -258,12 +246,11 @@ const handleFile = async () => {
                 ammount: offer,
                 type: 0,
                 status:0,
-                assignment_id: 82  
+                assignment_id: assignId,  
 
             })
             const user_id = user.user_id;
-            console.log("User iddd",user.user_id)
-            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: 24}]);
+            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: assignId}]);
             setStat({ message: ""})
             
         }
@@ -279,6 +266,7 @@ const handleFile = async () => {
             <ChatBoxT>
                 {messageT.map((item,i) => <MessageC key={i} data={item} />)}
             </ChatBoxT>
+            
         </MainBox>
 
         {/*...........BOX FOR TEXT,ATTACHMENTS and MONEY...............*/}
@@ -353,7 +341,6 @@ const handleFile = async () => {
                                                 <FilePreviewInfo>
                                                     
                                                     <Typography sx={{marginLeft:"auto"}}>{item.name}</Typography>
-                                                    {console.log(fileList, "Checking file name")}
                                                     <Typography sx={{marginLeft:"10px"}}>{`${Math.round(item.size/1025)} kB`}</Typography>
                                                     <IconButton onClick={() => fileRemove(item)}><CancelIcon/></IconButton>
                                                 </FilePreviewInfo>
@@ -395,12 +382,6 @@ const handleFile = async () => {
 
 
 }
-
-Chat.propTypes = {
-    onFileChange: PropTypes.func
-}
-
-export default Chat;
 
 //<img alt="send" src="/static/send.svg" width= {25} height={25} />
 //<img alt="attachment" src="/static/attachment.svg" width={30} height={30} />

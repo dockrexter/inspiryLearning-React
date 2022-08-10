@@ -17,7 +17,7 @@ const Logout = () => {
 
   const handleClose = () => {
     setOpen(false);
-    user.role === "admin" ? navigate("/auth/admin") : navigate("/dashboard/app");
+    user.role === "admin" ? navigate("/dashboard/admin") : navigate("/dashboard/user");
   };
 
   const handleLogout = async(e) => {

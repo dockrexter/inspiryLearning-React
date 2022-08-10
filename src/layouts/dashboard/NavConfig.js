@@ -9,7 +9,7 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 export const navConfigUser = [
   {
     title: 'assignments',
-    path: '/dashboard/app',
+    path: '/dashboard/user',
     icon: getIcon('bx:task'),
   },
   {
@@ -33,7 +33,7 @@ export const navConfigUser = [
 export const navConfigAdmin = [
   {
     title: 'assignments',
-    path: '/auth/admin',
+    path: '/dashboard/admin',
     icon: getIcon('bx:task'),
   },
   {

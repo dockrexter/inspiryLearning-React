@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 // @mui
-import { Grid, Container,Typography, Button, Box, CircularProgress } from '@mui/material';
+import { Grid,Checkbox, Container,Typography, Button, Box, CircularProgress, Card, CardActionArea, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 // components
 import DashboardPage from '../components/dashboardPage';
 // sections
-import Assignments from '../sections/assignments/Assignments';
-import Chat from '../sections/assignments/Chat';
 import { BackEndUrl } from '../url';
-
+import moment from 'moment';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AdminAssignmentDetails from './AdminAssignmentDetails';
 
 
 
@@ -21,10 +22,15 @@ export default function DashboardApp() {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useSelector(state => state.user);
+  const [assignDetails, setAssignDetails] = useState(false);
+  const [assginIdc,setAssignIDc] = useState(0);
 
-  ///.......................................//
-  const onFileChange = (files) => {
-   // console.log(files);
+
+
+
+  const handleCard =() =>{
+    setAssignDetails(true);
+    
 }
 
  // Calling Assignment Api For User
@@ -52,11 +58,14 @@ export default function DashboardApp() {
     getAssignments();
   }, []);
   return (
+    <>
+    {assignDetails? 
+      <AdminAssignmentDetails assignData={assignments} assignId={assginIdc}/>
+    :
     <DashboardPage title="Dashboard" style={{
-      marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
+      marginTop: "2px" }}>
       <Grid container sx={{ width: "100%"}}>
-      <Grid item xs={6} sx={{
-                    borderRight: "1.02801px solid #C0C0C2",
+      <Grid item xs={12} sx={{
                     paddingTop: 2,
                     overflowY: "scroll",
                     '&::-webkit-scrollbar': {
@@ -69,13 +78,96 @@ export default function DashboardApp() {
                 {/*Submit New Assignment Here*/}
                 <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6, padding: 1 }}>
                   Submmited Assignments      </Typography>
-                <Button size="medium" color="secondary" variant='contained' component={RouterLink} to="/dashboard/assignmentform" >
+                <Button size="medium" color="secondary" variant='contained' component={RouterLink} to="/dashboard/assignmentform" sx={{height:"50px"}} >
                   New Assignment
                 </Button>
                 
               </Grid>
               {assignments && assignments.length > 0 ?
-                <Assignments data={assignments}/>
+                <Box sx={{
+                  width: "1000px",
+                  padding:2,
+                  alignItems: "center",
+                }}>
+                  <Grid item xs={8} sx={{margin: "auto"}}>
+                      {assignments.map((d ,i)=>
+                          <Card sx={{
+                              background: "#E7F4F0",
+                              boxShadow: "0px 7.69539px 7.69539px #195B48",
+                              borderRadius: "15.3908px",
+                              marginTop: 3,
+                              transition: '0.3s',
+                              '&:hover': {
+                                  transform: 'scale(1.03)'
+                                  },
+      
+                          }}
+                              key={i}
+                          >
+                              <CardActionArea onClick={()=>{setAssignIDc(d.id);handleCard();}}> 
+                              <Grid container sx={{ padding: 2 }} spacing={1}>
+                                  <Grid item xs={4}>
+                                      <Stack direction="column" >
+                                          <Typography variant="body2" sx={{
+                                              color: "#0FA958",
+                                              fontStyle: "normal",
+                                              fontWeight: 700,
+                                              fontSize: "17.2385px",
+                                              lineHeight: "27px"
+                                          }}>
+                                              Starting Date     </Typography>
+                                          <Typography variant="body2" sx={{color: "black"}}>
+                                          {moment(d.created_date).format("MMMM Do YYYY")}</Typography>
+      
+                                      </Stack>
+      
+                                  </Grid>
+      
+                                  <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                      <Typography variant="subtitle1" sx={{
+                                          color: "#4F433C",
+                                          fontStyle: "normal",
+                                          fontWeight: 700,
+                                          fontSize: "20.9339px",
+                                          lineHeight: "27px"
+                                      }}>
+                                          {d.subject} </Typography>
+      
+                                  </Grid>
+      
+                                  <Grid item xs={4}>
+                                      <Stack direction="column">
+                                          <Typography variant="body2" sx={{
+                                              color: "#EAB531",
+                                              fontStyle: "normal",
+                                              fontWeight: 700,
+                                              fontSize: "17.2385px",
+                                              lineHeight: "27px"
+                                          }}>
+                                              Due Date
+                                          </Typography>
+                                          <Typography variant="body2" sx={{color: "black"}} >
+                                          {moment(d.deadline).format("MMMM Do YYYY")}</Typography>
+      
+                                      </Stack>
+      
+                                  </Grid>
+      
+                                  <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+                                              <Typography variant="caption" >{d.status} </Typography> 
+                                  </Grid>
+      
+                                  <Grid item xs={4} sx={{
+                                      display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
+                                  }}>
+                                     {d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+                                  </Grid>
+                              </Grid>
+                              </CardActionArea>
+                          </Card>
+                      )}
+                  </Grid>
+              </Box>
                 :
                 <>
                   {loading ? <CircularProgress /> :
@@ -86,13 +178,11 @@ export default function DashboardApp() {
                 </> 
               }
             </Grid>
-
           </Container>
-        </Grid>
-        <Grid item xs={6} sx={{ height: "100%", width: "100%" , backgroundColor: "#F5F1F5"}}>
-          <Chat onFileChange={(files) => onFileChange(files)} />
         </Grid>
       </Grid >
     </DashboardPage>
+}
+</>
   );
 }

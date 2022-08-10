@@ -88,16 +88,11 @@ const OfferBoxLeft = styled(Box)(({theme})=>({
 
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
-  // console.log(user.user_id, "This is user id");
-  // console.log(data.user_id,"This is Database User ID");
-  // console.log(data.admin_id,"This is Message");
-  //  console.log(data, "Message Format");
   return (
     <>
     {data.type === 0 && (user.user_id === data.user_id ||  user.user_id === data.admin_id) 
     ? 
     <MsgBoxRight>
-      {console.log(data, "Message")}
       <Typography variant='body2' sx={{
                         fontFamily: 'Poppins',
                         fontStyle: "normal",
@@ -120,7 +115,6 @@ const MessageC = ({data}) => {
     data.type === 0 && (user.user_id !== data.admin_id && user.user_id !== data.user_id)
     ? 
     <MsgBoxLeft>
-      {console.log(data, "Message")}
       <Typography variant='body2' sx={{
                         fontFamily: 'Poppins',
                         fontStyle: "normal",
@@ -143,7 +137,6 @@ const MessageC = ({data}) => {
     data.type === 2 && (user.user_id === data.user_id || user.user_id === data.admin_id)
     ? 
     <AttachmentBoxRight>
-      {console.log("Attachment Check:", data)}
       <Typography sx={{
                     fontFamily: 'Poppins',
                     fontStyle: "normal",
@@ -194,24 +187,52 @@ const MessageC = ({data}) => {
     : data.type === 2 && user.user_id !== data.admin_id && user.user_id !== data.admin_id
     ? 
     <AttachmentBoxLeft>
-      {console.log("Attachment Check left", data)}
-      <Typography variant='body2' sx={{
+      <Typography sx={{
+                    fontFamily: 'Poppins',
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    fontSize: "10.8628px",
+                    textAlign: "left",
+                    color: "#1E1100",
+                    opacity: 0.5 }}>Attachment</Typography>
+                    <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5px 5px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
+                      <Box sx={{width: "50px", height: "60px"}}>
+                        <img src={ImageConfig['default']} alt="Attachment"/>
+                      </Box>
+                       <Typography variant='body2' sx={{
                         fontFamily: 'Poppins',
                         fontStyle: "normal",
                         fontWeight: 500,
                         fontSize: "14.0784px",
                         lineHeight: "21px",
                         color: "#4F433C",
+
                         opacity: 0.9
-                    }}>{data.message}</Typography>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "right",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+                    }}>{data.file_name}</Typography>
+                    <IconButton
+                      href={`${data.download_url}`}
+                      download
+                    
+                    ><DownloadForOfflineIcon/></IconButton>
+                    </Box>
+                    <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
+                      <Typography sx={{
+                        fontFamily: 'Poppins',
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        fontSize: "10.8628px",
+                        textAlign: "right",
+                        color: "#1E1100",
+                        opacity: 0.5 }}>{Math.round(data.file_size/1024)}KB</Typography>
+                      <Typography sx={{
+                        fontFamily: 'Poppins',
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        fontSize: "10.8628px",
+                        textAlign: "right",
+                        color: "#1E1100",
+                        opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+                    </Box>
     </AttachmentBoxLeft> 
     : 
     data.type === 1 && (user.user_id === data.user_id || user.user_id === data.admin_id)
@@ -263,7 +284,6 @@ const MessageC = ({data}) => {
     data.type === 1 && (user.user_id !== data.admin_id && user.user_id !== data.admin_id)
     ? 
     <OfferBoxLeft>
-      {console.log(data, "OFFER DATA")}
       <Typography sx={{
                     fontFamily: 'Poppins',
                     fontStyle: "normal",
@@ -281,7 +301,7 @@ const MessageC = ({data}) => {
                           lineHeight: "21px",
                           color: "black",
                           marginRight: "2vmax"
-                      }}>${data.amount}</Typography>
+                      }}>${data.ammount}</Typography>
                        <Typography variant='body2' sx={{
                         fontFamily: 'Poppins',
                         fontStyle: "normal",

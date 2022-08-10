@@ -64,8 +64,7 @@ export default function LoginForm() {
           window.localStorage.setItem('user_id', JSON.stringify(res.data.user.user_id));
           dispatch(update(res.data.user));
           setInValid(false)
-          {user.role === "admin" ? navigate("/auth/admin", { replace: true }) : navigate("/dashboard/app", { replace: true });}
-          // navigate("/dashboard/app", { replace: true });
+          {user.role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard/user", { replace: true });}
         }
         else {
           setInValid(true);

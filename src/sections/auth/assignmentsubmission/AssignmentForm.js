@@ -83,7 +83,7 @@ export default function AssignmentForm() {
             }
           });
         console.log("assignments", res.data);
-        navigate('/dashboard/app', { replace: true });
+        navigate('/dashboard/user', { replace: true });
 
       }
       catch (error) {

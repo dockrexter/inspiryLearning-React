@@ -48,7 +48,7 @@ export default function Login() {
                 }}>
                     <ContentStyle >
                         <Box style={{ display: "flex", justifyContent: "flex-start", alignItems: "flex-start" }} >
-                            <IconButton component={RouterLink} to="/dashboard/app" >
+                            <IconButton component={RouterLink} to="/dashboard/user" >
                                 <ArrowBackIosIcon />
                             </IconButton>
                         </Box>
