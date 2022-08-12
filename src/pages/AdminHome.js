@@ -11,17 +11,21 @@ import startOfDay from "date-fns/startOfDay";
 import {Checkbox, CardActionArea} from '@mui/material';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AdminAssignmentDetails from './AdminAssignmentDetails';
 import { update } from 'src/redux/assignments';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const CustomPickersDay = styled(PickersDay, {
     shouldForwardProp: (prop) => prop !== "selected"
-  })(({ theme, selected }) => ({
+  })(({ theme, selected}) => ({
+     
     ...(selected && {
       backgroundColor: "red",
       color: "white",
+      "&.MuiPickersDay-today":{
+        backgroundColor: "#38A585",
+      },
       "&:hover, &:focus": {
         backgroundColor: "#38A585",
       },
@@ -29,7 +33,7 @@ const CustomPickersDay = styled(PickersDay, {
       borderBottomLeftRadius: "50%",
       borderTopRightRadius: "50%",
       borderBottomRightRadius: "50%"
-    })
+    }),
   }));
 
 
@@ -40,20 +44,21 @@ export default function AdminHome() {
     const [cDate, setCDate] = useState(startOfDay(new Date()));
     const [dueDate, setDueDate] = useState(startOfDay(new Date()));
     const [assignmentsUp, setAssignmentsUp] = useState([]);
+    const [assignmentsDue, setAssignmentsDue] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
+    const { assignment } = useSelector(state => state.assignment);
     const [month, setMonth] = useState(moment(new Date()).format('MM'));
     const [year, setYear] = useState(moment(new Date()).format('YYYY'));
-    const [assginIdc, setAssignIDc] = useState(0);
-    const [assignDetails, setAssignDetails] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
    //................ASSIGNMENT................//
 
-   const handleCard =() =>{
-    dispatch(update(assginIdc));
-    setAssignDetails(true);
-    
+   const handleCard =(id, deadline) =>{
+    console.log("assignment",id)
+    dispatch(update({id, deadline}));
+    navigate('/dashboard/assigmentdetails');
 }
 
   //.......................................................//
@@ -86,6 +91,32 @@ export default function AdminHome() {
           console.error("falied to Fetch Assignments: ",error);
         }
       }
+      //.................................................//
+      const getAllAssignmentsDue = async() => {
+        try {
+         // console.log(user.token);
+          const res = await axios.post(`${BackEndUrl}/assignment/getAllDueAssignments`, {
+            current_date: moment(cDate).format('DD MM YYYY'),
+          },
+          {
+            headers: {
+              token: user.token
+            }
+          },
+          );
+          if (res.data.status === "ok") {
+            setAssignmentsDue(res.data.assignments);  
+        }
+        }
+        catch (error) {
+          console.error("falied to Fetch DATA: ",error);
+        }
+      }
+
+
+
+
+      //.................Custom Calenter Functions..............//
       const findDate = (dates, date) => {
         const dateTime = date.getTime();
         return dates.find((item) => item.getTime() === dateTime);
@@ -94,25 +125,27 @@ export default function AdminHome() {
         if (!value) {
           return <PickersDay {...pickersDayProps} />;
         }
-      const selected = findDate(value, date);
+      const selected = findDate(value, date); 
   
       return (
+        <>
         <CustomPickersDay
           {...pickersDayProps}
           disableMargin
           selected={selected}
         />
+        </>
       );
     }
+    //............//
 
 
       useEffect(() => {
         getAllAssignments();
+        getAllAssignmentsDue();
       }, [assignmentsUp, month, year]);
 
     return (
-      <>
-      {assignDetails? <AdminAssignmentDetails assignData={assignmentsUp} assignId={assginIdc}/>:
       <DashboardPage title="Dashboard" style={{
         marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
           <Grid container sx={{ width: "100%" }}>
@@ -132,7 +165,7 @@ export default function AdminHome() {
                             <Grid item xs={8} sx={{width: "700px"}}>
                               <LocalizationProvider   dateAdapter={AdapterDateFns}>
                                     <StaticDatePicker
-                                     sx={{color: "black"}}
+                                     sx={{ }}
                                         displayStaticWrapperAs="desktop"
                                         value={cDate}
                                         onMonthChange={(value)=>{
@@ -142,23 +175,24 @@ export default function AdminHome() {
                                           setYear(moment(value).format("YYYY"));
                                         }}
                                         onChange={(newValue) => { 
-                                          setDueDate(newValue); 
+                                          setDueDate(newValue);
+                                          console.log("Due Date",dueDate) 
                                           }}
                                         renderDay={renderPickerDay}
                                         renderInput={(params) => <TextField {...params} />}
-                                        inputFormat="'Week of' MMM d"    
+                                        inputFormat="dd MMM yyyy"    
                                   />
                                 </LocalizationProvider>
                         </Grid>
                           <Grid item xs={8}>
                               <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between"}}>
                                   <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
-                                        {moment(month).format('MMM')} {year}     </Typography>
+                                       Current Date: {moment(cDate).format('DD MMM YYYY')}</Typography>
                                     <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6 }}>
                                         List of applications received       </Typography>
                                 </Stack>
                           </Grid>
-                                {assignmentsUp && assignmentsUp.length > 0 ?
+                                {assignmentsUp && assignmentsUp.length > 0  && assignmentsUp.filter(opt => moment(opt.deadline).format('DD MMM YYYY') === moment(dueDate).format('DD MMM YYYY')).length > 0 ?
                                 <Box sx={{
                                   width: "1000px",
                                   padding:2,
@@ -181,7 +215,7 @@ export default function AdminHome() {
                                           }}
                                               key={i}
                                           >
-                                              <CardActionArea onClick={()=>{setAssignIDc(d.id);handleCard();}}> 
+                                              <CardActionArea onClick={()=>{handleCard(d.id, d.deadline)}}> 
                                               <Grid container sx={{ padding: 2 }} spacing={1}>
                                                   <Grid item xs={4}>
                                                       <Stack direction="column" >
@@ -243,8 +277,10 @@ export default function AdminHome() {
                                               </CardActionArea>
                                           </Card>
                                       )}
-                                      <Typography sx={{marginTop: 5}}> All Due {moment(month).format('MMM')} {year}  </Typography>
-                                      {assignmentsUp.map((d ,i)=>
+                                      {moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY")?
+                                      <>
+                                      <Typography sx={{marginTop: 5}}> All Due Assignments  </Typography>
+                                      {assignmentsDue.map((d ,i)=>
                                           <Card sx={{
                                               
                                               background: "#E7F4F0",
@@ -259,7 +295,7 @@ export default function AdminHome() {
                                           }}
                                               key={i}
                                           >
-                                              <CardActionArea onClick={()=>{setAssignIDc(d.id);handleCard();}}> 
+                                              <CardActionArea onClick={()=>{handleCard(d.id, d.deadline)}}> 
                                               <Grid container sx={{ padding: 2 }} spacing={1}>
                                                   <Grid item xs={4}>
                                                       <Stack direction="column" >
@@ -321,6 +357,10 @@ export default function AdminHome() {
                                               </CardActionArea>
                                           </Card>
                                       )}
+                                      </>
+                                      :
+                                      null
+                                    }
                                   </Grid>
                               </Box>
                                 :
@@ -328,7 +368,7 @@ export default function AdminHome() {
                                 {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "400px", width: "400px", marginTop: 3 }}>
                                   <CircularProgress size={80} />
                                 </Box>
-                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "700px", width: "700px",      marginTop: 5 }}>
+                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vmax", width: "30vmax",      marginTop: 1 }}>
                                     <img src="/static/nodata.png" alt="No data" />
                                 </Box>}
                                 </>}
@@ -337,7 +377,5 @@ export default function AdminHome() {
                   </Grid >
               </Grid>
             </DashboardPage>
-          }
-          </>
     );
 }

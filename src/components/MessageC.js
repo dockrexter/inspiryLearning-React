@@ -4,6 +4,10 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { ImageConfig } from '../ImageConfig';
+import { useNavigate } from 'react-router-dom';
+import { BackEndUrl } from 'src/url';
+import axios from 'axios';
+import { useState } from 'react';
 
 //.............CHAT STYLING............//
 const AttachmentBoxRight = styled(Box)(({theme})=> ({
@@ -88,6 +92,29 @@ const OfferBoxLeft = styled(Box)(({theme})=>({
 
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
+  const [ammount, setAmmount] = useState(0);
+  let navigate = useNavigate(); 
+
+
+  const handlePay = async() =>{
+    try {
+      const res = await axios.post(`${BackEndUrl}/payment/pay`, 
+      ammount,
+  {
+    headers: {
+      token: user.token
+    }
+  },
+      );
+      if (res){
+        window.open(res.data.url, '_blank').focus();
+
+      }
+    } catch (error) {
+      console.error("Something went wrong: ", error);
+      
+    }
+  }
   return (
     <>
     {data.type === 0 && (user.user_id === data.user_id ||  user.user_id === data.admin_id) 
@@ -314,7 +341,7 @@ const MessageC = ({data}) => {
                     </Box>
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
                       <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button>Pay</Button> 
+                        <Button onClick={()=>{setAmmount(data.ammount); handlePay()}}>Pay</Button> 
                         <Button>Reject</Button>
                       </Box>
       <Typography sx={{

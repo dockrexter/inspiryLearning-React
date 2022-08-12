@@ -67,11 +67,12 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     );
   }
 
-  export default function Chat({assignId}) {
+  export default function Chat() {
 //.......................HOOKS DECALRATION....................//
 
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
+    const { assignment } = useSelector(state => state.assignment);
     const socket = io("https://inspirylearning-web.herokuapp.com")
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null); 
@@ -103,16 +104,9 @@ const handleClickOpen = () => {
 
 
 //........................Offer Handle..................//
-const handleOffer= async() =>{
-    const res = await axios.post(`${BackEndUrl}/payment/pay`, 
-        offer,
-    {
-      headers: {
-        token: user.token
-      }
-    },
-        );
-        if (res) {
+const handleOffer=() =>{
+    try {
+            setOpen(false);
             socketRef.current.emit("sendMessage", {
               message: offerSummary,
               user_type: 0,
@@ -121,14 +115,16 @@ const handleOffer= async() =>{
               ammount: offer,
               type: 1,
               status:0,
-              assignment_id: assignId,  
+              assignment_id: assignment.id, 
           
               })
               const user_id = user.user_id;
-          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: assignId}]);
+          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: assignment.id}]);
             setOffer(0);
-            setOpen(false);
-          }   
+        } catch (error) {
+            console.error("Error in Offer: ",error);
+        
+        } 
 }
 //........................INPUT INPUT AND HANDLE SUBMITS.......................//
 
@@ -179,12 +175,12 @@ const handleFile = async () => {
             ammount: null,
             type: 2,
             status:null,
-            assignment_id: assignId,  
+            assignment_id: assignment.id,
         
             })
             const user_id = user.user_id;
         setMessageT([...messageT, {message:null, download_url:`${BackEndUrl}/${res.data.url}` , user_id ,type: 2, time_stamp: new Date(), attachment: "1",file_name: fileList[i].name,
-        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: assignId}]);
+        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: assignment.id}]);
           setIsFilePicked(false);
         }
     }}
@@ -202,7 +198,7 @@ const handleFile = async () => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
                     user_id: user.user_id,
-                    assignment_id: assignId
+                    assignment_id: assignment.id,
                 })
                 
               });
@@ -246,11 +242,11 @@ const handleFile = async () => {
                 ammount: offer,
                 type: 0,
                 status:0,
-                assignment_id: assignId,  
+                assignment_id: assignment.id,
 
             })
             const user_id = user.user_id;
-            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: assignId}]);
+            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: assignment.id}]);
             setStat({ message: ""})
             
         }
@@ -263,8 +259,9 @@ const handleFile = async () => {
         {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
 
         <MainBox>
+
             <ChatBoxT>
-                {messageT.map((item,i) => <MessageC key={i} data={item} />)}
+                {messageT? messageT.map((item,i) => <MessageC key={i} data={item} />) : null}
             </ChatBoxT>
             
         </MainBox>
@@ -366,10 +363,7 @@ const handleFile = async () => {
                     value={stat.text}
                     sx={{
                         input: { color: "white" },
-                        floatingLabelFocusStyle: { color: "white" },
-                        notchedOutline: {
-                            borderColor: 'white !important'
-                          },
+
                         width: "70%",
                         opacity: 0.8
                         }}> </TextField>

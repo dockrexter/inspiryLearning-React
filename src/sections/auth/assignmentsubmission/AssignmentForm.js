@@ -10,8 +10,6 @@ import { Link, Stack, Checkbox, TextField, Grid, Typography } from '@mui/materia
 import { LoadingButton } from '@mui/lab';
 
 // component
-import PersonIcon from '@mui/icons-material/Person';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
@@ -33,15 +31,16 @@ export default function AssignmentForm() {
 
 
   const getUploadParams = () => {
-    return { url: 'https://httpbin.org/post' }
+    return { url: `${BackEndUrl}/api/upload` }
   }
 
   const handleChangeStatus = ({ meta }, status) => {
     console.log(status, meta)
+    {status === 'rejected_file_type' ? alert("This File Type is not Allowed"): null}
   }
 
   const handleSubmitDrop = (files, allFiles) => {
-    console.log(files.map(f => f.meta))
+    console.log(" files in con",files.map(f => f.meta))
     allFiles.forEach(f => f.remove())
   }
 
@@ -94,9 +93,6 @@ export default function AssignmentForm() {
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 
-  const handleShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
 
 
   const handleShowPasswordConfirm = () => {
@@ -105,7 +101,6 @@ export default function AssignmentForm() {
   const handleShowPasswordOld = () => {
     setShowPasswordOld((show) => !show);
   };
-  console.log("values", values)
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -174,6 +169,7 @@ export default function AssignmentForm() {
                 onChangeStatus={handleChangeStatus}
                 onSubmit={handleSubmitDrop}
                 styles={{ dropzone: { maxHeight: 250 } }}
+                accept="image/*, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, text/plain, application/x-zip-compressed, application/vnd.openxmlformats-officedocument.wordprocessingml.template, application/vnd.ms-powerpoint.template, application/vnd.openxmlformats-officedocument.spreadsheetml.template, application/vnd.ms-excel.template, application/vnd.openxmlformats-officedocument.presentationml.template"
               />
             </Stack>
           </Grid>

@@ -14,7 +14,7 @@ export default function Input(theme) {
         },
         input: {
           '&::placeholder': {
-            background: "rgb(56, 165, 133,0.12)",
+            background: "white",
 
 
           }
@@ -54,18 +54,18 @@ export default function Input(theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: theme.palette.grey[500_32],
-            background: "rgb(56, 165, 133,0.12)",
+          // '&.MuiOutlinedInput-notchedOutline': {
+          //   borderColor: theme.palette.grey[500_32],
+          //   background: "rgb(56, 165, 133,0.12)",
 
-          },
-          '&.Mui-disabled': {
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.action.disabledBackground,
-              background: "rgb(56, 165, 133,0.12)",
+          // },
+          // '&.Mui-disabled': {
+          //   '& .MuiOutlinedInput-notchedOutline': {
+          //     borderColor: theme.palette.action.disabledBackground,
+          //     background: "rgb(56, 165, 133,0.12)",
 
-            }
-          }
+          //   }
+          //}
         }
       }
     }

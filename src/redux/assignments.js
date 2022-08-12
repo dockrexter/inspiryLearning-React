@@ -5,13 +5,16 @@ const assignmentSlice = createSlice({
   name: 'assignment',
   initialState: {
     assignment: {
-        token: JSON.parse(window.localStorage.getItem("assignmentID")),
+      id: 0,
+      deadline: ""
+
     }
   },
   reducers: {
     update: (state, action) => {
         //console.log("changed", action, state)
         state.assignment = action.payload;
+        console.log("changed", action, state);
     },
     clear: (state) => {
         state.assignment = '';

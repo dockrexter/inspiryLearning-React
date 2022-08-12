@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // @mui
 import { Grid,Checkbox, Container,Typography, Button, Box, CircularProgress, Card, CardActionArea, Stack } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -11,7 +11,8 @@ import { BackEndUrl } from '../url';
 import moment from 'moment';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import AdminAssignmentDetails from './AdminAssignmentDetails';
+import { update } from 'src/redux/assignments';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -22,15 +23,16 @@ export default function DashboardApp() {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useSelector(state => state.user);
-  const [assignDetails, setAssignDetails] = useState(false);
-  const [assginIdc,setAssignIDc] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
 
 
 
-
-  const handleCard =() =>{
-    setAssignDetails(true);
-    
+const handleCard =(id, deadline) =>{
+  console.log("assignment",id)
+  dispatch(update({id, deadline}));
+  navigate('/dashboard/assigmentdetails');
 }
 
  // Calling Assignment Api For User
@@ -58,11 +60,7 @@ export default function DashboardApp() {
     getAssignments();
   }, []);
   return (
-    <>
-    {assignDetails? 
-      <AdminAssignmentDetails assignData={assignments} assignId={assginIdc}/>
-    :
-    <DashboardPage title="Dashboard" style={{
+   <DashboardPage title="Dashboard" style={{
       marginTop: "2px" }}>
       <Grid container sx={{ width: "100%"}}>
       <Grid item xs={12} sx={{
@@ -104,7 +102,7 @@ export default function DashboardApp() {
                           }}
                               key={i}
                           >
-                              <CardActionArea onClick={()=>{setAssignIDc(d.id);handleCard();}}> 
+                              <CardActionArea onClick={()=>{handleCard(d.id, d.deadline)}}> 
                               <Grid container sx={{ padding: 2 }} spacing={1}>
                                   <Grid item xs={4}>
                                       <Stack direction="column" >
@@ -182,7 +180,6 @@ export default function DashboardApp() {
         </Grid>
       </Grid >
     </DashboardPage>
-}
-</>
+
   );
 }
