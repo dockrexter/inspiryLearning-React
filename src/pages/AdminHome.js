@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BackEndUrl } from '../url';
-import { Grid, Container, Box, styled, CircularProgress ,Typography, Stack,TextField, Card} from '@mui/material';
+import { Grid, Container, Box, styled, CircularProgress ,Typography, Stack,TextField} from '@mui/material';
 import {LocalizationProvider, StaticDatePicker, PickersDay} from "@mui/x-date-pickers";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DashboardPage from '../components/dashboardPage';
 import moment from 'moment';
 import startOfDay from "date-fns/startOfDay";
-import {Checkbox, CardActionArea} from '@mui/material';
-import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { update } from 'src/redux/assignments';
-import { useNavigate } from 'react-router-dom';
+import AssignmentCardAction from 'src/components/AssignmentCardAction';
 
 
 
@@ -47,19 +43,10 @@ export default function AdminHome() {
     const [assignmentsDue, setAssignmentsDue] = useState([]);
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.user);
-    const { assignment } = useSelector(state => state.assignment);
     const [month, setMonth] = useState(moment(new Date()).format('MM'));
     const [year, setYear] = useState(moment(new Date()).format('YYYY'));
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
    //................ASSIGNMENT................//
-
-   const handleCard =(id, deadline) =>{
-    console.log("assignment",id)
-    dispatch(update({id, deadline}));
-    navigate('/dashboard/assigmentdetails');
-}
 
   //.......................................................//
 
@@ -192,170 +179,29 @@ export default function AdminHome() {
                                         List of applications received       </Typography>
                                 </Stack>
                           </Grid>
-                                {assignmentsUp && assignmentsUp.length > 0  && assignmentsUp.filter(opt => moment(opt.deadline).format('DD MMM YYYY') === moment(dueDate).format('DD MMM YYYY')).length > 0 ?
+                                {(assignmentsUp && assignmentsUp.length > 0)  || (assignmentsDue && assignmentsDue.length > 0) ?
                                 <Box sx={{
                                   width: "1000px",
                                   padding:2,
                                   alignItems: "center",
                                 }}>
                                   <Grid item xs={8} sx={{margin: "auto"}}>
+                                    {assignmentsUp.filter(opt => moment(opt.deadline).format('DD MMM YYYY') === moment(dueDate).format('DD MMM YYYY')).length > 0 ? 
+                                    <>
                                     <Typography>Due {moment(dueDate).format('DD MMM YYYY')}</Typography>
                                       {assignmentsUp.filter(opt => moment(opt.deadline).format('DD MMM YYYY') === moment(dueDate).format('DD MMM YYYY')).map((d ,i)=>
-                                          <Card sx={{
-                                              
-                                              background: "#E7F4F0",
-                                              boxShadow: "0px 7.69539px 7.69539px #195B48",
-                                              borderRadius: "15.3908px",
-                                              marginTop: 3,
-                                              transition: '0.3s',
-                                              '&:hover': {
-                                                  transform: 'scale(1.03)'
-                                                  },
-                      
-                                          }}
-                                              key={i}
-                                          >
-                                              <CardActionArea onClick={()=>{handleCard(d.id, d.deadline)}}> 
-                                              <Grid container sx={{ padding: 2 }} spacing={1}>
-                                                  <Grid item xs={4}>
-                                                      <Stack direction="column" >
-                                                          <Typography variant="body2" sx={{
-                                                              color: "#0FA958",
-                                                              fontStyle: "normal",
-                                                              fontWeight: 700,
-                                                              fontSize: "17.2385px",
-                                                              lineHeight: "27px"
-                                                          }}>
-                                                              Starting Date     </Typography>
-                                                          <Typography variant="body2" sx={{color: "black"}}>
-                                                          {moment(d.created_date).format("MMMM Do YYYY")}</Typography>
-                      
-                                                      </Stack>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                                      <Typography variant="subtitle1" sx={{
-                                                          color: "#4F433C",
-                                                          fontStyle: "normal",
-                                                          fontWeight: 700,
-                                                          fontSize: "20.9339px",
-                                                          lineHeight: "27px"
-                                                      }}>
-                                                          {d.subject} </Typography>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4}>
-                                                      <Stack direction="column">
-                                                          <Typography variant="body2" sx={{
-                                                              color: "#EAB531",
-                                                              fontStyle: "normal",
-                                                              fontWeight: 700,
-                                                              fontSize: "17.2385px",
-                                                              lineHeight: "27px"
-                                                          }}>
-                                                              Due Date
-                                                          </Typography>
-                                                          <Typography variant="body2" sx={{color: "black"}} >
-                                                          {moment(d.deadline).format("MMMM Do YYYY")}</Typography>
-                      
-                                                      </Stack>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                                                              <Typography variant="caption" >{d.status} </Typography> 
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4} sx={{
-                                                      display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
-                                                  }}>
-                                                     {d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
-                                                  </Grid>
-                                              </Grid>
-                                              </CardActionArea>
-                                          </Card>
-                                      )}
+                                            <AssignmentCardAction key={i} d={d} />
+                                          )}
+                                    </> : moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY") ? <></> : 
+                                  
+                                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "25vmax", width: "25vmax",      margin: "auto" }}>
+                                    <img src="/static/nodata.png" alt="No data" />
+                                  </Box>}
                                       {moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY")?
                                       <>
                                       <Typography sx={{marginTop: 5}}> All Due Assignments  </Typography>
                                       {assignmentsDue.map((d ,i)=>
-                                          <Card sx={{
-                                              
-                                              background: "#E7F4F0",
-                                              boxShadow: "0px 7.69539px 7.69539px #195B48",
-                                              borderRadius: "15.3908px",
-                                              marginTop: 3,
-                                              transition: '0.3s',
-                                              '&:hover': {
-                                                  transform: 'scale(1.03)'
-                                                  },
-                      
-                                          }}
-                                              key={i}
-                                          >
-                                              <CardActionArea onClick={()=>{handleCard(d.id, d.deadline)}}> 
-                                              <Grid container sx={{ padding: 2 }} spacing={1}>
-                                                  <Grid item xs={4}>
-                                                      <Stack direction="column" >
-                                                          <Typography variant="body2" sx={{
-                                                              color: "#0FA958",
-                                                              fontStyle: "normal",
-                                                              fontWeight: 700,
-                                                              fontSize: "17.2385px",
-                                                              lineHeight: "27px"
-                                                          }}>
-                                                              Starting Date     </Typography>
-                                                          <Typography variant="body2" sx={{color: "black"}}>
-                                                          {moment(d.created_date).format("MMMM Do YYYY")}</Typography>
-                      
-                                                      </Stack>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                                      <Typography variant="subtitle1" sx={{
-                                                          color: "#4F433C",
-                                                          fontStyle: "normal",
-                                                          fontWeight: 700,
-                                                          fontSize: "20.9339px",
-                                                          lineHeight: "27px"
-                                                      }}>
-                                                          {d.subject} </Typography>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4}>
-                                                      <Stack direction="column">
-                                                          <Typography variant="body2" sx={{
-                                                              color: "#EAB531",
-                                                              fontStyle: "normal",
-                                                              fontWeight: 700,
-                                                              fontSize: "17.2385px",
-                                                              lineHeight: "27px"
-                                                          }}>
-                                                              Due Date
-                                                          </Typography>
-                                                          <Typography variant="body2" sx={{color: "black"}} >
-                                                          {moment(d.deadline).format("MMMM Do YYYY")}</Typography>
-                      
-                                                      </Stack>
-                      
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                                                              <Typography variant="caption" >{d.status} </Typography> 
-                                                  </Grid>
-                      
-                                                  <Grid item xs={4} sx={{
-                                                      display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
-                                                  }}>
-                                                     {d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
-                                                  </Grid>
-                                              </Grid>
-                                              </CardActionArea>
-                                          </Card>
+                                          <AssignmentCardAction key={i} d={d} />
                                       )}
                                       </>
                                       :
@@ -365,10 +211,10 @@ export default function AdminHome() {
                               </Box>
                                 :
                                 <>
-                                {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "400px", width: "400px", marginTop: 3 }}>
+                                {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "15vmax", width: "15vmax", marginTop: 3 }}>
                                   <CircularProgress size={80} />
                                 </Box>
-                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vmax", width: "30vmax",      marginTop: 1 }}>
+                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "25vmax", width: "25vmax",      marginTop: 1 }}>
                                     <img src="/static/nodata.png" alt="No data" />
                                 </Box>}
                                 </>}

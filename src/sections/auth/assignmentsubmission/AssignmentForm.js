@@ -70,7 +70,7 @@ export default function AssignmentForm() {
               attachments: values.attachments,
               deadline: date,
               user_id: user.user_id,
-              status: "Work in Progress"
+              status: "New Request"
             }
 
           },
@@ -95,12 +95,6 @@ export default function AssignmentForm() {
 
 
 
-  const handleShowPasswordConfirm = () => {
-    setShowPasswordConfirm((show) => !show);
-  };
-  const handleShowPasswordOld = () => {
-    setShowPasswordOld((show) => !show);
-  };
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -114,9 +108,6 @@ export default function AssignmentForm() {
                 placeholder="Subject"
                 {...getFieldProps('subject')}
                 multiline
-              // error={Boolean(touched.firstName && errors.firstName)}
-              // helperText={touched.firstName && errors.firstName}
-
               />
               <TextField
                 fullWidth
@@ -124,11 +115,7 @@ export default function AssignmentForm() {
                 multiline
                 rows={6}
                 placeholder="Summary"
-
                 {...getFieldProps('summary')}
-              // error={Boolean(touched.lastName && errors.lastName)}
-              // helperText={touched.lastName && errors.lastName}
-
               />
 
             </Stack>

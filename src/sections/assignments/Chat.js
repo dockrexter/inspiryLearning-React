@@ -1,5 +1,5 @@
 import React from 'react'
-import { Stack,Fab, Paper, TextField, Box, styled,IconButton, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, Button, DialogActions, Input } from '@mui/material';
+import { Stack, Paper, TextField, Box, styled,IconButton, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, Button, DialogActions, Input } from '@mui/material';
 import io from 'socket.io-client'
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { useState } from 'react';
@@ -14,7 +14,6 @@ import axios from 'axios';
 import { BackEndUrl } from 'src/url';
 import Draggable from 'react-draggable'
 import { ImageConfig } from '../../../src/ImageConfig';
-import PropTypes from 'prop-types';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 
@@ -110,9 +109,9 @@ const handleOffer=() =>{
             socketRef.current.emit("sendMessage", {
               message: offerSummary,
               user_type: 0,
-              time_stamp: "2022-06-27 12:07:50.234Z",
+              time_stamp: new Date(),
               attachment: null,
-              ammount: offer,
+              amount: offer,
               type: 1,
               status:0,
               assignment_id: assignment.id, 
@@ -153,6 +152,7 @@ const handleOffer=() =>{
 
 
 const handleFile = async () => {
+    setAttachOpen(false);
     if(fileList.length > 0){
     for(var i=0; i<fileList.length; i++){
     const formData = new FormData();
@@ -167,12 +167,12 @@ const handleFile = async () => {
           socketRef.current.emit("sendMessage", {
             message:null,
             user_type: 0,
-            time_stamp: "2022-08-06 11:12:17.171259Z",
+            time_stamp: new Date(),
             attachment: "1",
             download_url: `${res.data.url}`,
             file_name: fileList[i].name,
             file_size: fileList[i].size,
-            ammount: null,
+            amount: null,
             type: 2,
             status:null,
             assignment_id: assignment.id,
@@ -180,11 +180,10 @@ const handleFile = async () => {
             })
             const user_id = user.user_id;
         setMessageT([...messageT, {message:null, download_url:`${BackEndUrl}/${res.data.url}` , user_id ,type: 2, time_stamp: new Date(), attachment: "1",file_name: fileList[i].name,
-        file_size: fileList[i].size, ammount: 0, status:0, assignment_id: assignment.id}]);
+        file_size: fileList[i].size, amount: 0, status:0, assignment_id: assignment.id}]);
           setIsFilePicked(false);
         }
     }}
-    setAttachOpen(false);
     setFileList([]);
 
 }
@@ -237,9 +236,9 @@ const handleFile = async () => {
             socketRef.current.emit("sendMessage", {
                 message: message,
                 user_type: 0,
-                time_stamp: "2022-06-27 12:07:50.234Z" ,
+                time_stamp: new Date(),
                 attachment: null,
-                ammount: offer,
+                amount: offer,
                 type: 0,
                 status:0,
                 assignment_id: assignment.id,
@@ -256,6 +255,9 @@ const handleFile = async () => {
             width: "100%",
             height: "100%",
             margin: "0 auto" }}>
+
+
+
         {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
 
         <MainBox>
@@ -265,6 +267,8 @@ const handleFile = async () => {
             </ChatBoxT>
             
         </MainBox>
+
+
 
         {/*...........BOX FOR TEXT,ATTACHMENTS and MONEY...............*/}
 
@@ -312,9 +316,18 @@ const handleFile = async () => {
                             </Dialog>
                             </> 
                             :
-                             null}
+                             null
+                            }
+
+
+
+
 
                              {/*....................ATTACHMENTS OVER HERE....................*/}
+
+
+
+                             
 
                         <IconButton onClick={handleAttachOpen} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
                         <Dialog
@@ -376,6 +389,3 @@ const handleFile = async () => {
 
 
 }
-
-//<img alt="send" src="/static/send.svg" width= {25} height={25} />
-//<img alt="attachment" src="/static/attachment.svg" width={30} height={30} />

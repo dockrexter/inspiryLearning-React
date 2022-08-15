@@ -1,7 +1,5 @@
-import { Grid, Container, Typography, Stack,DialogActions, Button, Card, Checkbox, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
-import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+import { Grid, Container, Paper, Typography,DialogContentText, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
 import moment from 'moment';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import Chat from 'src/sections/assignments/Chat';
@@ -12,6 +10,21 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackEndUrl } from '../url';
 import { useEffect } from 'react';
+import AssignmentCard from '../components/AssignmentCard';
+import Draggable from 'react-draggable'
+
+
+
+function PaperComponent(props) {
+    return (
+      <Draggable
+        handle="#draggable-dialog-title"
+        cancel={'[class*="MuiDialogContent-root"]'}
+      >
+        <Paper {...props} />
+      </Draggable>
+    );
+  }
 
 
 export default function AdminAssignmentDetails() {
@@ -23,7 +36,38 @@ export default function AdminAssignmentDetails() {
     let navigate = useNavigate(); 
     const [open, setOpen] = useState(false);
     const [finish, setFinish] = useState(false);
+    const [openAssigne, setOpenAssigne] = useState(false);
+    const [assigneSum, setAssigneSum] = useState("");
 
+    //................ADD Assignee.........//
+    const handleAssignee= async() =>{
+            try {
+            const res = await axios.post(`${BackEndUrl}/assignment/updateAssignee`, {
+                id: assignment.id,
+                assignee: assigneSum,
+              },
+              {
+                headers: {
+                  token: user.token
+                }
+              },
+              );
+              if (res.data.status === "ok") {
+                console.log("Assignee Added", res.data);
+                setOpenAssigne(false);
+
+            }
+        } catch (error) {
+            console.error("Error in Assignee: ", error);
+                
+        }           
+    }
+    const handleClickOpenAssigne = () => {
+        setOpenAssigne(true);
+    }
+    const handleAssigneClose = () => {
+        setOpenAssigne(false);
+      };
     //.............API CALL...............//
     const getAssignment = async () => {
     try {
@@ -116,6 +160,7 @@ export default function AdminAssignmentDetails() {
                             <Box display="flex" justifyContent="space-between">
                             <IconButton onClick={handleBack}><ChevronLeftIcon/></IconButton>
                             {user.role === "admin" ? <>
+                            <Button onClick={handleClickOpenAssigne}>Add Assignee</Button>
                             <Button onClick={handleClickOpen}>Change Status<ArrowDropDownIcon/></Button>
                                 <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
                                     <DialogTitle>Change Status</DialogTitle>
@@ -143,6 +188,25 @@ export default function AdminAssignmentDetails() {
                                             <Button onClick={handleStatusSubmit}>Submit</Button>
                                         </DialogActions>
                                 </Dialog>
+                                <Dialog
+                                    open={openAssigne}
+                                    onClose={handleAssigneClose}
+                                    PaperComponent={PaperComponent}
+                                    aria-labelledby="draggable-dialog-title"
+                                    >
+                                    <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                                        Add an Assignee
+                                    </DialogTitle>
+                                    <DialogContent>
+                                            <TextField onChange={(e) => setAssigneSum(e.target.value)} sx={{ width: "300px"}}></TextField>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleAssigneClose}>
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleAssignee}>Add</Button>
+                                    </DialogActions>
+                                </Dialog>
                                 </> : null}
                             </Box>
                         </Grid>
@@ -152,76 +216,7 @@ export default function AdminAssignmentDetails() {
                                 <>
                             <Grid item xs={12}>
                                 {assignData.filter(opt => opt.id === assignment.id).map((d ,i) =>
-                                    <Card key={i} sx={{
-                                        width: "100%",
-                                        background: "#E7F4F0",
-                                        boxShadow: "0px 7.69539px 7.69539px #195B48",
-                                        borderRadius: "15.3908px",
-                                        marginTop: 1
-
-                                    }}>
-                                        <Grid container sx={{ padding: 2 }} spacing={1}>
-
-                                            <Grid item xs={4}>
-                                                <Stack direction="column">
-                                                    <Typography variant="body2" sx={{
-                                                        color: "#EAB531",
-                                                        fontStyle: "normal",
-                                                        fontWeight: 700,
-                                                        fontSize: "17.2385px",
-                                                        lineHeight: "27px"
-                                                    }}>
-                                                        Due Today     </Typography>
-                                                    <Typography variant="body2" >
-                                                        {moment(d.deadline).format("MMMM Do YYYY")}
-                                                    </Typography>
-
-                                                </Stack>
-                                            </Grid>
-                                            <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                                <Typography variant="subtitle1" sx={{
-                                                    color: "#4F433C",
-                                                    fontStyle: "normal",
-                                                    fontWeight: 700,
-                                                    fontSize: "20.9339px",
-                                                    lineHeight: "27px"
-                                                }}>
-                                                    {d.subject} Science
-                                                </Typography>
-
-                                            </Grid>
-
-                                            <Grid item xs={4}>
-                                                <Stack direction="column">
-                                                    <Typography variant="body2" sx={{
-                                                        color: "#0FA958",
-                                                        fontStyle: "normal",
-                                                        fontWeight: 700,
-                                                        fontSize: "17.2385px",
-                                                        lineHeight: "27px"
-                                                    }}>
-                                                        Starting Date
-                                                    </Typography>
-                                                    <Typography variant="body2" >
-                                                        {moment(d.created_date).format("MMMM Do YYYY")}
-                                                    </Typography>
-                                                </Stack>
-                                            </Grid>
-                                            <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                                                <Typography variant="caption" >
-                                                    {d.status}
-                                                </Typography>
-                                            </Grid>
-
-                                            <Grid item xs={4} sx={{
-                                                display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
-                                            }}>
-                                                {d.status === "Work Completed" ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
-                                            </Grid>
-                                        </Grid>
-                                    </Card>
-
-                                 )}
+                                    <AssignmentCard key={i} d={d} /> )}
                             </Grid>
                         
 

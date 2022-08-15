@@ -45,6 +45,7 @@
     "firebase": "^9.9.1",
     "formik": "^2.2.9",
     "history": "^5.2.0",
+    "js-file-download": "^0.4.12",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "material-ui-popup-state": "^4.0.1",

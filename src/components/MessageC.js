@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { ImageConfig } from '../ImageConfig';
-import { useNavigate } from 'react-router-dom';
 import { BackEndUrl } from 'src/url';
 import axios from 'axios';
-import { useState } from 'react';
+import fileDownload from 'js-file-download'
 
 //.............CHAT STYLING............//
 const AttachmentBoxRight = styled(Box)(({theme})=> ({
@@ -88,18 +87,77 @@ const OfferBoxLeft = styled(Box)(({theme})=>({
 
 }))
 
+const MsgText = styled(Typography)(({theme})=>({
+    fontFamily: 'Poppins',
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: "14.0784px",
+    lineHeight: "21px",
+    color: "#4F433C",
+    opacity: 0.9
+}))
+ const MsgDate = styled(Typography)(({theme})=>({
+        fontFamily: 'Poppins',
+        fontStyle: "normal",
+        fontWeight: 400,
+        fontSize: "10.8628px",
+        textAlign: "right",
+        color: "#1E1100",
+        opacity: 0.5
+  }))   
+  
+  const AttachmentText = styled(Typography)(({theme})=>({
+    fontFamily: 'Poppins',
+    fontStyle: "normal",
+    fontWeight: 400,
+    fontSize: "10.8628px",
+    textAlign: "left",
+    color: "#1E1100",
+    opacity: 0.5 
+
+  }))
+
+              
+const AttachmentSize = styled(Typography)(({theme})=>({
+  fontFamily: 'Poppins',
+  fontStyle: "normal",
+  fontWeight: 400,
+  fontSize: "10.8628px",
+  textAlign: "right",
+  color: "#1E1100",
+  opacity: 0.5
+}))
+
+const OfferAmmount = styled(Typography)(({theme})=>({
+    fontFamily: 'Poppins',
+    fontStyle: "bold",
+    fontWeight: 500,
+    fontSize: "20px",
+    lineHeight: "21px",
+    color: "black",
+    marginRight: "1vmax"
+}))
 //.................MAIN FUCTION..............//
 
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
-  const [ammount, setAmmount] = useState(0);
-  let navigate = useNavigate(); 
 
 
-  const handlePay = async() =>{
+   const handleDownloadfile = (url, filename) => {
+      axios.get(url, {
+        responseType: 'blob',
+      })
+      .then((res) => {
+        fileDownload(res.data, filename)
+      })
+       
+   }
+
+
+  const handlePay = async(amount) =>{
     try {
       const res = await axios.post(`${BackEndUrl}/payment/pay`, 
-      ammount,
+      amount,
   {
     headers: {
       token: user.token
@@ -120,238 +178,83 @@ const MessageC = ({data}) => {
     {data.type === 0 && (user.user_id === data.user_id ||  user.user_id === data.admin_id) 
     ? 
     <MsgBoxRight>
-      <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-                        opacity: 0.9
-                    }}>{data.message}</Typography>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "right",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+      <MsgText variant='body2'>{data.message}</MsgText>
+      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
     </MsgBoxRight> 
     : 
     data.type === 0 && (user.user_id !== data.admin_id && user.user_id !== data.user_id)
     ? 
     <MsgBoxLeft>
-      <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-                        opacity: 0.9
-                    }}>{data.message}</Typography>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "right",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+      <MsgText variant='body2'>{data.message}</MsgText>
+      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
     </MsgBoxLeft> 
     : 
     data.type === 2 && (user.user_id === data.user_id || user.user_id === data.admin_id)
     ? 
     <AttachmentBoxRight>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "left",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>Attachment</Typography>
+      <AttachmentText>Attachment</AttachmentText>
                     <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5px 5px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
-                      <Box sx={{width: "50px", height: "60px"}}>
+                      <Box sx={{width: "10%", height: "10%"}}>
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
-                       <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-
-                        opacity: 0.9
-                    }}>{data.file_name}</Typography>
-                    <IconButton
-                      href={`${data.download_url}`}
-                      download
-                    
+                       <MsgText variant='body2'>{data.file_name}</MsgText>
+                    <IconButton onClick={handleDownloadfile(data.download_url, data.file_name)}
                     ><DownloadForOfflineIcon/></IconButton>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
-                      <Typography sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        fontSize: "10.8628px",
-                        textAlign: "right",
-                        color: "#1E1100",
-                        opacity: 0.5 }}>{Math.round(data.file_size/1024)}KB</Typography>
-                      <Typography sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        fontSize: "10.8628px",
-                        textAlign: "right",
-                        color: "#1E1100",
-                        opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+                      <AttachmentSize>{Math.round(data.file_size/1024)}KB</AttachmentSize>
+                      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
                     </Box>
     </AttachmentBoxRight> 
     : data.type === 2 && user.user_id !== data.admin_id && user.user_id !== data.admin_id
     ? 
     <AttachmentBoxLeft>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "left",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>Attachment</Typography>
+      <AttachmentText>Attachment</AttachmentText>
                     <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5px 5px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
                       <Box sx={{width: "50px", height: "60px"}}>
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
-                       <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-
-                        opacity: 0.9
-                    }}>{data.file_name}</Typography>
+                      <MsgText>{data.file_name}</MsgText>
                     <IconButton
-                      href={`${data.download_url}`}
-                      download
-                    
+                      onClick={handleDownloadfile(data.download_url, data.file_name)}
                     ><DownloadForOfflineIcon/></IconButton>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
-                      <Typography sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        fontSize: "10.8628px",
-                        textAlign: "right",
-                        color: "#1E1100",
-                        opacity: 0.5 }}>{Math.round(data.file_size/1024)}KB</Typography>
-                      <Typography sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        fontSize: "10.8628px",
-                        textAlign: "right",
-                        color: "#1E1100",
-                        opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography>
+                      <AttachmentSize>{Math.round(data.file_size/1024)}KB</AttachmentSize>
+                      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
                     </Box>
     </AttachmentBoxLeft> 
     : 
     data.type === 1 && (user.user_id === data.user_id || user.user_id === data.admin_id)
     ? 
     <OfferBoxRight>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "left",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>Offer</Typography>
-                    <Box sx={{display: "flex", alignItems:"center",  wordWrap:"break-word", margin: "0 5px"}}>
-                      <Typography variant='body2' sx={{
-                          fontFamily: 'Poppins',
-                          fontStyle: "bold",
-                          fontWeight: 500,
-                          fontSize: "20px",
-                          lineHeight: "21px",
-                          color: "black",
-                          marginRight: "1vmax"
-                      }}>${data.amount}</Typography>
-                       <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-
-                        opacity: 0.9
-                    }}>{data.message}</Typography>
-                    </Box>
-                    <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
-                      <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button>WithDraw</Button> 
-                      </Box>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "right",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography></Box>
+      <AttachmentText>Offer</AttachmentText>
+        <Box sx={{display: "flex", alignItems:"center",  wordWrap:"break-word", margin: "0 5px"}}>
+          <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
+          <MsgText variant='body2' >{data.message}</MsgText>
+        </Box>
+        <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
+          <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
+            <Button>WithDraw</Button> 
+          </Box>
+          <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+        </Box>
     </OfferBoxRight> 
     : 
     data.type === 1 && (user.user_id !== data.admin_id && user.user_id !== data.admin_id)
     ? 
     <OfferBoxLeft>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "left",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>Offer</Typography>
+      <AttachmentText>Offer</AttachmentText>
        <Box sx={{display: "flex", alignItems:"center"}}>
-                      <Typography variant='body2' sx={{
-                          fontFamily: 'Poppins',
-                          fontStyle: "bold",
-                          fontWeight: 500,
-                          fontSize: "20px",
-                          lineHeight: "21px",
-                          color: "black",
-                          marginRight: "2vmax"
-                      }}>${data.ammount}</Typography>
-                       <Typography variant='body2' sx={{
-                        fontFamily: 'Poppins',
-                        fontStyle: "normal",
-                        fontWeight: 500,
-                        fontSize: "14.0784px",
-                        lineHeight: "21px",
-                        color: "#4F433C",
-                        opacity: 0.9
-                    }}>{data.message}</Typography>
+                      <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
+                       <MsgText variant='body2'>{data.message}</MsgText>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
                       <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button onClick={()=>{setAmmount(data.ammount); handlePay()}}>Pay</Button> 
+                        <Button onClick={()=>{handlePay(data.amount)}}>Pay</Button> 
                         <Button>Reject</Button>
                       </Box>
-      <Typography sx={{
-                    fontFamily: 'Poppins',
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "10.8628px",
-                    textAlign: "right",
-                    color: "#1E1100",
-                    opacity: 0.5 }}>{moment(data.time_stamp).format('MMM DD YY')}</Typography></Box>
+      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
     </>

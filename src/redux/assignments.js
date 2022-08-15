@@ -12,9 +12,7 @@ const assignmentSlice = createSlice({
   },
   reducers: {
     update: (state, action) => {
-        //console.log("changed", action, state)
         state.assignment = action.payload;
-        console.log("changed", action, state);
     },
     clear: (state) => {
         state.assignment = '';
@@ -25,6 +23,3 @@ const assignmentSlice = createSlice({
 
 export const { update, clear } = assignmentSlice.actions;
 export default assignmentSlice.reducer
-
-
-// export default assignmentSlice.reducer;
