@@ -5,30 +5,24 @@ export const userSlice = createSlice({
     initialState: {
         user: {
             token: JSON.parse(window.localStorage.getItem("token")),
-            user_id: JSON.parse(window.localStorage.getItem("user_id")),
-            firstname: JSON.parse(window.localStorage.getItem("firstname")),
-            lastname: JSON.parse(window.localStorage.getItem("lastname")),
+            id: JSON.parse(window.localStorage.getItem("id")),
+            firstName: JSON.parse(window.localStorage.getItem("firstName")),
+            lastName: JSON.parse(window.localStorage.getItem("lastName")),
             email: JSON.parse(window.localStorage.getItem("email")),
             phone: JSON.parse(window.localStorage.getItem("phone")),
-            role: JSON.parse(window.localStorage.getItem("role")),
-            //assign_id: JSON.parse(window.localStorage.getItem("assign_id")),
+            role: JSON.parse(window.localStorage.getItem("role"))
         }
 
     },
     reducers: {
         update: (state, action) => {
-            //console.log("changed", action, state)
             state.user = action.payload;
         },
         clear: (state) => {
             state.user = '';
         }
-
     }
 });
 
 export const { update, clear } = userSlice.actions;
-
-
-
 export default userSlice.reducer;

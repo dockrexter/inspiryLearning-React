@@ -1,4 +1,4 @@
-import { Grid, Container, Paper, Typography,DialogContentText, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
+import { Grid, Container, Paper,styled , Typography,DialogContentText, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
 import moment from 'moment';
 import { useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux'
@@ -26,6 +26,15 @@ function PaperComponent(props) {
     );
   }
 
+const ChatStyle = styled(Grid)(({ theme }) =>({
+  height: "100%", 
+  width: "100%",
+    [theme.breakpoints.down('md')]:{
+        display: "none"
+     }
+
+}));
+
 
 export default function AdminAssignmentDetails() {
     const { user } = useSelector(state => state.user);
@@ -39,11 +48,36 @@ export default function AdminAssignmentDetails() {
     const [openAssigne, setOpenAssigne] = useState(false);
     const [assigneSum, setAssigneSum] = useState("");
 
+
+
+
+
+    const handleAttachments= async() =>{
+      try {
+      const res = await axios.post(`${BackEndUrl}/api/assignments/getAttachments`, {
+          assignment_id: assignment.id,
+        },
+        {
+          headers: {
+            token: user.token
+          }
+        },
+        );
+        if (res) {
+          console.log("Attachments: ",res.data.data)
+      }
+  } catch (error) {
+      console.error("Error in Attachments: ", error);
+          
+  }          
+}
+
     //................ADD Assignee.........//
     const handleAssignee= async() =>{
+            setFinish(false);
             try {
-            const res = await axios.post(`${BackEndUrl}/assignment/updateAssignee`, {
-                id: assignment.id,
+            const res = await axios.post(`${BackEndUrl}/api/assignments/updateAssignee`, {
+                assignment_id: assignment.id,
                 assignee: assigneSum,
               },
               {
@@ -53,28 +87,39 @@ export default function AdminAssignmentDetails() {
               },
               );
               if (res.data.status === "ok") {
-                console.log("Assignee Added", res.data);
-                setOpenAssigne(false);
+                alert("Asignee Added SuccessFully!!")
+                setFinish(true);
 
             }
         } catch (error) {
+            alert("Can't Add Asignee!! Please Try Again")
             console.error("Error in Assignee: ", error);
                 
-        }           
+        }   
+        setOpenAssigne(false);        
     }
     const handleClickOpenAssigne = () => {
         setOpenAssigne(true);
     }
+    
     const handleAssigneClose = () => {
+
         setOpenAssigne(false);
+
       };
+
+
+
     //.............API CALL...............//
+
+
+
     const getAssignment = async () => {
     try {
         
-    const res = await axios.post(`${BackEndUrl}/assignment/getCurrentMonthAssignments`, {
-        currentMonth: moment(assignment.deadline).format('MM'),
-        currentYear: moment(assignment.deadline).format('YYYY'),
+    const res = await axios.post(`${BackEndUrl}/api/assignments/getCurrentMonthAssignments`, {
+        current_month: moment(assignment.deadline).format('MM'),
+        current_year: moment(assignment.deadline).format('YYYY'),
       },
       {
         headers: {
@@ -83,7 +128,7 @@ export default function AdminAssignmentDetails() {
       },
       );
       if (res.data.status === "ok") {
-        setAssignData(res.data.assignments);
+        setAssignData(res.data.data);
         setLoading(false);
     }
 } catch (error) {
@@ -110,9 +155,10 @@ export default function AdminAssignmentDetails() {
   const handleStatusSubmit = async (event, reason) => {
     if (reason !== 'backdropClick') {
         setFinish(false);
+        setOpen(false);
             try {
-                const res = await axios.post(`${BackEndUrl}/assignment/changeStatus`, {
-                    id: assignment.id, 
+                const res = await axios.post(`${BackEndUrl}/api/assignments/updateStatus`, {
+                    assignment_id: assignment.id, 
                     status: status
                 },
                 {
@@ -122,31 +168,41 @@ export default function AdminAssignmentDetails() {
                 },
                 );
                 if (res.data.status === "ok") {
-                    alert("Status Updated SucessFully")
+                    alert("Status Updated SucessFully!!")
                     setFinish(true);
                 }
               }
               catch (error) {
                 console.error("Error", error);
-                alert("Something went wrong Please Try Again")
+                alert("Status Update Failed! Try Again")
               }
         
-        setOpen(false);
     }
   };
+  //.....................................................................//
 
     const handleBack = () => {
+
     navigate("/")
+
     } 
+
+
+
+
     useEffect(() => {
         getAssignment();
+        handleAttachments();
     },[finish]);
+
+
+
     return (
         <DashboardPage title="Dashboard" style={{
             marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
             <Grid container sx={{ width: "100%"}} >
             <Grid item xs={6} sx={{
-                    width: "860px",
+                    width: "80%",
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
                     overflowY: "auto",
@@ -198,7 +254,7 @@ export default function AdminAssignmentDetails() {
                                         Add an Assignee
                                     </DialogTitle>
                                     <DialogContent>
-                                            <TextField onChange={(e) => setAssigneSum(e.target.value)} sx={{ width: "300px"}}></TextField>
+                                            <TextField onChange={(e) => setAssigneSum(e.target.value)} sx={{ width: "100%"}}></TextField>
                                     </DialogContent>
                                     <DialogActions>
                                         <Button onClick={handleAssigneClose}>
@@ -210,7 +266,7 @@ export default function AdminAssignmentDetails() {
                                 </> : null}
                             </Box>
                         </Grid>
-                        {loading ? <Box sx={{display: "flex", justifyContent: "space-around", height: "400px", width: "400px", marginTop: 3 }}>
+                        {loading ? <Box sx={{display: "flex", justifyContent: "space-around", height: "40%px", width: "40%", margin: "auto" }}>
                                   <CircularProgress size={80} />
                                 </Box> :
                                 <>
@@ -239,9 +295,9 @@ export default function AdminAssignmentDetails() {
                         </Grid>
                     </Container>
                 </Grid >
-                <Grid item xs={6} sx={{ height: "100%", width: "100%" }}>
+                <ChatStyle item xs={6}>
                     <Chat/>
-                </Grid>
+                </ChatStyle>
             </Grid >
         </DashboardPage>
     );

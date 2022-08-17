@@ -1,14 +1,13 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 // material
-import { Stack, Checkbox, TextField, IconButton, InputAdornment, Alert } from '@mui/material';
+import { Stack,TextField, IconButton, InputAdornment, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
-import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import Iconify from '../../../components/Iconify';
 import { BackEndUrl } from "../../../url";
@@ -46,20 +45,20 @@ export default function ChangePasswordForm() {
 
         if (values.password === values.confirmpassword) {
 
-          const res = await axios.post(`${BackEndUrl}/user/changePassword`, {
-            values: {
-              currentPassword: values.oldpassword,
-              changePassword: values.password,
-              confirmPassword: values.confirmpassword,
-              user_id: user.user_id
+          const res = await axios.post(`${BackEndUrl}/api/users/changePassword`,
+            {
+              oldPassword: values.oldpassword,
+              newPassword: values.password,
+            },
+            { 
+              headers: 
+              { 
+                token: user.token 
+              } 
             }
-          },
-            { headers: { token: user.token } }
           );
-          console.log("token recevied", res.data);
           if (res.data.status === "ok") {
             setInValid(false);
-
             alert("Password changed successfully");
             navigate("/", { replace: true });
 
@@ -74,8 +73,8 @@ export default function ChangePasswordForm() {
         }
 
       }
-      catch (err) {
-        console.log(err);
+      catch (error) {
+        console.error("Something Went Wrong! Try again Password", error);
       }
 
     },
@@ -102,9 +101,7 @@ export default function ChangePasswordForm() {
             fullWidth
             autoComplete="current-password"
             type={showPasswordOld ? 'text' : 'password'}
-            // label="Password"
             placeholder="Enter current password"
-
             {...getFieldProps('oldpassword')}
             InputProps={{
               endAdornment: (
@@ -126,9 +123,7 @@ export default function ChangePasswordForm() {
             fullWidth
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
-            // label="Password"
             placeholder="Enter new password"
-
             {...getFieldProps('password')}
             InputProps={{
               endAdornment: (
@@ -151,9 +146,7 @@ export default function ChangePasswordForm() {
             fullWidth
             autoComplete="current-password"
             type={showPasswordConfirm ? 'text' : 'password'}
-            // label="Password"
             placeholder="Confirm new password"
-
             {...getFieldProps('confirmpassword')}
             InputProps={{
               endAdornment: (

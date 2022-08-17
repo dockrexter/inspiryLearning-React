@@ -27,6 +27,7 @@ export default function AssignmentForm() {
   const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [date, setDate] = useState(new Date());
   const { user } = useSelector(state => state.user);
+  const [fileList, setFileList] = useState([]);
 
 
 
@@ -35,12 +36,14 @@ export default function AssignmentForm() {
   }
 
   const handleChangeStatus = ({ meta }, status) => {
-    console.log(status, meta)
     {status === 'rejected_file_type' ? alert("This File Type is not Allowed"): null}
   }
 
   const handleSubmitDrop = (files, allFiles) => {
-    console.log(" files in con",files.map(f => f.meta))
+    for(let i = 0; i < files.length; i++){
+      console.log(files[i].file);
+      setFileList([...fileList, files[i].file]);
+    }
     allFiles.forEach(f => f.remove())
   }
 
@@ -61,32 +64,36 @@ export default function AssignmentForm() {
     },
     onSubmit: async (values) => {
       try {
+        const formData = new FormData();
+        if(fileList.length > 0){
+          for(var i=0; i<fileList.length; i++){
+          formData.append( 
+              "file", 
+              fileList[i], 
+              fileList[i].name 
+            );
+          }
+        }
 
-        const res = await axios.post(`${BackEndUrl}/assignment/postAssignments`,
-          {
-            values: {
-              subject: values.subject,
-              summary: values.summary,
-              attachments: values.attachments,
-              deadline: date,
-              user_id: user.user_id,
-              status: "New Request"
-            }
-
+        const res = await axios.post(`${BackEndUrl}/api/assignments/createUserAssignment`,
+          { 
+            files: formData, 
+            subject: values.subject,
+            summary: values.summary,
+            deadline: values.deadline,
           },
-
-
           {
             headers: {
               token: user.token
             }
           });
         console.log("assignments", res.data);
-        navigate('/dashboard/user', { replace: true });
+        alert("Assignment Created Successfully!!")
+        //navigate('/dashboard/user', { replace: true });
 
       }
       catch (error) {
-        console.log(error);
+        console.error("Error Adding Assignment: ", error);
       }
     },
   });
@@ -152,7 +159,7 @@ export default function AssignmentForm() {
                 Attachments
               </Typography>
               <Dropzone
-                getUploadParams={getUploadParams}
+                // getUploadParams={getUploadParams}
                 onChangeStatus={handleChangeStatus}
                 onSubmit={handleSubmitDrop}
                 styles={{ dropzone: { maxHeight: 250 } }}

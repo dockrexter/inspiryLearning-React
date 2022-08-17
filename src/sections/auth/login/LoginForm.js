@@ -30,7 +30,7 @@ export default function LoginForm() {
     state => state.user
   );
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    email: Yup.string().email('Email must be a valid').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
@@ -46,23 +46,24 @@ export default function LoginForm() {
 
 
       try {
-        const res = await axios.post(`${BackEndUrl}/login`, {
+        const res = await axios.post(`${BackEndUrl}/api/users/login`, {
           email: values.email,
           password: values.password,
           role: user.role
 
         });
         if (res.data.status === "ok") {
+          console.log("REspose while LOGIN: ", res)
 
 
-          window.localStorage.setItem('token', JSON.stringify(res.data.user.token));
-          window.localStorage.setItem('firstname', JSON.stringify(res.data.user.firstname));
-          window.localStorage.setItem('lastname', JSON.stringify(res.data.user.lastname));
-          window.localStorage.setItem('phone', JSON.stringify(res.data.user.phone));
-          window.localStorage.setItem('email', JSON.stringify(res.data.user.email));
-          window.localStorage.setItem('role', JSON.stringify(res.data.user.role));
-          window.localStorage.setItem('user_id', JSON.stringify(res.data.user.user_id));
-          dispatch(update(res.data.user));
+          window.localStorage.setItem('token', JSON.stringify(res.data.data.token));
+          window.localStorage.setItem('firstName', JSON.stringify(res.data.data.firstName));
+          window.localStorage.setItem('lastName', JSON.stringify(res.data.data.lastName));
+          window.localStorage.setItem('phone', JSON.stringify(res.data.data.phone));
+          window.localStorage.setItem('email', JSON.stringify(res.data.data.email));
+          window.localStorage.setItem('role', JSON.stringify(res.data.data.role));
+          window.localStorage.setItem('id', JSON.stringify(res.data.data.id));
+          dispatch(update(res.data.data));
           setInValid(false)
           {user.role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard/user", { replace: true });}
         }

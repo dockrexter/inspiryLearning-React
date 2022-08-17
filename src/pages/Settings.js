@@ -1,15 +1,12 @@
-import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Card, Link, Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
 import Page from '../components/Page';
-import Logo from '../components/Logo';
 // sections
 import { SettingsForm } from '../sections/auth/settings';
-import AuthSocial from '../sections/auth/AuthSocial';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({

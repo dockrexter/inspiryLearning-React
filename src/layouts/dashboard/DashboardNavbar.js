@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import NotificationsPopover from './NotificationsPopover';
 import Popover from '@mui/material/Popover';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +45,13 @@ DashboardNavbar.propTypes = {
 };
 export default function DashboardNavbar({ onOpenSidebar }) {
   const { user } = useSelector(state => state.user);
+  const navigate = useNavigate();
+  const handleDashboard = () => {
+    navigate("/");
+  }
+  const handleLogout = () => {
+    navigate("/dashboard/logout");
+  }
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -51,7 +59,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
         <Typography variant='h3' sx={{ color: "#EAB531"}}> {hello} </Typography>
-        <Typography variant='h3' sx={{ color: "black", marginLeft:"12px"}}> {user.firstname}!</Typography>
+        <Typography variant='h3' sx={{ color: "black", marginLeft:"12px"}}> {user.firstName}!</Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <NotificationsPopover />
@@ -73,8 +81,8 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             }}
           >
             <Box sx={{display: "flex", flexDirection: "column", padding:1}}>
-              <Button>Dashboard</Button>
-              <Button>Logout</Button>
+              <Button onClick={handleDashboard}>Dashboard</Button>
+              <Button onClick={handleLogout}>Logout</Button>
             </Box>
           </Popover>
         </div>

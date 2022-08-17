@@ -48,14 +48,11 @@ export default function AdminHome() {
 
    //................ASSIGNMENT................//
 
-  //.......................................................//
-
     const getAllAssignments = async() => {
         try {
-         // console.log(user.token);
-          const res = await axios.post(`${BackEndUrl}/assignment/getCurrentMonthAssignments`, {
-            currentMonth: month,
-            currentYear:  year,
+          const res = await axios.post(`${BackEndUrl}/api/assignments/getCurrentMonthAssignments`, {
+            current_month: month,
+            current_year:  year,
           },
           {
             headers: {
@@ -64,14 +61,8 @@ export default function AdminHome() {
           },
           );
           if (res.data.status === "ok") {
-            setAssignmentsUp(res.data.assignments);
-             for(var i=0; i < assignmentsUp.length; i++){
-               const array = value; 
-               const date = startOfDay(new Date(assignmentsUp[i].deadline));
-               array.push(date);
-              setValue(array);
-            }
-           setLoading(false);  
+            setAssignmentsUp(res.data.data);
+            setLoading(false);  
         }
         }
         catch (error) {
@@ -81,8 +72,7 @@ export default function AdminHome() {
       //.................................................//
       const getAllAssignmentsDue = async() => {
         try {
-         // console.log(user.token);
-          const res = await axios.post(`${BackEndUrl}/assignment/getAllDueAssignments`, {
+          const res = await axios.post(`${BackEndUrl}/api/assignments/getAllDueAssignments`, {
             current_date: moment(cDate).format('DD MM YYYY'),
           },
           {
@@ -92,16 +82,13 @@ export default function AdminHome() {
           },
           );
           if (res.data.status === "ok") {
-            setAssignmentsDue(res.data.assignments);  
+            setAssignmentsDue(res.data.data);  
         }
         }
         catch (error) {
-          console.error("falied to Fetch DATA: ",error);
+          console.error("falied to Fetch Due Assignments: ",error);
         }
       }
-
-
-
 
       //.................Custom Calenter Functions..............//
       const findDate = (dates, date) => {
@@ -124,13 +111,22 @@ export default function AdminHome() {
         </>
       );
     }
+    
     //............//
+    useEffect(()=>{
+      for(var i=0; i < assignmentsUp.length; i++){
+        const array = value; 
+        const date = startOfDay(new Date(assignmentsUp[i].deadline));
+        array.push(date);
+        setValue(array);
+     }
+    },[assignmentsUp])
 
 
       useEffect(() => {
         getAllAssignments();
         getAllAssignmentsDue();
-      }, [assignmentsUp, month, year]);
+      }, [month, year]);
 
     return (
       <DashboardPage title="Dashboard" style={{
@@ -162,8 +158,7 @@ export default function AdminHome() {
                                           setYear(moment(value).format("YYYY"));
                                         }}
                                         onChange={(newValue) => { 
-                                          setDueDate(newValue);
-                                          console.log("Due Date",dueDate) 
+                                          setDueDate(newValue); 
                                           }}
                                         renderDay={renderPickerDay}
                                         renderInput={(params) => <TextField {...params} />}
@@ -194,7 +189,7 @@ export default function AdminHome() {
                                           )}
                                     </> : moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY") ? <></> : 
                                   
-                                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "25vmax", width: "25vmax",      margin: "auto" }}>
+                                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60%", width: "60%",      margin: "auto" }}>
                                     <img src="/static/nodata.png" alt="No data" />
                                   </Box>}
                                       {moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY")?
@@ -211,10 +206,10 @@ export default function AdminHome() {
                               </Box>
                                 :
                                 <>
-                                {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "15vmax", width: "15vmax", marginTop: 3 }}>
+                                {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "50%", width: "50%", marginTop: 3 }}>
                                   <CircularProgress size={80} />
                                 </Box>
-                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "25vmax", width: "25vmax",      marginTop: 1 }}>
+                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60%", width: "60%",      margin: "auto" }}>
                                     <img src="/static/nodata.png" alt="No data" />
                                 </Box>}
                                 </>}

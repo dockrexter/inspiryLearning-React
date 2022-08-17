@@ -24,13 +24,13 @@ export default function DashboardApp() {
   const getAssignments = async () => {
     try {
 
-      const res = await axios.get(`${BackEndUrl}/assignment/getAssignments?user_id=${user.user_id}`, {
+      const res = await axios.get(`${BackEndUrl}/api/assignments/getUserAssignments`, {
         headers: {
           token: user.token
         }
       });
       if (res.data.status === "ok") {
-        setAssignments(res.data.assignments);
+        setAssignments(res.data.data);
         setLoading(false);
       }
     }
@@ -45,8 +45,8 @@ export default function DashboardApp() {
   }, []);
   return (
    <DashboardPage title="Dashboard" style={{
-      marginTop: "2px" }}>
-      <Grid container sx={{ width: "100%"}}>
+      marginTop: "2px", width: "100%" }}>
+      <Grid container sx={{ width: "80%"}}>
       <Grid item xs={12} sx={{
                     paddingTop: 2,
                     overflowY: "scroll",
@@ -67,7 +67,7 @@ export default function DashboardApp() {
               </Grid>
               {assignments && assignments.length > 0 ?
                 <Box sx={{
-                  width: "1000px",
+                  width: "100%",
                   padding:2,
                   alignItems: "center",
                 }}>
@@ -80,7 +80,7 @@ export default function DashboardApp() {
                 :
                 <>
                   {loading ? <CircularProgress /> :
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", marginTop: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50%", width: "50%", margin:"auto" }}>
                       <img src="/static/nodata.png" alt="No data" />
                     </Box>
                   }

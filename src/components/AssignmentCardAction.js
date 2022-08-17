@@ -6,11 +6,12 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { update } from 'src/redux/assignments';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const AssignmentCardAction = ({d}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    console.log(d);
+    const { user } = useSelector(state => state.user);
 
 
 
@@ -63,7 +64,7 @@ const AssignmentCardAction = ({d}) => {
                     lineHeight: "27px"
                 }}>
                     {d.subject} </Typography>
-                    <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
+                    {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
                         <Typography variant="body2" sx={{
                         color: "#0FA958",
                         fontStyle: "normal",
@@ -72,7 +73,8 @@ const AssignmentCardAction = ({d}) => {
                         lineHeight: "27px"
                     }}>Assignee</Typography>
                         <Typography variant="caption" >{d.assignee} </Typography>
-                    </Box>
+                    </Box> : null}
+                    
 
             </Grid>
 
@@ -88,7 +90,9 @@ const AssignmentCardAction = ({d}) => {
                         Due Date
                     </Typography>
                     <Typography variant="body2" sx={{color: "black"}} >
-                    {moment(d.deadline).format("MMMM Do YYYY")}</Typography>
+                    {moment(d.deadline).format("MMMM DD YYYY")}</Typography>
+                    <Typography variant="body2" sx={{color: "black"}} >
+                    {moment(d.deadline).format("LT")}</Typography>
 
                 </Stack>
 

@@ -154,10 +154,16 @@ const MessageC = ({data}) => {
    }
 
 
-  const handlePay = async(amount) =>{
+  const handlePay = async(amount, message) =>{
     try {
-      const res = await axios.post(`${BackEndUrl}/payment/pay`, 
-      amount,
+      const res = await axios.post(`${BackEndUrl}/api/payment/pay`, {
+
+        itemName: "Assignment Payment",
+        price: amount,
+        currency: "USD",
+        description: message
+
+      },
   {
     headers: {
       token: user.token
@@ -251,7 +257,7 @@ const MessageC = ({data}) => {
                     </Box>
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
                       <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button onClick={()=>{handlePay(data.amount)}}>Pay</Button> 
+                        <Button onClick={()=>{handlePay(data.amount, data.message)}}>Pay</Button> 
                         <Button>Reject</Button>
                       </Box>
       <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate></Box>

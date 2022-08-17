@@ -3,8 +3,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import React from 'react'
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const assignmentCard = ({d}) => {
+    const { user } = useSelector(state => state.user);
   return (
     <Card sx={{
                 width: "100%",
@@ -29,7 +31,7 @@ const assignmentCard = ({d}) => {
 
                 </Stack>
             </Grid>
-            <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Grid item xs={8} sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="subtitle1" sx={{
                     color: "#4F433C",
                     fontStyle: "normal",
@@ -39,7 +41,7 @@ const assignmentCard = ({d}) => {
                 }}>
                     {d.subject}
                 </Typography>
-                <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
+                {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
                         <Typography variant="body2" sx={{
                         color: "#0FA958",
                         fontStyle: "normal",
@@ -47,8 +49,8 @@ const assignmentCard = ({d}) => {
                         fontSize: "17.2385px",
                         lineHeight: "27px"
                     }}>Assignee</Typography>
-                        <Typography variant="body2" >{d.assignee} </Typography>
-                    </Box>
+                        <Typography variant="caption" >{d.assignee} </Typography>
+                    </Box> : <></>}
 
             </Grid>
 
@@ -75,7 +77,7 @@ const assignmentCard = ({d}) => {
             </Grid>
 
             <Grid item xs={4} sx={{
-                display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
+                display: "flex", alignItems: "flex-end", justifyContent: "flex-end", 
             }}>
                 {d.status === "Work Completed" ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
             </Grid>

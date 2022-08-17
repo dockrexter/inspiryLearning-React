@@ -152,6 +152,7 @@ const handleOffer=() =>{
 
 
 const handleFile = async () => {
+    console.log("Checking In chat",fileList);
     setAttachOpen(false);
     if(fileList.length > 0){
     for(var i=0; i<fileList.length; i++){

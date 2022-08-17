@@ -26,21 +26,19 @@ export default function SettingsForm() {
   );
   const formik = useFormik({
     initialValues: {
-      firstName: user.firstname,
-      lastName: user.lastname,
+      firstName: user.firstName,
+      lastName: user.lastName,
       phone: user.phone,
     },
     onSubmit: async (values) => {
 
       try {
 
-        const res = await axios.post(`${BackEndUrl}/user/updateUser`, {
-          values: {
+        const res = await axios.post(`${BackEndUrl}/api/users/updateUser`,
+        {
             firstName: values.firstName,
             lastName: values.lastName,
             phone: values.phone,
-            user_id: user.user_id
-          }
         },
           {
             headers: {
@@ -49,16 +47,19 @@ export default function SettingsForm() {
           }
         )
         if (res.data.status === "ok") {
-          window.localStorage.setItem('firstname', JSON.stringify(res.data.firstName));
-          window.localStorage.setItem('lastname', JSON.stringify(res.data.lastName));
-          window.localStorage.setItem('phone', JSON.stringify(res.data.phone));
-          // dispatch(update(res.data.user));
+           window.localStorage.setItem('firstName', JSON.stringify(res.data.data.firstName));
+           window.localStorage.setItem('lastName', JSON.stringify(res.data.data.lastName));
+           window.localStorage.setItem('phone', JSON.stringify(res.data.data.phone));
+          console.log("Update Settings: ", res.data.data);
+          alert("Settings Update Successfully!!")
+          //dispatch(update(res.data.u));
 
         }
 
       }
-      catch (err) {
-        console.log(err);
+      catch (error) {
+        console.error("Setting Update Failed: ", error);
+        alert("Something Went Wrong! Please Try Again");
       }
 
 
@@ -76,8 +77,6 @@ export default function SettingsForm() {
             fullWidth
             placeholder="First Name"
             {...getFieldProps('firstName')}
-            // error={Boolean(touched.firstName && errors.firstName)}
-            // helperText={touched.firstName && errors.firstName}
             InputProps={{
               startAdornment: <InputAdornment position="start">
                 <PersonIcon />
@@ -90,8 +89,6 @@ export default function SettingsForm() {
             placeholder="Last Name"
 
             {...getFieldProps('lastName')}
-            // error={Boolean(touched.lastName && errors.lastName)}
-            // helperText={touched.lastName && errors.lastName}
             InputProps={{
               startAdornment: <InputAdornment position="start">
                 <PersonIcon />
@@ -101,14 +98,8 @@ export default function SettingsForm() {
           />
           <TextField
             fullWidth
-            // autoComplete="email"
-            type="number"
-
-            // label="Email address"
             placeholder="Phone Number"
             {...getFieldProps('phone')}
-            // error={Boolean(touched.phone && errors.phone)}
-            // helperText={touched.phone && errors.phone}
             InputProps={{
               startAdornment: <InputAdornment position="start">
                 <LocalPhoneIcon />
