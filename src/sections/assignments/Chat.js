@@ -19,7 +19,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 
 const ChatBoxT = styled(ReactScrollToBottom)(({theme}) => ({
-    height: "70vh",
+    height: "65vh",
     boxSizing: "border-box",
     backgroundColor: "#F5F1F5",
     overflowY: "auto",
@@ -30,7 +30,7 @@ const ChatBoxT = styled(ReactScrollToBottom)(({theme}) => ({
 
 const MainBox = styled(Box)(({theme})=>({
     width: "100%", 
-    height: "70vh", 
+    height: "65vh", 
     margin: "0 auto"
 
 }))
@@ -150,7 +150,6 @@ const handleOffer=() =>{
 
 
 const handleFile = async () => {
-    console.log("Checking In chat",fileList);
     setAttachOpen(false);
     if(fileList.length > 0){
     for(var i=0; i<fileList.length; i++){
@@ -196,7 +195,6 @@ const handleFile = async () => {
                 
               });
              socketRef.current.on("getChat",(chat)=>{
-                console.log("CHAT: ", chat);
                 setMessageT(chat);
              })
              socketRef.current.on("message",(data)=>{
@@ -226,7 +224,6 @@ const handleFile = async () => {
             }, 2000);
         }
             const onMessageSubmit = (e) => {
-                console.log("event on message submit",e)
             e.preventDefault();
             const {message} = stat
             socketRef.current.emit("sendMessage", {
@@ -246,14 +243,14 @@ const handleFile = async () => {
             backgroundColor: "#F5F1F5",
             width: "100%",
             height: "100%",
-            margin: "0 auto" }}>
+            margin: "auto" }}>
+        
 
-
+            <Box sx={{width: "100%", height: "2vmax", background: "#38a585"}}></Box>
 
         {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
 
         <MainBox>
-
             <ChatBoxT>
                 {messageT? messageT.map((item,i) => <MessageC key={i} data={item} />) : null}
             </ChatBoxT>
@@ -310,18 +307,13 @@ const handleFile = async () => {
                             :
                              null
                             }
-
-
-
-
-
                              {/*....................ATTACHMENTS OVER HERE....................*/}
 
 
 
                              
 
-                        <IconButton onClick={handleAttachOpen} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
+                        <IconButton onClick={()=>handleAttachOpen} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
                         <Dialog
                             open={attachOpen}
                             onClose={handleAttachClose}

@@ -31,9 +31,9 @@ export default function AssignmentForm() {
 
 
 
-  const getUploadParams = () => {
-    return { url: `${BackEndUrl}/api/upload` }
-  }
+  // const getUploadParams = () => {
+  //   return { url: `${BackEndUrl}/api/upload` }
+  // }
 
   const handleChangeStatus = ({ meta }, status) => {
     {status === 'rejected_file_type' ? alert("This File Type is not Allowed"): null}
@@ -41,7 +41,6 @@ export default function AssignmentForm() {
 
   const handleSubmitDrop = (files, allFiles) => {
     for(let i = 0; i < files.length; i++){
-      console.log(files[i].file);
       setFileList([...fileList, files[i].file]);
     }
     allFiles.forEach(f => f.remove())
@@ -63,7 +62,6 @@ export default function AssignmentForm() {
       enddate: ''
     },
     onSubmit: async (values) => {
-      console.log("Checking file List", fileList)
         const formData = new FormData();
         if(fileList.length > 0){
           for(var i=0; i<fileList.length; i++){
@@ -77,8 +75,6 @@ export default function AssignmentForm() {
         formData.append("subject", values.subject);
         formData.append("summary", values.summary);
         formData.append("deadline", date);
-        console.log("deadline", date);
-        console.log("Form Data", formData)
       try {
         const res = await axios.post(`${BackEndUrl}/api/assignments/createUserAssignment`,
         formData,
@@ -87,10 +83,9 @@ export default function AssignmentForm() {
               token: user.token
             }
           });
-        console.log("assignments", res.data);
         alert("Assignment Created Successfully!!")
         setFileList([]);
-        //navigate('/dashboard/user', { replace: true });
+        navigate('/dashboard/user', { replace: true });
 
       }
       catch (error) {

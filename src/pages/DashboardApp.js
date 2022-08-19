@@ -31,12 +31,11 @@ export default function DashboardApp() {
       });
       if (res.data.status === "ok") {
         setAssignments(res.data.data);
-        // console.log("Assignment in user Data: ",res.data.data);
         setLoading(false);
       }
     }
     catch (error) {
-      console.log(error);
+      console.error("user Assignments: ",error);
     }
   }
 
@@ -46,18 +45,20 @@ export default function DashboardApp() {
   }, []);
   return (
    <DashboardPage title="Dashboard" style={{
-      marginTop: "2px", width:"80%" }}>
+      marginTop: "2px" }}>
       <Grid container sx={{ width: "100%"}}>
       <Grid item xs={12} sx={{
                     paddingTop: 2,
-                    overflowY: "scroll",
+                    overflowY: "auto",
                     '&::-webkit-scrollbar': {
                     display: "none",
                     },
                 }}>
-          <Container maxWidth="xl">
-            <Grid container sx={{height: "80vh"}}>
-              <Grid item xs={12} sx={{ display:"flex", justifyContent:"space-between" }}>
+            <Grid container
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{height: "80vh"}}>
+              <Grid item xs={12} sx={{ display:"flex", justifyContent:"space-between", width:"100%", padding: 1 }}>
                 {/*Submit New Assignment Here*/}
                 <Typography variant="caption" sx={{ color: "#202323", opacity: 0.6, padding: 1 }}>
                   Submmited Assignments      </Typography>
@@ -72,7 +73,7 @@ export default function DashboardApp() {
                   padding:2,
                   alignItems: "center",
                 }}>
-                  <Grid item xs={8} sx={{margin: "auto"}}>
+                  <Grid item xs={12} md={8}  sx={{margin: "auto"}}>
                       {assignments.map((d ,i)=>
                           <AssignmentCardAction key={i} d={d}/>
                       )}
@@ -88,7 +89,6 @@ export default function DashboardApp() {
                 </> 
               }
             </Grid>
-          </Container>
         </Grid>
       </Grid >
     </DashboardPage>

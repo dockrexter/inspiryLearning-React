@@ -32,6 +32,7 @@ const AssignmentCardAction = ({d}) => {
         borderRadius: "15.3908px",
         marginTop: 3,
         transition: '0.3s',
+        wordWrap:"inherit",
         '&:hover': {
             transform: 'scale(1.03)'
             },
@@ -57,22 +58,24 @@ const AssignmentCardAction = ({d}) => {
 
             </Grid>
 
-            <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Grid item xs={8} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between",}}>
                 <Typography variant="subtitle1" sx={{
                     color: "#4F433C",
                     fontStyle: "normal",
                     fontWeight: 700,
                     fontSize: "20.9339px",
-                    lineHeight: "27px"
+                    lineHeight: "21px",
+                    wordWrap:"break-word",
+                    width: "65%",
                 }}>
                     {d.subject} </Typography>
-                    {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
+                    {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '28%', wordWrap: "break-word", alignItems: "center"}}>
                         <Typography variant="body2" sx={{
                         color: "#0FA958",
                         fontStyle: "normal",
                         fontWeight: 700,
                         fontSize: "17.2385px",
-                        lineHeight: "27px"
+                        lineHeight: "21px"
                     }}>Assignee</Typography>
                         <Typography variant="caption" >{d.assignee} </Typography>
                     </Box> : null}

@@ -130,7 +130,7 @@ export default function AdminHome() {
 
     return (
       <DashboardPage title="Dashboard" style={{
-        marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
+        marginTop: "2px", borderTop: "1.02801px solid #C0C0C2"}}>
           <Grid container sx={{ width: "100%" }}>
               <Grid item xs={12} sx={{
                     borderRight: "1.02801px solid #C0C0C2",
@@ -144,8 +144,9 @@ export default function AdminHome() {
                         <Grid container 
                         alignItems="center"
                         justifyContent="center"
-                        sx={{height: "80vh"}}>
-                            <Grid item xs={8} sx={{width: "700px"}}>
+                        sx={{height: "80vh"}}
+                        >
+                            <Grid item xs={12} md={8} sx={{width: "100%"}}>
                               <LocalizationProvider   dateAdapter={AdapterDateFns}>
                                     <StaticDatePicker
                                      sx={{ }}
@@ -166,7 +167,7 @@ export default function AdminHome() {
                                   />
                                 </LocalizationProvider>
                         </Grid>
-                          <Grid item xs={8}>
+                          <Grid item xs={12} md={8}>
                               <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between"}}>
                                   <Typography variant="body2" sx={{ color: "#4F433C", opacity: 0.8 }}>
                                        Current Date: {moment(cDate).format('DD MMM YYYY')}</Typography>
@@ -176,11 +177,11 @@ export default function AdminHome() {
                           </Grid>
                                 {(assignmentsUp && assignmentsUp.length > 0)  || (assignmentsDue && assignmentsDue.length > 0) ?
                                 <Box sx={{
-                                  width: "1000px",
+                                  width: "100%",
                                   padding:2,
                                   alignItems: "center",
                                 }}>
-                                  <Grid item xs={8} sx={{margin: "auto"}}>
+                                  <Grid item xs={12} md={8} sx={{margin: "auto", padding:1}}>
                                     {assignmentsUp.filter(opt => moment(opt.deadline).format('DD MMM YYYY') === moment(dueDate).format('DD MMM YYYY')).length > 0 ? 
                                     <>
                                     <Typography>Due {moment(dueDate).format('DD MMM YYYY')}</Typography>

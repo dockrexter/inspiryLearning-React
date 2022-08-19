@@ -29,7 +29,12 @@ const AttachmentBox = styled(Box)(({theme})=> ({
   boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
 }))
 
-
+const GridStyled = styled(Grid)(({theme})=> ({
+  width: "1000px",
+  [theme.breakpoints.down('md')]: {
+    width: "100%",
+  }
+}))
 function PaperComponent(props) {
     return (
       <Draggable
@@ -44,10 +49,6 @@ function PaperComponent(props) {
 const ChatStyle = styled(Grid)(({ theme }) =>({
   height: "100%", 
   width: "100%",
-    [theme.breakpoints.down('md')]:{
-        display: "none"
-     }
-
 }));
 
 
@@ -65,13 +66,9 @@ export default function AdminAssignmentDetails() {
     const [assigneSum, setAssigneSum] = useState("");
     const [assignAttach, setAssignAttach] = useState([]);
 
-    let x =6;
-    x=6;
-    console.log("Value of x: ",x);
 
 
     const handleDownloadfile = async(url, filename) => {
-      console.log("CHECKING URL", `${BackEndUrl}${url}`)
       try {
         
       const res = await axios.get(`${BackEndUrl}${url}`, {
@@ -100,7 +97,6 @@ export default function AdminAssignmentDetails() {
         },
         );
         if (res) {
-          console.log("Attachments check: ",res.data.data)
           setAssignAttach(res.data.data);
           setLoadingAttach(false);
       }
@@ -153,8 +149,6 @@ export default function AdminAssignmentDetails() {
 
 
     const getAssignment = async () => {
-      console.log("Assignment Month: ", moment(assignment.deadline).format('MM'));
-      console.log("YEAR IN ASSIGNMENT :", moment(assignment.deadline).format('YYYY'));
     try {
         
     const res = await axios.post(`${BackEndUrl}/api/assignments/getCurrentMonthAssignments`, {
@@ -169,7 +163,6 @@ export default function AdminAssignmentDetails() {
       );
       if (res.data.status === "ok") {
         setAssignData(res.data.data);
-        console.log("Assignments in details user: ",res.data)
         setLoading(false);
     }
 } catch (error) {
@@ -240,10 +233,10 @@ export default function AdminAssignmentDetails() {
 
     return (
         <DashboardPage title="Dashboard" style={{
-            marginTop: "2px", borderTop: "1.02801px solid #C0C0C2" }}>
-            <Grid container sx={{ width: "100%"}} >
-            <Grid item xs={6} sx={{
-                    width: "80%",
+            marginTop: "2px", borderTop: "1.02801px solid #C0C0C2"}}>
+            <Grid container sx={{ width: "100%",height: "80vh"}} >
+            <Grid item xs={12} md={6} sx={{
+                    width: "100%",
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
                     overflowY: "auto",
@@ -252,7 +245,7 @@ export default function AdminAssignmentDetails() {
                     },
                 }}>
                     <Container maxWidth="xl">
-                        <Grid container>
+                        <Grid container sx={{width: "100%"}}>
                         <Grid item xs={12}>
                             <Box display="flex" justifyContent="space-between">
                             <IconButton onClick={handleBack}><ChevronLeftIcon/></IconButton>
@@ -307,17 +300,17 @@ export default function AdminAssignmentDetails() {
                                 </> : null}
                             </Box>
                         </Grid>
-                        {loading ? <Box sx={{display: "flex", justifyContent: "space-around", height: "40%px", width: "40%", margin: "auto" }}>
+                        {loading ? <Box sx={{display: "flex", justifyContent: "space-around", height: "40%", width: "40%", margin: "auto" }}>
                                   <CircularProgress size={80} />
                                 </Box> :
                                 <>
-                            <Grid item xs={12}>
+                            <GridStyled item xs={12} sx={{width: "1000px"}}>
                                 {assignData.filter(opt => opt.id === assignment.id).map((d ,i) =>
                                     <AssignmentCard key={i} d={d} /> )}
-                            </Grid>
+                            </GridStyled>
                         
 
-                            <Grid item xs={12} sx={{ marginTop: 5, overflowY: "scroll", }}>
+                            <Grid item xs={12} sx={{ marginTop: 5 }}>
                             {assignData.filter(opt => opt.id === assignment.id).map((d,i) =>
                                 <Stack  key={i} direction="column" spacing={2}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
@@ -357,7 +350,11 @@ export default function AdminAssignmentDetails() {
                         </Grid>
                     </Container>
                 </Grid >
-                <ChatStyle item xs={6}>
+                <ChatStyle 
+                alignItems="center"
+                justifyContent="center"
+                sx={{height: "80vh"}}
+                item xs={12} md={6}>
                     <Chat/>
                 </ChatStyle>
             </Grid >

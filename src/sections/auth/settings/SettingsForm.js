@@ -50,7 +50,6 @@ export default function SettingsForm() {
            window.localStorage.setItem('firstName', JSON.stringify(res.data.data.firstName));
            window.localStorage.setItem('lastName', JSON.stringify(res.data.data.lastName));
            window.localStorage.setItem('phone', JSON.stringify(res.data.data.phone));
-          console.log("Update Settings: ", res.data.data);
           alert("Settings Update Successfully!!")
           //dispatch(update(res.data.u));
 
