@@ -87,7 +87,7 @@ const OfferBoxLeft = styled(Box)(({theme})=>({
 
 }))
 
-const MsgText = styled(Typography)(({theme})=>({
+export const MsgText = styled(Typography)(({theme})=>({
     fontFamily: 'Poppins',
     fontStyle: "normal",
     fontWeight: 500,
@@ -96,7 +96,7 @@ const MsgText = styled(Typography)(({theme})=>({
     color: "#4F433C",
     opacity: 0.9
 }))
- const MsgDate = styled(Typography)(({theme})=>({
+ export const MsgDate = styled(Typography)(({theme})=>({
         fontFamily: 'Poppins',
         fontStyle: "normal",
         fontWeight: 400,
@@ -106,7 +106,7 @@ const MsgText = styled(Typography)(({theme})=>({
         opacity: 0.5
   }))   
   
-  const AttachmentText = styled(Typography)(({theme})=>({
+ export const AttachmentText = styled(Typography)(({theme})=>({
     fontFamily: 'Poppins',
     fontStyle: "normal",
     fontWeight: 400,
@@ -118,7 +118,7 @@ const MsgText = styled(Typography)(({theme})=>({
   }))
 
               
-const AttachmentSize = styled(Typography)(({theme})=>({
+export const AttachmentSize = styled(Typography)(({theme})=>({
   fontFamily: 'Poppins',
   fontStyle: "normal",
   fontWeight: 400,
@@ -143,21 +143,24 @@ const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
 
 
-   const handleDownloadfile = (url, filename) => {
-      axios.get(url, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        fileDownload(res.data, filename)
-      })
-       
-   }
+  const handleDownloadfile = async(url, filename) => {
+    try {
+      
+    const res = await axios.get(`${BackEndUrl}${url}`, {
+      responseType: 'blob',
+    });
+    if(res) {
+      fileDownload(res.data, filename)
+    }
+  } catch (error) {
+    console.error("ATTACHMENT DOWNLOAD ERROR: ", error);    
+  }
+ }
 
 
   const handlePay = async(amount, message) =>{
     try {
       const res = await axios.post(`${BackEndUrl}/api/payment/pay`, {
-
         itemName: "Assignment Payment",
         price: amount,
         currency: "USD",
@@ -171,7 +174,7 @@ const MessageC = ({data}) => {
   },
       );
       if (res){
-        window.open(res.data.url, '_blank').focus();
+        window.open(res.data.data.url, '_blank').focus();
 
       }
     } catch (error) {
@@ -181,21 +184,21 @@ const MessageC = ({data}) => {
   }
   return (
     <>
-    {data.type === 0 && (user.user_id === data.user_id ||  user.user_id === data.admin_id) 
+    {data.type === 0 && user.id === data.userId 
     ? 
     <MsgBoxRight>
       <MsgText variant='body2'>{data.message}</MsgText>
-      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
     </MsgBoxRight> 
     : 
-    data.type === 0 && (user.user_id !== data.admin_id && user.user_id !== data.user_id)
+    data.type === 0 && user.id !== data.userId
     ? 
     <MsgBoxLeft>
       <MsgText variant='body2'>{data.message}</MsgText>
-      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
     </MsgBoxLeft> 
     : 
-    data.type === 2 && (user.user_id === data.user_id || user.user_id === data.admin_id)
+    data.type === 2 && user.id === data.userId
     ? 
     <AttachmentBoxRight>
       <AttachmentText>Attachment</AttachmentText>
@@ -203,16 +206,16 @@ const MessageC = ({data}) => {
                       <Box sx={{width: "10%", height: "10%"}}>
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
-                       <MsgText variant='body2'>{data.file_name}</MsgText>
-                    <IconButton onClick={handleDownloadfile(data.download_url, data.file_name)}
+                       <MsgText variant='body2'>{data.fileName}</MsgText>
+                    <IconButton onClick={()=>handleDownloadfile(data.url, data.fileName)}
                     ><DownloadForOfflineIcon/></IconButton>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
-                      <AttachmentSize>{Math.round(data.file_size/1024)}KB</AttachmentSize>
-                      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+                      <AttachmentSize>{Math.round(data.fileSize/1024)}KB</AttachmentSize>
+                      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
                     </Box>
     </AttachmentBoxRight> 
-    : data.type === 2 && user.user_id !== data.admin_id && user.user_id !== data.admin_id
+    : data.type === 2 && user.id !== data.userId
     ? 
     <AttachmentBoxLeft>
       <AttachmentText>Attachment</AttachmentText>
@@ -220,18 +223,18 @@ const MessageC = ({data}) => {
                       <Box sx={{width: "50px", height: "60px"}}>
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
-                      <MsgText>{data.file_name}</MsgText>
+                      <MsgText>{data.fileName}</MsgText>
                     <IconButton
-                      onClick={handleDownloadfile(data.download_url, data.file_name)}
+                      onClick={()=>handleDownloadfile(data.url, data.fileName)}
                     ><DownloadForOfflineIcon/></IconButton>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
-                      <AttachmentSize>{Math.round(data.file_size/1024)}KB</AttachmentSize>
-                      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+                      <AttachmentSize>{Math.round(data.fileSize/1024)}KB</AttachmentSize>
+                      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
                     </Box>
     </AttachmentBoxLeft> 
     : 
-    data.type === 1 && (user.user_id === data.user_id || user.user_id === data.admin_id)
+    data.type === 1 && user.id === data.userId
     ? 
     <OfferBoxRight>
       <AttachmentText>Offer</AttachmentText>
@@ -243,11 +246,11 @@ const MessageC = ({data}) => {
           <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
             <Button>WithDraw</Button> 
           </Box>
-          <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate>
+          <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
         </Box>
     </OfferBoxRight> 
     : 
-    data.type === 1 && (user.user_id !== data.admin_id && user.user_id !== data.admin_id)
+    data.type === 1 && user.id !== data.userId
     ? 
     <OfferBoxLeft>
       <AttachmentText>Offer</AttachmentText>
@@ -257,10 +260,10 @@ const MessageC = ({data}) => {
                     </Box>
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
                       <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button onClick={()=>{handlePay(data.amount, data.message)}}>Pay</Button> 
+                        <Button onClick={()=>handlePay(data.amount, data.message)}>Pay</Button> 
                         <Button>Reject</Button>
                       </Box>
-      <MsgDate>{moment(data.time_stamp).format('MMM DD YY')}</MsgDate></Box>
+      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
     </>

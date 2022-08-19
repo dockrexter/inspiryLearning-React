@@ -72,7 +72,7 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("https://inspirylearning-web.herokuapp.com")
+    const socket = io("https://inspirylearning-server.herokuapp.com")
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null); 
 	const [isFilePicked, setIsFilePicked] = useState(false);
@@ -108,17 +108,15 @@ const handleOffer=() =>{
             setOpen(false);
             socketRef.current.emit("sendMessage", {
               message: offerSummary,
-              user_type: 0,
-              time_stamp: new Date(),
-              attachment: null,
+              createdAt: new Date(),
               amount: offer,
               type: 1,
-              status:0,
-              assignment_id: assignment.id, 
+              paymentStatus:0,
+              assignmentId: assignment.id,
+              userId: user.id, 
           
               })
-              const user_id = user.user_id;
-          setMessageT([...messageT, {message: offerSummary, user_id ,type: 1, time_stamp: new Date(), attachment: null, amount: offer, status:0, assignment_id: assignment.id}]);
+          setMessageT([...messageT, {message: offerSummary, userId: user.id ,type: 1, createdAt: new Date(), amount: offer, paymentStatus:0, assignmentId: assignment.id}]);
             setOffer(0);
         } catch (error) {
             console.error("Error in Offer: ",error);
@@ -166,22 +164,17 @@ const handleFile = async () => {
         );
         if (res.data.status === "ok") {
           socketRef.current.emit("sendMessage", {
-            message:null,
-            user_type: 0,
-            time_stamp: new Date(),
-            attachment: "1",
-            download_url: `${res.data.url}`,
-            file_name: fileList[i].name,
-            file_size: fileList[i].size,
-            amount: null,
+            createdAt: new Date(),
+            url: `${res.data.url}`,
+            fileName: fileList[i].name,
+            fileSize: fileList[i].size,
             type: 2,
-            status:null,
-            assignment_id: assignment.id,
+            assignmentId: assignment.id,
+            userId: user.id,
         
             })
-            const user_id = user.user_id;
-        setMessageT([...messageT, {message:null, download_url:`${BackEndUrl}/${res.data.url}` , user_id ,type: 2, time_stamp: new Date(), attachment: "1",file_name: fileList[i].name,
-        file_size: fileList[i].size, amount: 0, status:0, assignment_id: assignment.id}]);
+        setMessageT([...messageT, {url:res.data.url , userId: user.id ,type: 2, createdAt: new Date(),fileName: fileList[i].name,
+        fileSize: fileList[i].size, amount: 0, assignmentId: assignment.id}]);
           setIsFilePicked(false);
         }
     }}
@@ -192,18 +185,19 @@ const handleFile = async () => {
 //..................SOCKET.IO........................//
 
 
-    const [stat, setStat] = useState({message: '', user_id:'', });
+    const [stat, setStat] = useState({message: '', userId:'', });
     useEffect(
 		() => {
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
-                    user_id: user.user_id,
+                    user_id: user.id,
                     assignment_id: assignment.id,
                 })
                 
               });
              socketRef.current.on("getChat",(chat)=>{
-                setMessageT(chat.data);
+                console.log("CHAT: ", chat);
+                setMessageT(chat);
              })
              socketRef.current.on("message",(data)=>{
                 setMessageT([...messageT,data]);
@@ -232,21 +226,18 @@ const handleFile = async () => {
             }, 2000);
         }
             const onMessageSubmit = (e) => {
+                console.log("event on message submit",e)
             e.preventDefault();
             const {message} = stat
             socketRef.current.emit("sendMessage", {
                 message: message,
-                user_type: 0,
-                time_stamp: new Date(),
-                attachment: null,
-                amount: offer,
+                createdAt: new Date(),
                 type: 0,
-                status:0,
-                assignment_id: assignment.id,
+                assignmentId: assignment.id,
+                userId: user.id,
 
             })
-            const user_id = user.user_id;
-            setMessageT([...messageT, {message, user_id, timpe_stamp: new Date() ,type: 0, status:0, assignment_id: assignment.id}]);
+            setMessageT([...messageT, {message, userId: user.id, createdAt: new Date() ,type: 0, assignmentId: assignment.id}]);
             setStat({ message: ""})
             
         }
@@ -374,7 +365,7 @@ const handleFile = async () => {
                         </>
                
                     <TextField label="Type Your Message" name="message" onChange={e => onTextChange(e)}
-                    value={stat.text}
+                    value={stat.message}
                     sx={{
                         input: { color: "white" },
 

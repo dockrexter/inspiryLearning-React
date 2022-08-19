@@ -63,25 +63,25 @@ export default function AssignmentForm() {
       enddate: ''
     },
     onSubmit: async (values) => {
-      try {
+      console.log("Checking file List", fileList)
         const formData = new FormData();
         if(fileList.length > 0){
           for(var i=0; i<fileList.length; i++){
           formData.append( 
-              "file", 
+              "files", 
               fileList[i], 
               fileList[i].name 
             );
           }
         }
-
+        formData.append("subject", values.subject);
+        formData.append("summary", values.summary);
+        formData.append("deadline", date);
+        console.log("deadline", date);
+        console.log("Form Data", formData)
+      try {
         const res = await axios.post(`${BackEndUrl}/api/assignments/createUserAssignment`,
-          { 
-            files: formData, 
-            subject: values.subject,
-            summary: values.summary,
-            deadline: values.deadline,
-          },
+        formData,
           {
             headers: {
               token: user.token
@@ -89,6 +89,7 @@ export default function AssignmentForm() {
           });
         console.log("assignments", res.data);
         alert("Assignment Created Successfully!!")
+        setFileList([]);
         //navigate('/dashboard/user', { replace: true });
 
       }

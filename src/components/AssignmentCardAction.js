@@ -16,6 +16,8 @@ const AssignmentCardAction = ({d}) => {
 
 
     const handleCard =(id, deadline) =>{
+        console.log("id",id);
+        console.log("deadline",deadline);
         dispatch(update({id, deadline}));
         navigate('/dashboard/assigmentdetails');
     }
@@ -99,13 +101,13 @@ const AssignmentCardAction = ({d}) => {
             </Grid>
 
             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-                        <Typography variant="caption" >{d.status} </Typography> 
+                        <Typography variant="caption" >{d.status == 0? "Work Completed" : d.status == 1 ? "Work In Progress" : d.status == 2 ? "New Request" : d.status == 3 ? "Under Review" : d.status == 4 ? "Pending Payment" : "Undefined Status"}</Typography> 
             </Grid>
 
             <Grid item xs={4} sx={{
                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end",
             }}>
-               {d.status === "Work Completed"? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+               {d.status === 0? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
             </Grid>
         </Grid>
         </CardActionArea>

@@ -31,6 +31,7 @@ export default function DashboardApp() {
       });
       if (res.data.status === "ok") {
         setAssignments(res.data.data);
+        // console.log("Assignment in user Data: ",res.data.data);
         setLoading(false);
       }
     }
@@ -45,8 +46,8 @@ export default function DashboardApp() {
   }, []);
   return (
    <DashboardPage title="Dashboard" style={{
-      marginTop: "2px", width: "100%" }}>
-      <Grid container sx={{ width: "80%"}}>
+      marginTop: "2px", width:"80%" }}>
+      <Grid container sx={{ width: "100%"}}>
       <Grid item xs={12} sx={{
                     paddingTop: 2,
                     overflowY: "scroll",

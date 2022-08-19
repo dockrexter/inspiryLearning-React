@@ -12,7 +12,22 @@ import { BackEndUrl } from '../url';
 import { useEffect } from 'react';
 import AssignmentCard from '../components/AssignmentCard';
 import Draggable from 'react-draggable'
+import { AttachmentText, AttachmentSize,MsgText, MsgDate } from 'src/components/MessageC';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { ImageConfig } from '../ImageConfig';
+import fileDownload from 'js-file-download'
 
+const AttachmentBox = styled(Box)(({theme})=> ({
+  backgroundColor: "#E7F4F0",
+  padding: "0.2vmax",
+  margin: "0.2vmax",
+  borderRadius: "0.5vmax",
+  display: "inline-block",
+  width: "50%",
+  clear: "both",
+  wordWrap:"break-word",
+  boxShadow: "0px 3.21569px 8.03922px rgba(0, 0, 0, 0.19)",
+}))
 
 
 function PaperComponent(props) {
@@ -39,17 +54,38 @@ const ChatStyle = styled(Grid)(({ theme }) =>({
 export default function AdminAssignmentDetails() {
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState(2);
     const [assignData, setAssignData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingAttach, setLoadingAttach] = useState(true);
     let navigate = useNavigate(); 
     const [open, setOpen] = useState(false);
     const [finish, setFinish] = useState(false);
     const [openAssigne, setOpenAssigne] = useState(false);
     const [assigneSum, setAssigneSum] = useState("");
+    const [assignAttach, setAssignAttach] = useState([]);
+
+    let x =6;
+    x=6;
+    console.log("Value of x: ",x);
 
 
+    const handleDownloadfile = async(url, filename) => {
+      console.log("CHECKING URL", `${BackEndUrl}${url}`)
+      try {
+        
+      const res = await axios.get(`${BackEndUrl}${url}`, {
+        responseType: 'blob',
+      });
+      if(res) {
+        fileDownload(res.data, filename)
+      }
+    } catch (error) {
+      console.error("ATTACHMENT DOWNLOAD ERROR: ", error);    
+    }
 
+       
+   }
 
 
     const handleAttachments= async() =>{
@@ -64,7 +100,9 @@ export default function AdminAssignmentDetails() {
         },
         );
         if (res) {
-          console.log("Attachments: ",res.data.data)
+          console.log("Attachments check: ",res.data.data)
+          setAssignAttach(res.data.data);
+          setLoadingAttach(false);
       }
   } catch (error) {
       console.error("Error in Attachments: ", error);
@@ -74,7 +112,7 @@ export default function AdminAssignmentDetails() {
 
     //................ADD Assignee.........//
     const handleAssignee= async() =>{
-            setFinish(false);
+      setFinish(false);
             try {
             const res = await axios.post(`${BackEndUrl}/api/assignments/updateAssignee`, {
                 assignment_id: assignment.id,
@@ -88,7 +126,7 @@ export default function AdminAssignmentDetails() {
               );
               if (res.data.status === "ok") {
                 alert("Asignee Added SuccessFully!!")
-                setFinish(true);
+                setFinish(false);
 
             }
         } catch (error) {
@@ -115,6 +153,8 @@ export default function AdminAssignmentDetails() {
 
 
     const getAssignment = async () => {
+      console.log("Assignment Month: ", moment(assignment.deadline).format('MM'));
+      console.log("YEAR IN ASSIGNMENT :", moment(assignment.deadline).format('YYYY'));
     try {
         
     const res = await axios.post(`${BackEndUrl}/api/assignments/getCurrentMonthAssignments`, {
@@ -129,6 +169,7 @@ export default function AdminAssignmentDetails() {
       );
       if (res.data.status === "ok") {
         setAssignData(res.data.data);
+        console.log("Assignments in details user: ",res.data)
         setLoading(false);
     }
 } catch (error) {
@@ -230,11 +271,11 @@ export default function AdminAssignmentDetails() {
                                                         onChange={handleChange}
                                                         input={<OutlinedInput label="Status" id="dialog" />}>
                                                         <option aria-label="None" value="" />
-                                                        <option value={"New Request"}>New Request</option>
-                                                        <option value={"Under Review"}>Under Review</option>
-                                                        <option value={"Pending Payment"}>Pending Payment</option>
-                                                        <option value={"Work in Progress"}>Work in Progress</option>
-                                                        <option value={"Work Completed"}>Work Completed</option>
+                                                        <option value={2}>New Request</option>
+                                                        <option value={3}>Under Review</option>
+                                                        <option value={4}>Pending Payment</option>
+                                                        <option value={1}>Work in Progress</option>
+                                                        <option value={0}>Work Completed</option>
                                                     </Select>
                                                 </FormControl>
                                             </Box>
@@ -276,7 +317,7 @@ export default function AdminAssignmentDetails() {
                             </Grid>
                         
 
-                            <Grid item xs={12} sx={{ marginTop: 5 }}>
+                            <Grid item xs={12} sx={{ marginTop: 5, overflowY: "scroll", }}>
                             {assignData.filter(opt => opt.id === assignment.id).map((d,i) =>
                                 <Stack  key={i} direction="column" spacing={2}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
@@ -284,11 +325,32 @@ export default function AdminAssignmentDetails() {
                                     <Typography variant="body2" sx={{ color: "#202323", opacity: 0.6 }}>
                                         {d.summary} 
                                     </Typography>
-
-                                    <Typography variant="h6" sx={{ color: "#6ABBA3", fontWeight: 700 }}>
-                                        Attachments       </Typography>
+                                    
                                 </Stack>
-                                )}    
+                                )} 
+                                <Typography variant="h6" sx={{ color: "#6ABBA3", fontWeight: 600,marginBottom: 5 }}>
+                                        Attachments       </Typography>
+                                        {loadingAttach ? <Box sx={{display: "flex", justifyContent: "space-around", height: "40%px", width: "40%", margin: "auto" }}>
+                                          <CircularProgress size={80} />
+                                          </Box> : 
+                                          assignAttach.map((d,i) =>
+                                              <AttachmentBox key={i}>
+                                                  <AttachmentText>Attachment</AttachmentText>
+                                                    <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",         wordWrap:"break-word", margin: "2px 2px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
+                                                        <Box sx={{width: "50px", height: "50px"}}>
+                                                            <img src={ImageConfig['default']} alt="Attachment"/>
+                                                          </Box>
+                                                          <AttachmentSize>{d.fileName}</AttachmentSize>
+                                                          <IconButton
+                                                              onClick={()=>{handleDownloadfile(d.url, d.fileName)}}
+                                                          ><DownloadForOfflineIcon/></IconButton>
+                                                        </Box>
+                                                            <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
+                                                              <AttachmentSize>{Math.round(d.fileSize/1024)}KB</AttachmentSize>
+                                                            </Box>
+                                            </AttachmentBox>
+                                        )
+                                      }
                             </Grid>
                             </>
                     }
