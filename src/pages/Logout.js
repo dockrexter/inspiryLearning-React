@@ -7,9 +7,13 @@ import { useDispatch} from 'react-redux';
 import user, { clear } from 'src/redux/user';
 import { useState } from "react"
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { BackEndUrl } from "../url";
+import { clearToken } from 'src/redux/fbToken';
 
 
 const Logout = () => {
+  const { fbToken } = useSelector(state => state.fbToken);
   const { user } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,16 +23,40 @@ const Logout = () => {
     setOpen(false);
     user.role === "admin" ? navigate("/dashboard/admin") : navigate("/dashboard/user");
   };
-
+ const removeToken = async() => {
+    try {
+      const res = await axios.post(`${BackEndUrl}/api/token/remove`, {
+        token: fbToken.fbTokenClient,
+      },
+      {
+        headers: {
+              token: user.token,
+        }
+      }
+      );
+      if (res) {
+        console.log('Logout Succesfully: ', res);
+      }
+      
+    } catch (error) {
+      console.error('Error fbToken: ', error);
+      
+    }
+ }
   const handleLogout = async(e) => {
     window.localStorage.removeItem('token');
-    window.localStorage.removeItem('user_id');
-    window.localStorage.removeItem('lastname');
+    window.localStorage.removeItem('id');
+    window.localStorage.removeItem('lastName');
     window.localStorage.removeItem('phone');
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('role');
-    window.localStorage.removeItem('firstname');
+    window.localStorage.removeItem('firstName');
+    window.localStorage.removeItem('deadline');
+    window.localStorage.removeItem('assignId');
+    window.localStorage.removeItem('fbToken');
+    removeToken();
     dispatch(clear());
+    dispatch(clearToken());
     navigate("/home", { replace: true });
   }
   return (

@@ -329,11 +329,11 @@ export default function AdminAssignmentDetails() {
                                           assignAttach.map((d,i) =>
                                               <AttachmentBox key={i}>
                                                   <AttachmentText>Attachment</AttachmentText>
-                                                    <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",         wordWrap:"break-word", margin: "2px 2px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
-                                                        <Box sx={{width: "50px", height: "50px"}}>
+                                                  <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5px 5px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
+                                                        <Box sx={{width: "10%", height: "10%"}}>
                                                             <img src={ImageConfig['default']} alt="Attachment"/>
                                                           </Box>
-                                                          <AttachmentSize>{d.fileName}</AttachmentSize>
+                                                          <AttachmentSize variant='body2'>{d.fileName}</AttachmentSize>
                                                           <IconButton
                                                               onClick={()=>{handleDownloadfile(d.url, d.fileName)}}
                                                           ><DownloadForOfflineIcon/></IconButton>

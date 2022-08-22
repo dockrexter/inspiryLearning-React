@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Card, Link, Container, Typography, Box } from '@mui/material';
 import { useSelector } from 'react-redux';
+
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -120,12 +121,20 @@ export default function Login() {
             
             <LoginForm />
             {user.role === "user" ?
+            <>
               <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-                Don’t have an account?{' '}
-                <Link variant="subtitle1" component={RouterLink} to="/register" color="secondary">
-                  Get started
+                Agrees to all{' '}
+                <Link variant="subtitle1" component={RouterLink} to="/termsandconditions" color="secondary">
+                  Terms and Conditions
                 </Link>
               </Typography>
+              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+              Don’t have an account?{' '}
+              <Link variant="subtitle1" component={RouterLink} to="/register" color="secondary">
+                Get started
+              </Link>
+            </Typography>
+            </>
               : null}
           </ContentStyle>
         </Container>

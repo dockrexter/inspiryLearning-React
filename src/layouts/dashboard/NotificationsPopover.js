@@ -25,6 +25,7 @@ import { fToNow } from '../../utils/formatTime';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import MenuPopover from '../../components/MenuPopover';
+import { onMessageListener} from '../../firebase';
 
 // ----------------------------------------------------------------------
 
@@ -77,14 +78,20 @@ const NOTIFICATIONS = [
 ];
 
 export default function NotificationsPopover() {
+
   const anchorRef = useRef(null);
 
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [notifications, setNotifications] = useState([]);
+
 
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
 
   const [open, setOpen] = useState(null);
 
+  onMessageListener().then(payload => {
+    console.log("Message: ",payload);
+    setNotifications([...notifications, {id: payload.messageId, title: payload.notification.title, description: payload.notification.body, avatar: null, type: 'mail', createdAt: new Date(), isUnRead: true}]);
+  }).catch(err => console.log('failed: ', err));
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };

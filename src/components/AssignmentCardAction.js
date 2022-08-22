@@ -16,8 +16,10 @@ const AssignmentCardAction = ({d}) => {
 
 
     const handleCard =(id, deadline) =>{
-        console.log("id",id);
-        console.log("deadline",deadline);
+       // console.log("id",id);
+       // console.log("deadline",deadline);
+        window.localStorage.setItem('assignId', JSON.stringify(id));
+        window.localStorage.setItem('deadline', JSON.stringify(deadline));
         dispatch(update({id, deadline}));
         navigate('/dashboard/assigmentdetails');
     }

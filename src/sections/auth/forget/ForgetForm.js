@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -7,15 +6,14 @@ import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormContr
 import { LoadingButton } from '@mui/lab';
 // component
 import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
-import Iconify from '../../../components/Iconify';
+import axios from 'axios';
+import { BackEndUrl } from '../../../url';
+
 
 // ----------------------------------------------------------------------
 
 export default function ForgetForm() {
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -26,7 +24,23 @@ export default function ForgetForm() {
       email: '',
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
+    onSubmit: async() => {
+      console.log("Checking Email: ",values.email);
+      try {
+        const res = await axios.post(`${BackEndUrl}/api/users/sendPasswordResetLink`,
+        {
+            email: values.email,
+        }
+          );
+          if (res) {
+            console.log("Resposne: " , res);
+            alert("Password Reset Link sended to your Email!!")
+
+        }
+    } catch (error) {
+        alert("Something Went Wrong!! Please Try Again")
+        console.error("Error in Forget password: ", error);       
+    } 
       navigate('/dashboard', { replace: true });
     },
   });

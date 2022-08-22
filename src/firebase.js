@@ -1,21 +1,22 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { onBackgroundMessage } from "firebase/messaging/sw";
 
 var firebaseConfig = {
-    apiKey: "AIzaSyD9_0W19n2GSX3TJXfwr-eZ0eF9vE4MMdI",
-    authDomain: "inspiry-learning.firebaseapp.com",
-    projectId: "inspiry-learning",
-    storageBucket: "inspiry-learning.appspot.com",
-    messagingSenderId: "988318202051",
-    appId: "1:988318202051:web:bb3a1ad0916e5e5896ca76"
+    apiKey: "AIzaSyALYozyuuAViZV_o2WEQOL13x4lKBexqBY",
+    authDomain: "inspiry-learning-fcm.firebaseapp.com",
+    projectId: "inspiry-learning-fcm",
+    storageBucket: "inspiry-learning-fcm.appspot.com",
+    messagingSenderId: "559676178215",
+    appId: "1:559676178215:web:f4091cacface0c2671f302"
   };
 
 
-const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
+export const firebaseApp = initializeApp(firebaseConfig);
+export const messaging = getMessaging(firebaseApp);
 
 export const fetchToken = (setTokenFound) => {
-  return getToken(messaging, {vapidKey: 'BCaXFN8VlQgG3_vQMb0aaJzYVkJoivRpd10AhP-BgFKVM8eykVsJ8fp3mbxauVMb7_y5SMAW3LVCa-7INruesaM'}).then((currentToken) => {
+  return getToken(messaging, {vapidKey: 'BC61EFfyLfPoF8RFu_9AyYXmuENK-HpHcagRPMGsiljTbHnjjIaB4hNGxd_Y3eXF5MX83mV70hBdw-L1t9aQUW4'}).then((currentToken) => {
     if (currentToken) {
       console.log('current token for client: ', currentToken);
       setTokenFound(true);

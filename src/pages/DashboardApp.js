@@ -48,7 +48,6 @@ export default function DashboardApp() {
       marginTop: "2px" }}>
       <Grid container sx={{ width: "100%"}}>
       <Grid item xs={12} sx={{
-                    paddingTop: 2,
                     overflowY: "auto",
                     '&::-webkit-scrollbar': {
                     display: "none",

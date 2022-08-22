@@ -10,7 +10,7 @@ export const userSlice = createSlice({
             lastName: JSON.parse(window.localStorage.getItem("lastName")),
             email: JSON.parse(window.localStorage.getItem("email")),
             phone: JSON.parse(window.localStorage.getItem("phone")),
-            role: JSON.parse(window.localStorage.getItem("role"))
+            role: JSON.parse(window.localStorage.getItem("role")),
         }
 
     },

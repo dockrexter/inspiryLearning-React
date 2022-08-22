@@ -23,6 +23,8 @@ import Home from './pages/Home';
 import jwt_decode from 'jwt-decode'
 import AdminMainHome from './pages/adminMainHome';
 import Logout from './pages/Logout';
+import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 let decoded="";
 // ----------------------------------------------------------------------  //
 
@@ -68,6 +70,9 @@ export default function Router() {
         { path: 'register', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/user" /> : <Register/> },
         { path: 'forget', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/user" /> : <Forget /> },
         { path: 'forget', element: user?.token && decoded.role === "admin"? <Navigate to="/dashboard/admin" /> : <Forget /> },
+        { path: 'termsandconditions', element: <TermsAndConditions/> },
+        { path: 'privacypolicy', element: <PrivacyPolicy/> },
+
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

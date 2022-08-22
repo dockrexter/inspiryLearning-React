@@ -141,6 +141,7 @@ const OfferAmmount = styled(Typography)(({theme})=>({
 
 const MessageC = ({data}) => {
   const { user } = useSelector(state => state.user);
+  const {assignment} = useSelector(state => state.assignment);
 
 
   const handleDownloadfile = async(url, filename) => {
@@ -158,13 +159,15 @@ const MessageC = ({data}) => {
  }
 
 
-  const handlePay = async(amount, message) =>{
+  const handlePay = async(amount, message, id) =>{
     try {
       const res = await axios.post(`${BackEndUrl}/api/payment/pay`, {
         itemName: "Assignment Payment",
         price: amount,
         currency: "USD",
-        description: message
+        description: message,
+        messageId: id,
+        assignmentId: assignment.id
 
       },
   {
@@ -181,6 +184,25 @@ const MessageC = ({data}) => {
       console.error("Something went wrong: ", error);
       
     }
+  }
+  const handlereject= async(id)=>{
+    try {
+      const res = await axios.post(`${BackEndUrl}/api/payment/reject`,{
+        messageId: id,
+      },
+      {
+        headers: {
+          token: user.token
+        }
+      });
+      if (res){
+        console.log("Rejected Successfully: ",res)
+      }
+      
+    } catch (error) {
+      
+    }
+
   }
   return (
     <>
@@ -237,6 +259,7 @@ const MessageC = ({data}) => {
     data.type === 1 && user.id === data.userId
     ? 
     <OfferBoxRight>
+      {console.log("data from offer: ", data)}
       <AttachmentText>Offer</AttachmentText>
         <Box sx={{display: "flex", alignItems:"center",  wordWrap:"break-word", margin: "0 5px"}}>
           <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
@@ -253,16 +276,19 @@ const MessageC = ({data}) => {
     data.type === 1 && user.id !== data.userId
     ? 
     <OfferBoxLeft>
+      {console.log("data from offer: ", data)}
       <AttachmentText>Offer</AttachmentText>
        <Box sx={{display: "flex", alignItems:"center"}}>
                       <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
                        <MsgText variant='body2'>{data.message}</MsgText>
                     </Box>
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
-                      <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                        <Button onClick={()=>handlePay(data.amount, data.message)}>Pay</Button> 
-                        <Button>Reject</Button>
-                      </Box>
+                        {data.paymentStatus === 0?
+                        <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
+                          <Button onClick={()=>handlePay(data.amount, data.message, data.id)}>Pay</Button>
+                          <Button onClick={()=>handlereject(data.id)}>Reject</Button> 
+                        </Box>
+                        : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected</AttachmentSize>} 
       <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
