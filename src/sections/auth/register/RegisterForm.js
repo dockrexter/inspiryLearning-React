@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
+import { updateToken } from '../../../redux/fbToken';
 
 // material
 import { Stack, TextField, IconButton, InputAdornment, Alert } from '@mui/material';
@@ -15,6 +16,8 @@ import axios from "axios";
 import { BackEndUrl } from "../../../url";
 // component 
 import Iconify from '../../../components/Iconify';
+import { fetchToken } from '../login/FCMtoken';
+import { update } from '../../../redux/user';
 
 // ----------------------------------------------------------------------
 
@@ -51,24 +54,25 @@ export default function RegisterForm() {
       if (values.password === values.confirmPassword) {
         try {
          // Api CAll for registration 
-          const res = await axios.post(`${BackEndUrl}/signup`, {
-            password: values.password,
-            firstname: values.firstName,
-            lastname: values.lastName,
+          const res = await axios.post(`${BackEndUrl}/api/users/register`, {
+            firstName: values.firstName,
+            lastName: values.lastName,
             email: values.email,
-            phone: values.phone,
-            role: "user"
-
+            role: "user",
+            phone: `${values.phone}`,
+            password: values.password,
           });
-          if (res.data.status === "ok") {
-            window.localStorage.setItem('token', JSON.stringify(res.data.user.token));
-            window.localStorage.setItem('firstname', JSON.stringify(res.data.user.firstname));
-            window.localStorage.setItem('lastname', JSON.stringify(res.data.user.lastname));
-            window.localStorage.setItem('phone', JSON.stringify(res.data.user.phone));
-            window.localStorage.setItem('email', JSON.stringify(res.data.user.email));
-            window.localStorage.setItem('role', JSON.stringify(res.data.user.role));
-            window.localStorage.setItem('user_id', JSON.stringify(res.data.user.user_id));
-            dispatch(update(res.data.user));
+          if (res) {
+            window.localStorage.setItem('token', JSON.stringify(res?.data?.data?.token));
+            window.localStorage.setItem('firstName', JSON.stringify(res?.data?.data?.firstName));
+            window.localStorage.setItem('lastName', JSON.stringify(res?.data?.data?.lastName));
+            window.localStorage.setItem('phone', JSON.stringify(res?.data?.data?.phone));
+            window.localStorage.setItem('email', JSON.stringify(res?.data?.data?.email));
+            window.localStorage.setItem('role', JSON.stringify(res?.data?.data?.role));
+            window.localStorage.setItem('id', JSON.stringify(res?.data?.data?.id));
+            await fetchToken(res?.data?.data?.token)
+            dispatch(update(res?.data?.data));
+            dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("fbtoken"))}));
             setInValid(false)
             navigate("/dashboard/user", { replace: true });
           }
@@ -77,7 +81,7 @@ export default function RegisterForm() {
           }
         } catch (error) {
           setInValid(true);
-          //console.log(error);
+          console.error("Error in Registration",error);
         }
       }
       else {
@@ -151,7 +155,7 @@ export default function RegisterForm() {
           <TextField
             fullWidth
             // autoComplete="email"
-            type="number"
+            type="text"
             size="small"
 
             // label="Email address"

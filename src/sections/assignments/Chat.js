@@ -72,7 +72,7 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("https://inspirylearning-server.herokuapp.com")
+    const socket = io(BackEndUrl)
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null); 
 	const [isFilePicked, setIsFilePicked] = useState(false);
@@ -81,6 +81,26 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [offerSummary, setOfferSummary] = useState("");
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
+    const [stat, setStat] = useState({message: '', userId:'', });
+    useEffect(
+		() => {
+            if(user.id && assignment.id){
+			socketRef.current.on("connect", () => {
+            socketRef.current.emit('join',{
+                    user_id: user.id,
+                    assignment_id: assignment.id,
+                })
+                
+              });
+             socketRef.current.on("getChat",(chat)=>{
+                setMessageT(chat);
+             })
+             socketRef.current.on("message",(data)=>{
+                setMessageT([...messageT,data]);
+             })
+            }
+
+		},[messageT]);
 
 
 
@@ -159,9 +179,14 @@ const handleFile = async () => {
         fileList[i], 
         fileList[i].name 
       );
-        const res = await axios.post(`${BackEndUrl}/api/upload`, formData
+        const res = await axios.post(`${BackEndUrl}/api/attachments/upload`, formData,{
+            headers: {
+              token: user.token
+            }
+          }
         );
         if (res.data.status === "ok") {
+            console.log("Attachment Upload",res)
           socketRef.current.emit("sendMessage", {
             createdAt: new Date(),
             url: `${res.data.url}`,
@@ -184,24 +209,7 @@ const handleFile = async () => {
 //..................SOCKET.IO........................//
 
 
-    const [stat, setStat] = useState({message: '', userId:'', });
-    useEffect(
-		() => {
-			socketRef.current.on("connect", () => {
-            socketRef.current.emit('join',{
-                    user_id: user.id,
-                    assignment_id: assignment.id,
-                })
-                
-              });
-             socketRef.current.on("getChat",(chat)=>{
-                setMessageT(chat);
-             })
-             socketRef.current.on("message",(data)=>{
-                setMessageT([...messageT,data]);
-             })
-
-		},[messageT]);
+    
 
 //.....................TEXT GETTING FROM INPUT FILED...............// 
 
@@ -309,11 +317,7 @@ const handleFile = async () => {
                             }
                              {/*....................ATTACHMENTS OVER HERE....................*/}
 
-
-
-                             
-
-                        <IconButton onClick={()=>handleAttachOpen} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
+                        <IconButton onClick={()=>handleAttachOpen()} sx={{color: blueGrey[50] }}><AttachFileIcon/></IconButton>
                         <Dialog
                             open={attachOpen}
                             onClose={handleAttachClose}

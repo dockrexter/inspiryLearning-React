@@ -25,7 +25,6 @@ export default function ForgetForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: async() => {
-      console.log("Checking Email: ",values.email);
       try {
         const res = await axios.post(`${BackEndUrl}/api/users/sendPasswordResetLink`,
         {
@@ -33,7 +32,6 @@ export default function ForgetForm() {
         }
           );
           if (res) {
-            console.log("Resposne: " , res);
             alert("Password Reset Link sended to your Email!!")
 
         }

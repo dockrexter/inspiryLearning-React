@@ -329,7 +329,7 @@ export default function AdminAssignmentDetails() {
                                           assignAttach.map((d,i) =>
                                               <AttachmentBox key={i}>
                                                   <AttachmentText>Attachment</AttachmentText>
-                                                  <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5px 5px", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
+                                                  <Box sx={{display: "flex",borderRadius: "8.03922px", alignItems:"center",  wordWrap:"break-word", margin: "5% 5%", backgroundColor:"#DCE9E5", justifyContent: "space-between" }}>
                                                         <Box sx={{width: "10%", height: "10%"}}>
                                                             <img src={ImageConfig['default']} alt="Attachment"/>
                                                           </Box>

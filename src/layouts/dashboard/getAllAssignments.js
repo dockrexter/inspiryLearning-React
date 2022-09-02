@@ -23,7 +23,7 @@ const getAllAssignments = async() => {
           }
         }
         catch (error) {
-          console.log(error);
+          console.error("",error);
         }
       }
       useEffect(() => {

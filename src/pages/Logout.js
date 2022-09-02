@@ -35,11 +35,10 @@ const Logout = () => {
       }
       );
       if (res) {
-        console.log('Logout Succesfully: ', res);
       }
       
     } catch (error) {
-      console.error('Error fbToken: ', error);
+      console.error('Error Removing Token: ', error);
       
     }
  }

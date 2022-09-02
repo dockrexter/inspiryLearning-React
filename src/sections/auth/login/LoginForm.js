@@ -2,12 +2,13 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
+import { updateToken } from '../../../redux/fbToken';
 
 // material
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, Alert, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import axios from "axios";
-import { fetchToken} from '../../../firebase';
+import { fetchToken} from './FCMtoken';
 // component
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
@@ -15,9 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { update } from '../../../redux/user';
 import Iconify from '../../../components/Iconify';
 import { BackEndUrl } from "../../../url";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import  {messaging}  from "../../../firebase";
-import { updateToken } from 'src/redux/fbToken';
+
 
 // ----------------------------------------------------------------------
 
@@ -25,51 +24,9 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [inValid, setInValid] = useState(false);
-  const [isTokenFound, setTokenFound] = useState(false);
   const dispatch = useDispatch();
   //....................................................//
-  const addToken = async(tokenDB, currentToken) => {
-    console.log('tokenDB: ', tokenDB);
-    console.log('currentToken: ', currentToken);
-    try {
-      const res = await axios.post(`${BackEndUrl}/api/token/add`, {
-        token: currentToken,
-      },
-      {
-        headers: {
-              token: tokenDB,
-        }
-      }
-      );
-      if (res) {
-        console.log('token added: ', res);
-      }
-      
-    } catch (error) {
-      console.error('error adding Token: ', error);
-      
-    }
-  }
-
   //...................................................//
-  const fetchToken = (tokenDB) => {
-    return getToken(messaging, {vapidKey: 'BC61EFfyLfPoF8RFu_9AyYXmuENK-HpHcagRPMGsiljTbHnjjIaB4hNGxd_Y3eXF5MX83mV70hBdw-L1t9aQUW4'}).then((currentToken) => {
-      if (currentToken) {
-        console.log('current token for client: ', currentToken);
-        setTokenFound(true);
-        window.localStorage.setItem('fbToken', JSON.stringify(currentToken));
-        dispatch(updateToken({fbTokenClient: currentToken}));
-        addToken(tokenDB, currentToken);
-      } else {
-        console.log('No registration token available. Request permission to generate one.');
-        setTokenFound(false);
-        alert("Permission Denied! App Behaviour unstable") 
-      }
-    }).catch((err) => {
-      console.log('An error occurred while retrieving token. ', err);
-      // catch error while creating client token
-    });
-  }
   //...................................................//
 
   const { user } = useSelector(
@@ -95,15 +52,16 @@ export default function LoginForm() {
           role: user.role
         });
         if (res.data.status === "ok") {
-          window.localStorage.setItem('token', JSON.stringify(res.data.data.token));
-          window.localStorage.setItem('firstName', JSON.stringify(res.data.data.firstName));
-          window.localStorage.setItem('lastName', JSON.stringify(res.data.data.lastName));
-          window.localStorage.setItem('phone', JSON.stringify(res.data.data.phone));
-          window.localStorage.setItem('email', JSON.stringify(res.data.data.email));
-          window.localStorage.setItem('role', JSON.stringify(res.data.data.role));
-          window.localStorage.setItem('id', JSON.stringify(res.data.data.id));
-          fetchToken(res.data.data.token);
+          window.localStorage.setItem('token', JSON.stringify(res?.data?.data?.token));
+          window.localStorage.setItem('firstName', JSON.stringify(res?.data?.data?.firstName));
+          window.localStorage.setItem('lastName', JSON.stringify(res?.data?.data?.lastName));
+          window.localStorage.setItem('phone', JSON.stringify(res?.data?.data?.phone));
+          window.localStorage.setItem('email', JSON.stringify(res?.data?.data?.email));
+          window.localStorage.setItem('role', JSON.stringify(res?.data?.data?.role));
+          window.localStorage.setItem('id', JSON.stringify(res?.data?.data?.id));
+          await fetchToken(res.data.data.token);
           dispatch(update(res.data.data));
+          dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("fbtoken"))}));
           setInValid(false)
           {user.role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard/user", { replace: true });}
           

@@ -196,7 +196,7 @@ const MessageC = ({data}) => {
         }
       });
       if (res){
-        console.log("Rejected Successfully: ",res)
+         console.log("Rejected Successfully: ",res)
       }
       
     } catch (error) {
@@ -246,6 +246,7 @@ const MessageC = ({data}) => {
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
                       <MsgText>{data.fileName}</MsgText>
+                      {console.log("Attachment: ",data)}
                     <IconButton
                       onClick={()=>handleDownloadfile(data.url, data.fileName)}
                     ><DownloadForOfflineIcon/></IconButton>
@@ -259,7 +260,6 @@ const MessageC = ({data}) => {
     data.type === 1 && user.id === data.userId
     ? 
     <OfferBoxRight>
-      {console.log("data from offer: ", data)}
       <AttachmentText>Offer</AttachmentText>
         <Box sx={{display: "flex", alignItems:"center",  wordWrap:"break-word", margin: "0 5px"}}>
           <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
@@ -267,7 +267,11 @@ const MessageC = ({data}) => {
         </Box>
         <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
           <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-            <Button>WithDraw</Button> 
+          {data.paymentStatus === 0?
+                        <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
+                          <Button onClick={()=>handlereject(data.id)}>WithDraw</Button>
+                        </Box>
+                        : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected/Withdrawed</AttachmentSize>}
           </Box>
           <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
         </Box>
@@ -276,7 +280,7 @@ const MessageC = ({data}) => {
     data.type === 1 && user.id !== data.userId
     ? 
     <OfferBoxLeft>
-      {console.log("data from offer: ", data)}
+      {console.log("Offer Data: ", data)}
       <AttachmentText>Offer</AttachmentText>
        <Box sx={{display: "flex", alignItems:"center"}}>
                       <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>
@@ -288,7 +292,7 @@ const MessageC = ({data}) => {
                           <Button onClick={()=>handlePay(data.amount, data.message, data.id)}>Pay</Button>
                           <Button onClick={()=>handlereject(data.id)}>Reject</Button> 
                         </Box>
-                        : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected</AttachmentSize>} 
+                        : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected/withdrawed</AttachmentSize>} 
       <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
