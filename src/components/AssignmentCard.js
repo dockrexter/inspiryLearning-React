@@ -18,15 +18,16 @@ const assignmentCard = ({d}) => {
             <Grid item xs={4}>
                 <Stack direction="column">
                     <Typography variant="body2" sx={{
-                        color: "#EAB531",
+                        
+                        color: "#0FA958",
                         fontStyle: "normal",
                         fontWeight: 700,
                         fontSize: "17.2385px",
                         lineHeight: "27px"
                     }}>
-                        Due Today     </Typography>
+                        Starting Date     </Typography>
                     <Typography variant="body2" >
-                        {moment(d.deadline).format("MMMM Do YYYY")}
+                    {moment(d.created_date).format("MMM DD YYYY LT")}
                     </Typography>
 
                 </Stack>
@@ -57,16 +58,16 @@ const assignmentCard = ({d}) => {
             <Grid item xs={4}>
                 <Stack direction="column">
                     <Typography variant="body2" sx={{
-                        color: "#0FA958",
+                        color: "#EAB531",
                         fontStyle: "normal",
                         fontWeight: 700,
                         fontSize: "17.2385px",
                         lineHeight: "27px"
                     }}>
-                        Starting Date
+                        Due Date
                     </Typography>
                     <Typography variant="body2" >
-                        {moment(d.created_date).format("MMMM Do YYYY")}
+                    {moment(d.deadline).format("MMM DD YYYY LT")}
                     </Typography>
                 </Stack>
             </Grid>

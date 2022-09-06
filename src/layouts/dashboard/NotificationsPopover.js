@@ -89,9 +89,9 @@ export default function NotificationsPopover() {
   const [open, setOpen] = useState(null);
 
   onMessageListener().then(payload => {
-    console.log("Message: ",payload);
+    //console.log("Message: ",payload);
     setNotifications([...notifications, {id: payload.messageId, title: payload.notification.title, description: payload.notification.body, avatar: null, type: 'mail', createdAt: new Date(), isUnRead: true}]);
-  }).catch(err => console.log('failed: ', err));
+  }).catch(err => console.error('failed: ', err));
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };

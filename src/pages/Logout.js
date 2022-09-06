@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { BackEndUrl } from "../url";
 import { clearToken } from 'src/redux/fbToken';
+import { clearAssignment } from 'src/redux/assignments';
 
 
 const Logout = () => {
@@ -33,10 +34,7 @@ const Logout = () => {
               token: user.token,
         }
       }
-      );
-      if (res) {
-      }
-      
+      ); 
     } catch (error) {
       console.error('Error Removing Token: ', error);
       
@@ -56,6 +54,7 @@ const Logout = () => {
     removeToken();
     dispatch(clear());
     dispatch(clearToken());
+    dispatch(clearAssignment());
     navigate("/home", { replace: true });
   }
   return (
@@ -66,7 +65,7 @@ const Logout = () => {
         onClose={handleClose}
       >
         <DialogTitle>
-          <Typography variant="h5">LOGOUT</Typography>
+          <Typography>LOGOUT</Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -79,7 +78,7 @@ const Logout = () => {
         <DialogActions>
           <Button variant='contained' onClick={handleClose}>Cancle</Button>
           <Button variant='contained' onClick={handleLogout}>
-            LogOut
+            Logout
           </Button>
         </DialogActions>
       </Dialog>

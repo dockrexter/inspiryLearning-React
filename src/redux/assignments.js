@@ -14,12 +14,12 @@ const assignmentSlice = createSlice({
     update: (state, action) => {
         state.assignment = action.payload;
     },
-    clear: (state) => {
+    clearAssignment: (state) => {
         state.assignment = '';
     }
 
 }
 });
 
-export const { update, clear } = assignmentSlice.actions;
+export const { update, clearAssignment } = assignmentSlice.actions;
 export default assignmentSlice.reducer

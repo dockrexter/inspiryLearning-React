@@ -1,4 +1,4 @@
-import { Grid, Container, Paper,styled , Typography,DialogContentText, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
+import { Grid, Container, Paper,styled , Typography, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
 import moment from 'moment';
 import { useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux'
@@ -12,7 +12,7 @@ import { BackEndUrl } from '../url';
 import { useEffect } from 'react';
 import AssignmentCard from '../components/AssignmentCard';
 import Draggable from 'react-draggable'
-import { AttachmentText, AttachmentSize,MsgText, MsgDate } from 'src/components/MessageC';
+import { AttachmentText, AttachmentSize} from 'src/components/MessageC';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { ImageConfig } from '../ImageConfig';
 import fileDownload from 'js-file-download'
@@ -122,7 +122,7 @@ export default function AdminAssignmentDetails() {
               );
               if (res.data.status === "ok") {
                 alert("Asignee Added SuccessFully!!")
-                setFinish(false);
+                setFinish(true);
 
             }
         } catch (error) {
@@ -150,7 +150,10 @@ export default function AdminAssignmentDetails() {
 
     const getAssignment = async () => {
     try {
-        
+
+      const current_month = 9;
+      const current_year = 2022;
+    console.log("Date",new Date(`${current_year}-${current_month + 1}-01`))
     const res = await axios.post(`${BackEndUrl}/api/assignments/getCurrentMonthAssignments`, {
         current_month: moment(assignment.deadline).format('MM'),
         current_year: moment(assignment.deadline).format('YYYY'),
@@ -163,6 +166,7 @@ export default function AdminAssignmentDetails() {
       );
       if (res.data.status === "ok") {
         setAssignData(res.data.data);
+        console.log("Assignment", res)
         setLoading(false);
     }
 } catch (error) {
@@ -234,6 +238,9 @@ export default function AdminAssignmentDetails() {
     return (
         <DashboardPage title="Dashboard" style={{
             marginTop: "2px", borderTop: "1.02801px solid #C0C0C2"}}>
+              {loading ? <Box sx={{display: "flex", justifyContent: "space-around", }}>
+                                  <CircularProgress size={150} />
+                                </Box> :
             <Grid container sx={{ width: "100%",height: "80vh"}} >
             <Grid item xs={12} md={6} sx={{
                     width: "100%",
@@ -300,23 +307,24 @@ export default function AdminAssignmentDetails() {
                                 </> : null}
                             </Box>
                         </Grid>
-                        {loading ? <Box sx={{display: "flex", justifyContent: "space-around", height: "40%", width: "40%", margin: "auto" }}>
-                                  <CircularProgress size={80} />
-                                </Box> :
                                 <>
                             <GridStyled item xs={12} sx={{width: "1000px"}}>
-                                {assignData.filter(opt => opt.id === assignment.id).map((d ,i) =>
-                                    <AssignmentCard key={i} d={d} /> )}
+                                {assignData?.map((d ,i) =>{
+                                  if(d.id === assignment.id){
+                                  return  <AssignmentCard key={i} d={d} />
+                                  }
+                                    
+                                })}
                             </GridStyled>
                         
 
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
-                            {assignData.filter(opt => opt.id === assignment.id).map((d,i) =>
+                            {assignData?.filter(opt => opt.id === assignment?.id).map((d,i) =>
                                 <Stack  key={i} direction="column" spacing={2}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
                                         Discription      </Typography>
                                     <Typography variant="body2" sx={{ color: "#202323", opacity: 0.6 }}>
-                                        {d.summary} 
+                                        {d?.summary} 
                                     </Typography>
                                     
                                 </Stack>
@@ -346,7 +354,7 @@ export default function AdminAssignmentDetails() {
                                       }
                             </Grid>
                             </>
-                    }
+                    
                         </Grid>
                     </Container>
                 </Grid >
@@ -358,6 +366,7 @@ export default function AdminAssignmentDetails() {
                     <Chat/>
                 </ChatStyle>
             </Grid >
+          }
         </DashboardPage>
     );
 }

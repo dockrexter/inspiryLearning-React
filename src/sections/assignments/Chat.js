@@ -82,6 +82,8 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
     const [stat, setStat] = useState({message: '', userId:'', });
+
+
     useEffect(
 		() => {
             if(user.id && assignment.id){
@@ -99,10 +101,11 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
                 setMessageT([...messageT,data]);
              })
             }
+            // return ()=>{ 
+            //     socketRef.current.disconnect(); 
+            //    }
 
 		},[messageT]);
-
-
 
     
 //................Payment Popup handles....................//
@@ -186,10 +189,9 @@ const handleFile = async () => {
           }
         );
         if (res.data.status === "ok") {
-            console.log("Attachment Upload",res)
           socketRef.current.emit("sendMessage", {
             createdAt: new Date(),
-            url: `${res.data.url}`,
+            url: `${res.data.data.url}`,
             fileName: fileList[i].name,
             fileSize: fileList[i].size,
             type: 2,

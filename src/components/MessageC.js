@@ -196,11 +196,11 @@ const MessageC = ({data}) => {
         }
       });
       if (res){
-         console.log("Rejected Successfully: ",res)
+       //  console.log("Rejected Successfully: ",res)
       }
       
     } catch (error) {
-      
+      console.error("Rejection Error: ", error)
     }
 
   }
@@ -246,7 +246,6 @@ const MessageC = ({data}) => {
                         <img src={ImageConfig['default']} alt="Attachment"/>
                       </Box>
                       <MsgText>{data.fileName}</MsgText>
-                      {console.log("Attachment: ",data)}
                     <IconButton
                       onClick={()=>handleDownloadfile(data.url, data.fileName)}
                     ><DownloadForOfflineIcon/></IconButton>

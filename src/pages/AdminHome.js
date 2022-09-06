@@ -81,7 +81,8 @@ export default function AdminHome() {
             }
           },
           );
-          if (res.data.status === "ok") {
+          if (res) {
+            console.log(res)
             setAssignmentsDue(res.data.data);  
         }
         }
@@ -196,9 +197,11 @@ export default function AdminHome() {
                                       {moment(cDate).format("MM DD YYYY") === moment(dueDate).format("MM DD YYYY")?
                                       <>
                                       <Typography sx={{marginTop: 5}}> All Due Assignments  </Typography>
-                                      {assignmentsDue.map((d ,i)=>
+                                      {assignmentsDue.length > 0? assignmentsDue.map((d ,i)=>
                                           <AssignmentCardAction key={i} d={d} />
-                                      )}
+                                      ): <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60%", width: "60%",      margin: "auto" }}>
+                                      <img src="/static/nodata.png" alt="No data" />
+                                  </Box>}
                                       </>
                                       :
                                       null

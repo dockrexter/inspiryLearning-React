@@ -16,8 +16,8 @@ const AssignmentCardAction = ({d}) => {
 
 
     const handleCard =(id, deadline) =>{
-       // console.log("id",id);
-       // console.log("deadline",deadline);
+        console.log("id",id);
+        console.log("deadline",deadline);
         window.localStorage.setItem('assignId', JSON.stringify(id));
         window.localStorage.setItem('deadline', JSON.stringify(deadline));
         dispatch(update({id, deadline}));
@@ -54,7 +54,7 @@ const AssignmentCardAction = ({d}) => {
                     }}>
                         Starting Date     </Typography>
                     <Typography variant="body2" sx={{color: "black"}}>
-                    {moment(d.created_date).format("MMMM Do YYYY")}</Typography>
+                    {moment(d.created_date).format("MMM DD YYYY LT")}</Typography>
 
                 </Stack>
 
@@ -97,10 +97,7 @@ const AssignmentCardAction = ({d}) => {
                         Due Date
                     </Typography>
                     <Typography variant="body2" sx={{color: "black"}} >
-                    {moment(d.deadline).format("MMMM DD YYYY")}</Typography>
-                    <Typography variant="body2" sx={{color: "black"}} >
-                    {moment(d.deadline).format("LT")}</Typography>
-
+                    {moment(d.deadline).format("MMM DD YYYY LT")}</Typography>
                 </Stack>
 
             </Grid>

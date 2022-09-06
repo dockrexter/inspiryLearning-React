@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import axios from "axios";
 // material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
+import { Stack, TextField, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
 import PersonIcon from '@mui/icons-material/Person';
@@ -46,13 +46,12 @@ export default function SettingsForm() {
             }
           }
         )
-        if (res.data.status === "ok") {
-           window.localStorage.setItem('firstName', JSON.stringify(res.data.data.firstName));
-           window.localStorage.setItem('lastName', JSON.stringify(res.data.data.lastName));
-           window.localStorage.setItem('phone', JSON.stringify(res.data.data.phone));
-          alert("Settings Update Successfully!!")
-          //dispatch(update(res.data.u));
-
+        if (res) {
+            window.localStorage.setItem('firstName', JSON.stringify(values?.firstName));
+            window.localStorage.setItem('lastName', JSON.stringify(values?.lastName));
+            window.localStorage.setItem('phone', JSON.stringify(values?.phone));
+            dispatch(update({firstName:values?.firstName,lastName:values?.lastName, phone:values?.phone,id: user?.id, token:user?.token,email: user?.email, role:user?.role}));
+            alert("Settings Update Successfully!!")
         }
 
       }

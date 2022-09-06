@@ -25,6 +25,7 @@ import AdminMainHome from './pages/adminMainHome';
 import Logout from './pages/Logout';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import PaswordReset from './pages/PassWordReset';
 let decoded="";
 // ----------------------------------------------------------------------  //
 
@@ -70,6 +71,7 @@ export default function Router() {
         { path: 'register', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/user" /> : <Register/> },
         { path: 'forget', element: user?.token && decoded.role === "user"? <Navigate to="/dashboard/user" /> : <Forget /> },
         { path: 'forget', element: user?.token && decoded.role === "admin"? <Navigate to="/dashboard/admin" /> : <Forget /> },
+        { path: `resetPassword`, element: user?.token && decoded.role === "admin"? <Navigate to="/dashboard/admin" /> : <PaswordReset/> },
         { path: 'termsandconditions', element: <TermsAndConditions/> },
         { path: 'privacypolicy', element: <PrivacyPolicy/> },
 
