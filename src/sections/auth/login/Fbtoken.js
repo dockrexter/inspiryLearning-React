@@ -13,8 +13,11 @@ export const addToken = async(tokenDB, currentToken) => {
         }
       }
       );
+      if(res){
+        //console.log(res);
+      }
     } catch (error) {
-      console.error('error adding Token: ', error);
+      console.error(error);
       
     }
   }

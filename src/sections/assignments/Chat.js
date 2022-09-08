@@ -82,10 +82,12 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
     const [stat, setStat] = useState({message: '', userId:'', });
+    let messageId = 0;
 
 
     useEffect(
 		() => {
+            console.log("Connected")
             if(user.id && assignment.id){
 			socketRef.current.on("connect", () => {
             socketRef.current.emit('join',{
@@ -94,25 +96,29 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
                 })
                 
               });
-             socketRef.current.on("getChat",(chat)=>{
+            }
+            return ()=>{ 
+                console.log("Disconnected")
+                socketRef.current.disconnect(); 
+               }
+
+		},[]);
+
+        useEffect(()=>{
+            socketRef.current.on("getChat",(chat)=>{
                 setMessageT(chat);
              })
              socketRef.current.on("message",(data)=>{
                 setMessageT([...messageT,data]);
              })
-            }
-            // return ()=>{ 
-            //     socketRef.current.disconnect(); 
-            //    }
-
-		},[messageT]);
-
+        },[messageT])
     
 //................Payment Popup handles....................//
 const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
+    
     setOpen(false);
   };
 
@@ -139,8 +145,12 @@ const handleOffer=() =>{
               userId: user.id, 
           
               })
-          setMessageT([...messageT, {message: offerSummary, userId: user.id ,type: 1, createdAt: new Date(), amount: offer, paymentStatus:0, assignmentId: assignment.id}]);
-            setOffer(0);
+              socketRef.current.on("messageID",data =>{
+                setMessageT([...messageT, {message: offerSummary, id:data?.id, userId: user.id ,type: 1, createdAt: new Date(), amount: offer, paymentStatus:0, assignmentId: assignment.id}]);
+                setOffer(0);
+              })
+            
+            
         } catch (error) {
             console.error("Error in Offer: ",error);
         
@@ -297,14 +307,12 @@ const handleFile = async () => {
                                 Create an Offer
                             </DialogTitle>
                             <DialogContent>
-                                <DialogContentText>
                                     <Box sx={{display: "flex", alignItems: "center", margin:"10px 0"  }}>
                                         <Typography variant='h4'>$</Typography>
                                         <Input type="number" min="0" onChange={(e) => setOffer(e.target.value)} sx={{width:"50px", height: "50px"}}/>
                                     </Box>
                                     <Typography>Summary</Typography>
                                     <TextField multiline={true} rows={3} onChange={(e) => setOfferSummary(e.target.value)} sx={{ width: "300px"}}></TextField>
-                                </DialogContentText>
                             </DialogContent>
                             <DialogActions>
                             <Button onClick={handleClose}>

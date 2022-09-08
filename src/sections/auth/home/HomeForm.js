@@ -25,7 +25,7 @@ export default function HomeForm() {
   return (
     <Stack spacing={3}>
       <Button variant="contained" size="large" color="primary" onClick={() => {
-        window.localStorage.setItem('role', JSON.stringify("user"));
+        window.localStorage.setItem('insp_LEARN_role', JSON.stringify("user"));
         dispatch(update({
           role: "user", 
           firstname: "",
@@ -41,7 +41,7 @@ export default function HomeForm() {
         Login as User
       </Button>
       <Button variant="contained" size="large" color="secondary" onClick={() => {
-        window.localStorage.setItem('role', JSON.stringify("admin"));
+        window.localStorage.setItem('insp_LEARN_role', JSON.stringify("admin"));
         dispatch(update({
           role: "admin",
           firstname: "",

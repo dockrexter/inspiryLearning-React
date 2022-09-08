@@ -8,6 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import EmailIcon from '@mui/icons-material/Email';
 import axios from 'axios';
 import { BackEndUrl } from '../../../url';
+import { toast } from 'react-toastify';
 
 
 // ----------------------------------------------------------------------
@@ -32,11 +33,11 @@ export default function ForgetForm() {
         }
           );
           if (res) {
-            alert("Password Reset Link sended to your Email!!")
+            toast.success("Password Reset Link sended to your Email!!")
 
         }
     } catch (error) {
-        alert("Something Went Wrong!! Please Try Again")
+        toast.error("Something Went Wrong!! Please Try Again")
         console.error("Error in Forget password: ", error);       
     } 
       navigate('/dashboard', { replace: true });

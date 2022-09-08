@@ -21,7 +21,6 @@ import AdminAssignmentDetails from "./pages/AdminAssignmentDetails"
 import AdminHome from "./pages/AdminHome"
 import Home from './pages/Home';
 import jwt_decode from 'jwt-decode'
-import AdminMainHome from './pages/adminMainHome';
 import Logout from './pages/Logout';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';

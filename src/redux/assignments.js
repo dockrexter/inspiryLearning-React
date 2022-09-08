@@ -5,8 +5,8 @@ const assignmentSlice = createSlice({
   name: 'assignment',
   initialState: {
     assignment: {
-      deadline: JSON.parse(window.localStorage.getItem('deadline')),
-      id: JSON.parse(window.localStorage.getItem('assignId')),
+      deadline: JSON.parse(window.localStorage.getItem('insp_LEARN_deadline')),
+      id: JSON.parse(window.localStorage.getItem('insp_LEARN_assignId')),
 
     }
   },

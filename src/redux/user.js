@@ -4,13 +4,13 @@ export const userSlice = createSlice({
     name: 'user',
     initialState: {
         user: {
-            token: JSON.parse(window.localStorage.getItem("token")),
-            id: JSON.parse(window.localStorage.getItem("id")),
-            firstName: JSON.parse(window.localStorage.getItem("firstName")),
-            lastName: JSON.parse(window.localStorage.getItem("lastName")),
-            email: JSON.parse(window.localStorage.getItem("email")),
-            phone: JSON.parse(window.localStorage.getItem("phone")),
-            role: JSON.parse(window.localStorage.getItem("role")),
+            token: JSON.parse(window.localStorage.getItem("insp_LEARN_token")),
+            id: JSON.parse(window.localStorage.getItem("insp_LEARN_id")),
+            firstName: JSON.parse(window.localStorage.getItem("insp_LEARN_firstName")),
+            lastName: JSON.parse(window.localStorage.getItem("insp_LEARN_lastName")),
+            email: JSON.parse(window.localStorage.getItem("insp_LEARN_email")),
+            phone: JSON.parse(window.localStorage.getItem("insp_LEARN_phone")),
+            role: JSON.parse(window.localStorage.getItem("insp_LEARN_role")),
         }
 
     },

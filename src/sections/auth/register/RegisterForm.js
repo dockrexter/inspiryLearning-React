@@ -18,6 +18,7 @@ import { BackEndUrl } from "../../../url";
 import Iconify from '../../../components/Iconify';
 import { fetchToken } from '../login/FCMtoken';
 import { update } from '../../../redux/user';
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -63,16 +64,16 @@ export default function RegisterForm() {
             password: values.password,
           });
           if (res) {
-            window.localStorage.setItem('token', JSON.stringify(res?.data?.data?.token));
-            window.localStorage.setItem('firstName', JSON.stringify(res?.data?.data?.firstName));
-            window.localStorage.setItem('lastName', JSON.stringify(res?.data?.data?.lastName));
-            window.localStorage.setItem('phone', JSON.stringify(res?.data?.data?.phone));
-            window.localStorage.setItem('email', JSON.stringify(res?.data?.data?.email));
-            window.localStorage.setItem('role', JSON.stringify(res?.data?.data?.role));
-            window.localStorage.setItem('id', JSON.stringify(res?.data?.data?.id));
+            window.localStorage.setItem('insp_LEARN_token', JSON.stringify(res?.data?.data?.token));
+            window.localStorage.setItem('insp_LEARN_firstName', JSON.stringify(res?.data?.data?.firstName));
+            window.localStorage.setItem('insp_LEARN_lastName', JSON.stringify(res?.data?.data?.lastName));
+            window.localStorage.setItem('insp_LEARN_phone', JSON.stringify(res?.data?.data?.phone));
+            window.localStorage.setItem('insp_LEARN_email', JSON.stringify(res?.data?.data?.email));
+            window.localStorage.setItem('insp_LEARN_role', JSON.stringify(res?.data?.data?.role));
+            window.localStorage.setItem('insp_LEARN_id', JSON.stringify(res?.data?.data?.id));
             await fetchToken(res?.data?.data?.token)
             dispatch(update(res?.data?.data));
-            dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("fbtoken"))}));
+            dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("insp_LEARN_fbtoken"))}));
             setInValid(false)
             navigate("/dashboard/user", { replace: true });
           }
@@ -85,7 +86,7 @@ export default function RegisterForm() {
         }
       }
       else {
-        alert("Password and Confirm Password must be same");
+      toast.warn("Password and Confirm Password must be same");
       }
 
     },

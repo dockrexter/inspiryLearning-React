@@ -186,6 +186,7 @@ const MessageC = ({data}) => {
     }
   }
   const handlereject= async(id)=>{
+    console.log("Message=>: ", id)
     try {
       const res = await axios.post(`${BackEndUrl}/api/payment/reject`,{
         messageId: id,

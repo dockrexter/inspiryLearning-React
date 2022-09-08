@@ -5,7 +5,7 @@ const fbTokenSlice = createSlice({
   name: 'fbToken',
   initialState: {
     fbToken: {
-      fbTokenClient: JSON.parse(window.localStorage.getItem('fbToken')),
+      fbTokenClient: JSON.parse(window.localStorage.getItem('insp_LEARN_fbToken')),
 
     }
   },

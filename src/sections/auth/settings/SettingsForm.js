@@ -13,6 +13,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import { BackEndUrl } from '../../../url';
 import { update } from '../../../redux/user';
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -47,17 +48,17 @@ export default function SettingsForm() {
           }
         )
         if (res) {
-            window.localStorage.setItem('firstName', JSON.stringify(values?.firstName));
-            window.localStorage.setItem('lastName', JSON.stringify(values?.lastName));
-            window.localStorage.setItem('phone', JSON.stringify(values?.phone));
+            window.localStorage.setItem('insp_LEARN_firstName', JSON.stringify(values?.firstName));
+            window.localStorage.setItem('insp_LEARN_lastName', JSON.stringify(values?.lastName));
+            window.localStorage.setItem('insp_LEARN_phone', JSON.stringify(values?.phone));
             dispatch(update({firstName:values?.firstName,lastName:values?.lastName, phone:values?.phone,id: user?.id, token:user?.token,email: user?.email, role:user?.role}));
-            alert("Settings Update Successfully!!")
+            toast.success("Settings Update Successfully!!")
         }
 
       }
       catch (error) {
         console.error("Setting Update Failed: ", error);
-        alert("Something Went Wrong! Please Try Again");
+        toast.error("Something Went Wrong! Please Try Again");
       }
 
 

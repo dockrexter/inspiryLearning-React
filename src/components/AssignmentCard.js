@@ -27,7 +27,7 @@ const assignmentCard = ({d}) => {
                     }}>
                         Starting Date     </Typography>
                     <Typography variant="body2" >
-                    {moment(d.created_date).format("MMM DD YYYY LT")}
+                    {moment(d?.created_date).format("MMM DD YYYY LT")}
                     </Typography>
 
                 </Stack>
@@ -40,7 +40,7 @@ const assignmentCard = ({d}) => {
                     fontSize: "20.9339px",
                     lineHeight: "27px"
                 }}>
-                    {d.subject}
+                    {d?.subject}
                 </Typography>
                 {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '30%', wordWrap: "break-word", alignItems: "center"}}>
                         <Typography variant="body2" sx={{
@@ -50,7 +50,7 @@ const assignmentCard = ({d}) => {
                         fontSize: "17.2385px",
                         lineHeight: "27px"
                     }}>Assignee</Typography>
-                        <Typography variant="caption" >{d.assignee} </Typography>
+                        <Typography variant="caption" >{d?.assignee} </Typography>
                     </Box> : <></>}
 
             </Grid>
@@ -67,20 +67,20 @@ const assignmentCard = ({d}) => {
                         Due Date
                     </Typography>
                     <Typography variant="body2" >
-                    {moment(d.deadline).format("MMM DD YYYY LT")}
+                    {moment(d?.deadline).format("MMM DD YYYY LT")}
                     </Typography>
                 </Stack>
             </Grid>
             <Grid item xs={4} sx={{ display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
                 <Typography variant="caption" >
-                    {d.status == 0? "Work Completed" : d.status == 1 ? "Work In Progress" : d.status == 2 ? "New Request" : d.status == 3 ? "Under Review" : d.status == 4 ? "Pending Payment" : "Undefined Status"}
+                    {d?.status == 0? "Work Completed" : d?.status == 1 ? "Work In Progress" : d?.status == 2 ? "New Request" : d?.status == 3 ? "Under Review" : d?.status == 4 ? "Pending Payment" : "Undefined Status"}
                 </Typography>
             </Grid>
 
             <Grid item xs={4} sx={{
                 display: "flex", alignItems: "flex-end", justifyContent: "flex-end", 
             }}>
-                {d.status === 0 ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
+                {d?.status === 0 ? <CheckCircleIcon sx={{ color: "#00e676"}}/> :  <Checkbox disabled icon={<CircleUnchecked  />}/>}
             </Grid>
         </Grid>
     </Card>

@@ -11,6 +11,7 @@ import { LoadingButton } from '@mui/lab';
 import LockIcon from '@mui/icons-material/Lock';
 import Iconify from '../../../components/Iconify';
 import { BackEndUrl } from "../../../url";
+import { toast } from 'react-toastify';
 // ----------------------------------------------------------------------
 
 export default function ChangePasswordForm() {
@@ -59,7 +60,7 @@ export default function ChangePasswordForm() {
           );
           if (res.data.status === "ok") {
             setInValid(false);
-            alert("Password changed successfully");
+            toast.success("Password changed successfully");
             navigate("/", { replace: true });
 
           }
@@ -69,7 +70,7 @@ export default function ChangePasswordForm() {
 
         }
         else {
-          alert("Password and confirm password does not match");
+          toast.error("Password and confirm password does not match");
         }
 
       }

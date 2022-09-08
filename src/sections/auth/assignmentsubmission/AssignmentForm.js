@@ -16,6 +16,7 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { BackEndUrl } from "../../../url";
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -28,15 +29,8 @@ export default function AssignmentForm() {
   const [date, setDate] = useState(new Date());
   const { user } = useSelector(state => state.user);
   const [fileList, setFileList] = useState([]);
-
-
-
-  // const getUploadParams = () => {
-  //   return { url: `${BackEndUrl}/api/upload` }
-  // }
-
   const handleChangeStatus = ({ meta }, status) => {
-    {status === 'rejected_file_type' ? alert("This File Type is not Allowed"): null}
+    {status === 'rejected_file_type' ? toast.error("This File Type is not Allowed"): null}
   }
 
   const handleSubmitDrop = (files, allFiles) => {
@@ -46,12 +40,6 @@ export default function AssignmentForm() {
     allFiles.forEach(f => f.remove())
   }
 
-  // const LoginSchema = Yup.object().shape({
-  //   firstName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('First name required'),
-  //   lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-  //   phone: Yup.string().required('Phone is required'),
-
-  // });
 
   const formik = useFormik({
     initialValues: {
@@ -83,9 +71,11 @@ export default function AssignmentForm() {
               token: user.token
             }
           });
-        alert("Assignment Created Successfully!!")
+          if(res){
+        toast.success("Assignment Created Successfully!!")
         setFileList([]);
         navigate('/dashboard/user', { replace: true });
+          }
 
       }
       catch (error) {

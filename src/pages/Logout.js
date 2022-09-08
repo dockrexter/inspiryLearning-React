@@ -9,12 +9,12 @@ import { useState } from "react"
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { BackEndUrl } from "../url";
-import { clearToken } from 'src/redux/fbToken';
+import fbToken, { clearToken } from 'src/redux/fbToken';
 import { clearAssignment } from 'src/redux/assignments';
 
 
 const Logout = () => {
-  const { fbToken } = useSelector(state => state.fbToken);
+  const  fbToken = JSON.parse(window.localStorage.getItem('insp_LEARN_fbToken')) 
   const { user } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Logout = () => {
  const removeToken = async() => {
     try {
       const res = await axios.post(`${BackEndUrl}/api/token/remove`, {
-        token: fbToken.fbTokenClient,
+        token: fbToken
       },
       {
         headers: {
@@ -35,22 +35,25 @@ const Logout = () => {
         }
       }
       ); 
+      if(res){
+       // console.log("token removed Successfully=>",res)
+      }
     } catch (error) {
-      console.error('Error Removing Token: ', error);
+      console.error(error);
       
     }
  }
   const handleLogout = async(e) => {
-    window.localStorage.removeItem('token');
-    window.localStorage.removeItem('id');
-    window.localStorage.removeItem('lastName');
-    window.localStorage.removeItem('phone');
-    window.localStorage.removeItem('email');
-    window.localStorage.removeItem('role');
-    window.localStorage.removeItem('firstName');
-    window.localStorage.removeItem('deadline');
-    window.localStorage.removeItem('assignId');
-    window.localStorage.removeItem('fbToken');
+    window.localStorage.removeItem('insp_LEARN_token');
+    window.localStorage.removeItem('insp_LEARN_id');
+    window.localStorage.removeItem('insp_LEARN_lastName');
+    window.localStorage.removeItem('insp_LEARN_phone');
+    window.localStorage.removeItem('insp_LEARN_email');
+    window.localStorage.removeItem('insp_LEARN_role');
+    window.localStorage.removeItem('insp_LEARN_firstName');
+    window.localStorage.removeItem('insp_LEARN_deadline');
+    window.localStorage.removeItem('insp_LEARN_assignId');
+    window.localStorage.removeItem('insp_LEARN_fbToken');
     removeToken();
     dispatch(clear());
     dispatch(clearToken());
@@ -68,12 +71,10 @@ const Logout = () => {
           <Typography>LOGOUT</Typography>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
             <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center'}}>
             <LogoutIcon/>
             Are you sure you want to logout?
             </Box>
-          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant='contained' onClick={handleClose}>Cancle</Button>

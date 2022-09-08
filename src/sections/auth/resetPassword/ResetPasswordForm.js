@@ -10,6 +10,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import Iconify from '../../../components/Iconify';
 import axios from 'axios';
 import { BackEndUrl } from 'src/url';
+import { toast } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,7 @@ export default function ResetPasswordForm() {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [searchToken, setSearchToken] = useSearchParams();
   const token = searchToken.get("token");
-  console.log("Token From Link",token);
+  //console.log("Token From Link",token);
 
 
   const ResetPassSchema = Yup.object().shape({
@@ -44,11 +45,11 @@ export default function ResetPasswordForm() {
             }
               );
               if (res) {
-                alert("Password Reset Successfully\n Please Login")
+               toast.success("Password Reset Successfully\n Please Login")
     
             }
         } catch (error) {
-            alert("Something Went Wrong!! Please Try Again")
+            toast.error("Something Went Wrong!! Please Try Again")
             console.error("Error in Reseting password: ", error);       
         } 
           navigate('/dashboard', { replace: true });

@@ -38,8 +38,11 @@ export default function MenuPopover({ children, sx, ...other }) {
         sx: {
           p: 1,
           width: 200,
-          overflow: 'inherit',
+          overflowY: 'scroll',
           ...sx,
+          '&::-webkit-scrollbar': {
+            display: "none",
+          }
         },
       }}
       {...other}

@@ -81,8 +81,7 @@ export default function AdminHome() {
             }
           },
           );
-          if (res) {
-            console.log(res)
+          if (res.status === 200) {
             setAssignmentsDue(res.data.data);  
         }
         }
@@ -97,8 +96,9 @@ export default function AdminHome() {
         return dates.find((item) => item.getTime() === dateTime);
       };
       const renderPickerDay = (date, selectedDates, pickersDayProps) => {
+       // console.log("date=>",date)
         if (!value) {
-          return <PickersDay {...pickersDayProps} />;
+          return <PickersDay {...pickersDayProps} key={date}/>;
         }
       const selected = findDate(value, date); 
   
@@ -108,6 +108,7 @@ export default function AdminHome() {
           {...pickersDayProps}
           disableMargin
           selected={selected}
+          key={date}
         />
         </>
       );
@@ -213,9 +214,12 @@ export default function AdminHome() {
                                 {loading ?  <Box sx={{display: "flex", justifyContent: "space-around", height: "50%", width: "50%", marginTop: 3 }}>
                                   <CircularProgress size={80} />
                                 </Box>
-                                 : <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60%", width: "60%",      margin: "auto" }}>
+                                 : 
+                                 <Grid item xs={12}><Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30%", width: "30%",      margin: "auto" }}>
                                     <img src="/static/nodata.png" alt="No data" />
-                                </Box>}
+                                </Box>
+                                </Grid>
+                                }
                                 </>}
                         </Grid>
                     </Container>
