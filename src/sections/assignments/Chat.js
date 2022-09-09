@@ -72,7 +72,7 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io(BackEndUrl)
+    const socket = io(BackEndUrl,{transports: ['websocket']})
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null); 
 	const [isFilePicked, setIsFilePicked] = useState(false);
@@ -82,9 +82,6 @@ const FilePreviewInfo = styled(Box)(({theme})=>({
     const [attachOpen, setAttachOpen]=useState(false);
     const [fileList, setFileList] = useState([]);
     const [stat, setStat] = useState({message: '', userId:'', });
-    let messageId = 0;
-
-
     useEffect(
 		() => {
             console.log("Connected")
