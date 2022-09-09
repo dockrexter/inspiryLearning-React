@@ -1,4 +1,22 @@
-import { Grid, Container, Paper,styled , Typography, TextField, Stack,DialogActions, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, FormControl, InputLabel, Select, CircularProgress, OutlinedInput} from '@mui/material';
+import { Grid,
+  Container,
+  Paper,
+  styled , 
+  Typography, 
+  TextField, 
+  Stack,
+  DialogActions, 
+  Button, 
+  Box, 
+  IconButton, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  CircularProgress, 
+  OutlinedInput} from '@mui/material';
 import { useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import Chat from 'src/sections/assignments/Chat';
@@ -69,14 +87,17 @@ export default function AdminAssignmentDetails() {
 
 
     const handleDownloadfile = async(url, filename) => {
+      const toastid = toast.loading("Please wait...")
       try {
       const res = await axios.get(`${BackEndUrl}${url}`, {
         responseType: 'blob',
       });
       if(res) {
         fileDownload(res.data, filename)
+        toast.update(toastid, {isLoading: false, autoClose:10});
       }
     } catch (error) {
+      toast.update(toastid, {render: "Can't get file right now", type: "error",isLoading: false})
       console.error("ATTACHMENT DOWNLOAD ERROR: ", error);    
     }
 
@@ -228,11 +249,12 @@ export default function AdminAssignmentDetails() {
 
 
     return (
+      <>
+      {loading ? <Box sx={{display: "flex"}}>
+                                  <CircularProgress size={100} />
+                                </Box> :
         <DashboardPage title="Dashboard" style={{
             marginTop: "2px", borderTop: "1.02801px solid #C0C0C2"}}>
-              {loading ? <Box sx={{display: "flex", justifyContent: "space-around",margin:"auto" }}>
-                                  <CircularProgress size={150} />
-                                </Box> :
             <Grid container sx={{ width: "100%",height: "80vh"}} >
             <Grid item xs={12} md={6} sx={{
                     width: "100%",
@@ -308,7 +330,7 @@ export default function AdminAssignmentDetails() {
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
                                 <Stack direction="column" spacing={2}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
-                                        Discription      
+                                    Description      
                                     </Typography>
                                     <Typography variant="body2" sx={{ color: "#202323", opacity: 0.6 }}>
                                         {assignData?.summary} 
@@ -352,7 +374,7 @@ export default function AdminAssignmentDetails() {
                     <Chat/>
                 </ChatStyle>
             </Grid >
-          }
-        </DashboardPage>
+        </DashboardPage>}
+      </>
     );
 }

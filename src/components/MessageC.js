@@ -7,6 +7,7 @@ import { ImageConfig } from '../ImageConfig';
 import { BackEndUrl } from 'src/url';
 import axios from 'axios';
 import fileDownload from 'js-file-download'
+import { toast } from 'react-toastify';
 
 //.............CHAT STYLING............//
 const AttachmentBoxRight = styled(Box)(({theme})=> ({
@@ -145,21 +146,25 @@ const MessageC = ({data}) => {
 
 
   const handleDownloadfile = async(url, filename) => {
+    const toastid = toast.loading("Please wait...")
     try {
       
     const res = await axios.get(`${BackEndUrl}${url}`, {
       responseType: 'blob',
     });
     if(res) {
+      toast.update(toastid, {isLoading: false,autoClose:10});
       fileDownload(res.data, filename)
     }
   } catch (error) {
+    toast.update(toastid, {render: "Can't get file right now", type: "error",isLoading: false})
     console.error("ATTACHMENT DOWNLOAD ERROR: ", error);    
   }
  }
 
 
   const handlePay = async(amount, message, id) =>{
+    const toastid = toast.loading("Please wait...")
     try {
       const res = await axios.post(`${BackEndUrl}/api/payment/pay`, {
         itemName: "Assignment Payment",
@@ -177,16 +182,18 @@ const MessageC = ({data}) => {
   },
       );
       if (res){
+        toast.update(toastid, {isLoading: false, autoClose: 10});
         window.open(res.data.data.url, '_blank').focus();
 
       }
     } catch (error) {
       console.error("Something went wrong: ", error);
+      toast.update(toastid, { render: "Can't get Payment link\nRight Now", type: "error", isLoading: false, autoClose: 1000});
       
     }
   }
   const handlereject= async(id)=>{
-    console.log("Message=>: ", id)
+    const toastid = toast.loading("Please wait...");
     try {
       const res = await axios.post(`${BackEndUrl}/api/payment/reject`,{
         messageId: id,
@@ -197,10 +204,12 @@ const MessageC = ({data}) => {
         }
       });
       if (res){
+        toast.update(toastid, {isLoading: false, autoClose: 10});
        //  console.log("Rejected Successfully: ",res)
       }
       
     } catch (error) {
+      toast.update(toastid, { render: "Can't perform action right now\nTry Again", type: "error", isLoading: false, autoClose: 1000, });
       console.error("Rejection Error: ", error)
     }
 
@@ -280,7 +289,6 @@ const MessageC = ({data}) => {
     data.type === 1 && user.id !== data.userId
     ? 
     <OfferBoxLeft>
-      {console.log("Offer Data: ", data)}
       <AttachmentText>Offer</AttachmentText>
        <Box sx={{display: "flex", alignItems:"center"}}>
                       <OfferAmmount variant='body2'>${data.amount}</OfferAmmount>

@@ -100,7 +100,7 @@ export default function Login() {
                         <Typography variant="h2" gutterBottom sx={{
                             textAlign: "center", color: "#4F433C", lineHeight: "90px"
                         }}>
-                            Forgot Password?
+                            Forget Password?
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom sx={{
                             textAlign: "center",

@@ -42,18 +42,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const [ pathname,setpathName ] = useState(useLocation());
 
   const isDesktop = useResponsive('up', 'lg');
-
-  // useEffect(() => {
-  //   if (isOpenSidebar) {
-  //     onCloseSidebar();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [pathname]);
-
-  // useEffect(()=>{
-
-  // },[])
-
   const renderContent = (
     <Scrollbar
       sx={{

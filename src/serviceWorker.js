@@ -133,3 +133,7 @@ export function unregister() {
       });
   }
 }
+
+
+//"react-apexcharts": "^1.4.0",
+//"apexcharts": "^3.35.0",

@@ -15,26 +15,12 @@ import reportWebVitals from './reportWebVitals';
 
 import store from './redux/store';
 
-// ----------------------------------------------------------------------
-
-
-// const config = {
-//   apiKey: "AIzaSyBS8ZbiyC2xloh_FTIOPkYbxfGwrQztPdg00",
-//   authDomain: "inspire-learning-9112e.firebaseapp.com",
-//   projectId: "inspire-learning-9112e",
-//   storageBucket: "inspire-learning-9112e.appspot.com",
-//   messagingSenderId: "593350271833",
-//   appId: "1:593350271833:web:3404acfcfd09637fd9a248",
-//   measurementId: "G-LVG49WZNPG"
-// }
-
-// firebase.initializeApp(config);
-
+// ---------------------------------------------------------------------- //
 ReactDOM.render(
   <Provider store={store}>
     <HelmetProvider>
       <BrowserRouter>
-       <App /*firebase={firebase} *//>
+       <App/>
       </BrowserRouter>
     </HelmetProvider>
   </Provider>,

@@ -23,9 +23,9 @@ import { toast } from 'react-toastify';
 export default function AssignmentForm() {
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [showPasswordOld, setShowPasswordOld] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  // const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [date, setDate] = useState(new Date());
   const { user } = useSelector(state => state.user);
   const [fileList, setFileList] = useState([]);

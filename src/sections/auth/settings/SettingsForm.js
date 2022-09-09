@@ -1,6 +1,3 @@
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -18,10 +15,7 @@ import { toast } from 'react-toastify';
 // ----------------------------------------------------------------------
 
 export default function SettingsForm() {
-  const navigate = useNavigate();
-
   const dispatch = useDispatch();
-
   const { user } = useSelector(
     state => state.user
   );
@@ -52,7 +46,7 @@ export default function SettingsForm() {
             window.localStorage.setItem('insp_LEARN_lastName', JSON.stringify(values?.lastName));
             window.localStorage.setItem('insp_LEARN_phone', JSON.stringify(values?.phone));
             dispatch(update({firstName:values?.firstName,lastName:values?.lastName, phone:values?.phone,id: user?.id, token:user?.token,email: user?.email, role:user?.role}));
-            toast.success("Settings Update Successfully!!")
+            toast.success("Settings Update Successfully!!", {autoClose:500})
         }
 
       }

@@ -64,6 +64,8 @@ const Logout = () => {
     <Page title="Logout" sx={{width: "100%", height: "100%"}}>
         <Container sx={{ width: "100%"}}>
       <Dialog
+      fullWidth
+      maxWidth="sm"
         open={open}
         onClose={handleClose}
       >
@@ -77,7 +79,7 @@ const Logout = () => {
             </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant='contained' onClick={handleClose}>Cancle</Button>
+          <Button variant='contained' onClick={handleClose}>Cancel</Button>
           <Button variant='contained' onClick={handleLogout}>
             Logout
           </Button>

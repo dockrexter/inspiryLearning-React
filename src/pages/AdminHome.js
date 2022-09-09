@@ -131,9 +131,15 @@ export default function AdminHome() {
       }, [month, year]);
 
     return (
+      <>
+      {loading ?  
+          <Box sx={{display: "flex"}}>
+            <CircularProgress size={100}/>
+          </Box> :
       <DashboardPage title="Dashboard" style={{
         marginTop: "2px", borderTop: "1.02801px solid #C0C0C2"}}>
-          <Grid container sx={{ width: "100%" }}>
+          
+            <Grid container sx={{ width: "100%" }}>
               <Grid item xs={12} sx={{
                     borderRight: "1.02801px solid #C0C0C2",
                     paddingTop: 2,
@@ -225,6 +231,7 @@ export default function AdminHome() {
                     </Container>
                   </Grid >
               </Grid>
-            </DashboardPage>
+            </DashboardPage>}
+          </>
     );
 }
