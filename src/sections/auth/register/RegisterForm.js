@@ -54,12 +54,12 @@ export default function RegisterForm() {
     onSubmit: async (values) => {
       if (values.password === values.confirmPassword) {
         try {
-         // Api CAll for registration 
+          // Api CAll for registration 
           const res = await axios.post(`${BackEndUrl}/api/users/register`, {
             firstName: values.firstName,
             lastName: values.lastName,
             email: values.email,
-            role: "admin",
+            role: "user",
             phone: `${values.phone}`,
             password: values.password,
           });
@@ -73,7 +73,7 @@ export default function RegisterForm() {
             window.localStorage.setItem('insp_LEARN_id', JSON.stringify(res?.data?.data?.id));
             await fetchToken(res?.data?.data?.token)
             dispatch(update(res?.data?.data));
-            dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("insp_LEARN_fbtoken"))}));
+            dispatch(updateToken({ fbTokenClient: JSON.parse(window.localStorage.getItem("insp_LEARN_fbtoken")) }));
             setInValid(false)
             navigate("/dashboard/user", { replace: true });
           }
@@ -82,11 +82,11 @@ export default function RegisterForm() {
           }
         } catch (error) {
           setInValid(true);
-          console.error("Error in Registration",error);
+          console.error("Error in Registration", error);
         }
       }
       else {
-      toast.warn("Password and Confirm Password must be same");
+        toast.warn("Password and Confirm Password must be same");
       }
 
     },
