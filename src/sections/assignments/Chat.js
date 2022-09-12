@@ -74,8 +74,6 @@ export default function Chat() {
     const { assignment } = useSelector(state => state.assignment);
     const socket = io("https://inspirylearning.com", {
         'path': '/newSocket',
-        autoConnect: false,
-        transports: ['websocket'],
     });
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null);
