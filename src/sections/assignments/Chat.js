@@ -72,7 +72,7 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io('http://localhost:4000', {     // note changed URL here
+    const socket = io('https://inspirylearning.com/socket', {     // note changed URL here
         path: '/socket.io',
         autoConnect: false,
         transports: ['websocket'],
