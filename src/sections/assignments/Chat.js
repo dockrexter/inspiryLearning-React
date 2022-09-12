@@ -72,11 +72,7 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io('https://inspirylearning.com/socket', {     // note changed URL here
-        path: '/socket.io',
-        autoConnect: false,
-        transports: ['websocket'],
-    });
+    const socket = io('http://inspirylearning.com:4000');
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null);
     const [isFilePicked, setIsFilePicked] = useState(false);
