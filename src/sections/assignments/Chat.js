@@ -72,7 +72,11 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("http://localhost:8000/socket")
+    const socket = io('http://localhost:4000', {     // note changed URL here
+        path: '/socket.io',
+        autoConnect: false,
+        transports: ['websocket'],
+    });
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null);
     const [isFilePicked, setIsFilePicked] = useState(false);
