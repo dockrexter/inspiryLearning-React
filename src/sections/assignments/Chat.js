@@ -92,7 +92,9 @@ export default function Chat() {
                         assignment_id: assignment.id,
                     })
 
-                });
+                }).catch(err => {
+                    console.log(err);
+                })
             }
             return () => {
                 console.log("Disconnected")
