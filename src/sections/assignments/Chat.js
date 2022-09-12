@@ -72,10 +72,8 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("wss://inspirylearning.com", {
+    const socket = io("https://inspirylearning.com", {
         'path': '/newSocket',
-        transports: ["websocket"],
-        autoConnect: false,
     });
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null);
