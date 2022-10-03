@@ -22,23 +22,22 @@ import { toast } from 'react-toastify';
 
 export default function AssignmentForm() {
   const navigate = useNavigate();
-
-  // const [showPassword, setShowPassword] = useState(false);
-  // const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  // const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [date, setDate] = useState(new Date());
   const { user } = useSelector(state => state.user);
   const [fileList, setFileList] = useState([]);
-  const handleChangeStatus = ({ meta }, status) => {
-    {status === 'rejected_file_type' ? toast.error("This File Type is not Allowed"): null}
+
+
+
+  const handleChangeStatus = ({ meta }, status, fileWithMeta) => {
+    console.log("DATA ON CHANGE",fileWithMeta);
+    {status === 'rejected_file_type' ? toast.error("This File Type is not Allowed"): setFileList(fileWithMeta)}
   }
 
-  const handleSubmitDrop = (files, allFiles) => {
-    for(let i = 0; i < files.length; i++){
-      setFileList([...fileList, files[i].file]);
-    }
-    allFiles.forEach(f => f.remove())
-  }
+  // const handleSubmitDrop = (allFiles) => {
+    
+  //   setFileList(allFiles);
+  //   allFiles.forEach(f => f.remove())
+  // }
 
 
   const formik = useFormik({
@@ -51,12 +50,13 @@ export default function AssignmentForm() {
     },
     onSubmit: async (values) => {
         const formData = new FormData();
+        console.log("FileList=>",fileList);
         if(fileList.length > 0){
           for(var i=0; i<fileList.length; i++){
           formData.append( 
               "files", 
-              fileList[i], 
-              fileList[i].name 
+              fileList[i].file, 
+              fileList[i].file.name 
             );
           }
         }
@@ -147,7 +147,6 @@ export default function AssignmentForm() {
               <Dropzone
                 // getUploadParams={getUploadParams}
                 onChangeStatus={handleChangeStatus}
-                onSubmit={handleSubmitDrop}
                 styles={{ dropzone: { maxHeight: 250 } }}
                 accept="image/*, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, text/plain, application/x-zip-compressed, application/vnd.openxmlformats-officedocument.wordprocessingml.template, application/vnd.ms-powerpoint.template, application/vnd.openxmlformats-officedocument.spreadsheetml.template, application/vnd.ms-excel.template, application/vnd.openxmlformats-officedocument.presentationml.template"
               />

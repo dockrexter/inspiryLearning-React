@@ -117,6 +117,7 @@ export default function AdminAssignmentDetails() {
         },
         );
         if (res) {
+          console.log("Attach=>",res)
           setAssignAttach(res.data.data);
           setLoadingAttach(false);
       }

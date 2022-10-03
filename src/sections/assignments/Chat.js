@@ -269,7 +269,7 @@ export default function Chat() {
         }}>
 
 
-            <Box sx={{ width: "100%", height: "2vmax", background: "#38a585" }}></Box>
+            <Box sx={{ width: "100%", height: "2vmax", background: "#38a585", textAlign: "center", color: "white", padding:'0.1rem' }}>{user.role == 'admin' ? "Chat with User" : "Chat With Professional"}</Box>
 
             {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
 

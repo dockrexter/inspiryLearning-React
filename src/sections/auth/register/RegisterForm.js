@@ -59,7 +59,7 @@ export default function RegisterForm() {
             firstName: values.firstName,
             lastName: values.lastName,
             email: values.email,
-            role: "admin",
+            role: "user",
             phone: `${values.phone}`,
             password: values.password,
           });
