@@ -124,7 +124,7 @@ export default function AssignmentForm() {
                   label="Due Date"
                   size="small"
                   value={date}
-
+                  minDate={new Date()}
                   onChange={(newValue) => {
                     setDate(newValue);
                   }}
