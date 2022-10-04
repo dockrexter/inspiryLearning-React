@@ -72,7 +72,7 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("https://inspirylearning.com", {
+    const socket = io("http://localhost:8080", {
         'path': '/newSocket',
     });
     const socketRef = useRef(socket);
@@ -110,7 +110,14 @@ export default function Chat() {
         socketRef.current.on("message", (data) => {
             setMessageT([...messageT, data]);
         })
-    }, [messageT])
+        socketRef.current.on("paymentUpdate", (newData) => {
+            setMessageT(newData);
+        })
+    },[messageT])
+
+    const paymentStaus = () =>{
+        socketRef.current.emit("paymentStatus");
+    }
 
     //................Payment Popup handles....................//
     const handleClickOpen = () => {
@@ -275,7 +282,7 @@ export default function Chat() {
 
             <MainBox>
                 <ChatBoxT>
-                    {messageT ? messageT.map((item, i) => <MessageC key={i} data={item} />) : null}
+                    {messageT ? messageT.map((item, i) => <MessageC key={i} data={item} paymentStatus={paymentStaus}/>) : null}
                 </ChatBoxT>
 
             </MainBox>

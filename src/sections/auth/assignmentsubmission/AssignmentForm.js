@@ -29,8 +29,12 @@ export default function AssignmentForm() {
 
 
   const handleChangeStatus = ({ meta }, status, fileWithMeta) => {
-    console.log("DATA ON CHANGE",fileWithMeta);
-    {status === 'rejected_file_type' ? toast.error("This File Type is not Allowed"): setFileList(fileWithMeta)}
+    if(status === 'rejected_file_type'){
+    toast.error("This File Type is not Allowed")
+  }else if(status === 'error_file_size'){
+    toast.error("File Size too large")
+  }else{
+      setFileList(fileWithMeta)}
   }
 
   // const handleSubmitDrop = (allFiles) => {
@@ -149,6 +153,7 @@ export default function AssignmentForm() {
                 onChangeStatus={handleChangeStatus}
                 styles={{ dropzone: { maxHeight: 250 } }}
                 accept="image/*, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, text/plain, application/x-zip-compressed, application/vnd.openxmlformats-officedocument.wordprocessingml.template, application/vnd.ms-powerpoint.template, application/vnd.openxmlformats-officedocument.spreadsheetml.template, application/vnd.ms-excel.template, application/vnd.openxmlformats-officedocument.presentationml.template"
+                maxSizeBytes={10485760}
               />
             </Stack>
           </Grid>

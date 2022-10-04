@@ -5,8 +5,9 @@ import axios from 'axios';
 import { BackEndUrl } from 'src/url';
 import { useSelector } from 'react-redux';
 
-const DialogReject = ({open, close, id}) => {
+const DialogReject = ({open, close, id, paymentStatus}) => {
     const { user } = useSelector(state => state.user);
+
 
    const handlePaymentReject =async() =>{
     const toastid = toast.loading("Please wait...");
@@ -22,6 +23,8 @@ const DialogReject = ({open, close, id}) => {
       if (res){
         toast.update(toastid, {isLoading: false, autoClose: 10});
         close();
+        paymentStatus();
+        window.location.reload(false);
        //  console.log("Rejected Successfully: ",res)
       }
       

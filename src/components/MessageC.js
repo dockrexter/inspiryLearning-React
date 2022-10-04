@@ -10,6 +10,7 @@ import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import DialogReject from './DialogReject';
+import { useEffect } from 'react';
 
 //.............CHAT STYLING............//
 const AttachmentBoxRight = styled(Box)(({theme})=> ({
@@ -142,7 +143,7 @@ const OfferAmmount = styled(Typography)(({theme})=>({
 }))
 //.................MAIN FUCTION..............//
 
-const MessageC = ({data}) => {
+const MessageC = ({data, paymentStatus}) => {
   const { user } = useSelector(state => state.user);
   const {assignment} = useSelector(state => state.assignment);
   const [openRecject, setOpenReject] = useState(false);
@@ -188,6 +189,7 @@ const MessageC = ({data}) => {
       if (res){
         toast.update(toastid, {isLoading: false, autoClose: 10});
         window.open(res.data.data.url, '_blank').focus();
+        paymentStaus();
 
       }
     } catch (error) {
@@ -203,28 +205,6 @@ const MessageC = ({data}) => {
   const handlereject= async(id)=>{
     setOpenReject(true);
     setMessageIdR(id);
-    console.log("Testing I am in")
-
-    // const toastid = toast.loading("Please wait...");
-    // try {
-    //   const res = await axios.post(`${BackEndUrl}/api/payment/reject`,{
-    //     messageId: id,
-    //   },
-    //   {
-    //     headers: {
-    //       token: user.token
-    //     }
-    //   });
-    //   if (res){
-    //     toast.update(toastid, {isLoading: false, autoClose: 10});
-    //    //  console.log("Rejected Successfully: ",res)
-    //   }
-      
-    // } catch (error) {
-    //   toast.update(toastid, { render: "Can't perform action right now\nTry Again", type: "error", isLoading: false, autoClose: 1000, });
-    //   console.error("Rejection Error: ", error)
-    // }
-
   }
   return (
     <>
@@ -316,7 +296,7 @@ const MessageC = ({data}) => {
       <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
-    <DialogReject open={openRecject} close={handleRecjectClose} id={messageIdR}/>
+    <DialogReject open={openRecject} close={handleRecjectClose} id={messageIdR} paymentStatus={paymentStatus}/>
     </>
   )
 }
