@@ -57,7 +57,7 @@ export default function NotificationsPopover() {
         }
       })
       if(res.status === 200){
-         console.log("Notifications=>", res)
+        // console.log("Notifications=>", res)
         setTotalUnRead(res?.data?.data?.filter((item) => item.isRead === false).length)
       }
     } catch (error) {
@@ -87,7 +87,7 @@ export default function NotificationsPopover() {
     }
   }
   onMessageListener().then(payload => {
-    console.log("ON MASSAGE BG: ", payload)
+    // console.log("ON MASSAGE BG: ", payload)
     // setdbnotifications([...dbNotificatons, {id: payload.messageId, title: payload?.data?.title, message: payload?.data?.body, avatar: null, createdAt: new Date(), isRead: false,assignmentID: payload?.data?.assignmentID}]);
     setTotalUnRead(totalUnRead + 1);
     toast.info(`${payload?.data?.title} \n ${payload?.data?.body}`);
