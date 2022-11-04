@@ -86,14 +86,6 @@ import { Grid,
       const [assigneSum, setAssigneSum] = useState("");
       const [assignAttach, setAssignAttach] = useState([]);
       const [searchParams, setSearchParams] = useSearchParams();
-      useEffect(()=>{
-        const id = searchParams.get("id");
-        console.log("PARAMS SEARCH", id);
-        window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
-        dispatch(update({id}));
-        
-      },[]);
-      
   
       const handleDownloadfile = async(url, filename) => {
         const toastid = toast.loading("Please wait...")
@@ -114,10 +106,10 @@ import { Grid,
      }
   
   
-      const handleAttachments= async() =>{
+      const handleAttachments= async(id) =>{
         try {
         const res = await axios.post(`${BackEndUrl}/api/assignments/getAttachments`, {
-            assignment_id: assignment.id,
+            assignment_id: id,
           },
           {
             headers: {
@@ -141,7 +133,7 @@ import { Grid,
         setFinish(false);
               try {
               const res = await axios.post(`${BackEndUrl}/api/assignments/updateAssignee`, {
-                  assignment_id: assignment.id,
+                  assignment_id: id,
                   assignee: assigneSum,
                 },
                 {
@@ -174,10 +166,10 @@ import { Grid,
   
     //..................Api Call...................//
   
-      const getAssignmentbyID = async () => {
+      const getAssignmentbyID = async (id) => {
         try {
             const res = await axios.post(`${BackEndUrl}/api/assignments/getAssignmentById`, {
-            assignment_id: assignment?.id
+            assignment_id: id
           },
           {
             headers: {
@@ -219,7 +211,7 @@ import { Grid,
           setOpen(false);
               try {
                   const res = await axios.post(`${BackEndUrl}/api/assignments/updateStatus`, {
-                      assignment_id: assignment.id, 
+                      assignment_id: id, 
                       status: status
                   },
                   {
@@ -252,8 +244,12 @@ import { Grid,
   
   
       useEffect(() => {
-          handleAttachments();
-          getAssignmentbyID();
+        var id = searchParams.get("id");
+        console.log("PARAMS SEARCH", id);
+        window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
+        dispatch(update({id}));
+        handleAttachments(id);
+        getAssignmentbyID(id);
       },[finish]);
   
   
