@@ -86,10 +86,14 @@ import { Grid,
       const [assigneSum, setAssigneSum] = useState("");
       const [assignAttach, setAssignAttach] = useState([]);
       const [searchParams, setSearchParams] = useSearchParams();
-      const id = searchParams.get("id");
-      console.log("PARAMS SEARCH", id);
-      window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
-      dispatch(update({id}));
+      useEffect(()=>{
+        const id = searchParams.get("id");
+        console.log("PARAMS SEARCH", id);
+        window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
+        dispatch(update({id}));
+        
+      },[]);
+      
   
       const handleDownloadfile = async(url, filename) => {
         const toastid = toast.loading("Please wait...")
