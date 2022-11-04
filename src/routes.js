@@ -25,6 +25,7 @@ import Logout from './pages/Logout';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PaswordReset from './pages/PassWordReset';
+import AssignmentDetailsNotify from './pages/AssignmentDetailsNotify';
 let decoded="";
 // ----------------------------------------------------------------------  //
 
@@ -48,6 +49,7 @@ export default function Router() {
         { path: 'accountsettings', element: user?.token ? <Settings /> : <Navigate to="/home" replace /> },
         { path: 'assignmentform', element: user?.token && decoded.role === "user" ? <Assignment /> : <Navigate to="/home" replace /> },
         { path: 'assigmentdetails', element: user?.token ? <AdminAssignmentDetails /> : <Navigate to="/home" replace /> },
+        { path: 'assigmentdetails/:id', element: user?.token ? <AssignmentDetailsNotify /> : <Navigate to="/home" replace /> },
         { path: 'logout', element: user?.token ? <Logout/> : <Navigate to="/home" replace />},
         { path: 'newpassword', element: user?.token? <Password/> : <Navigate to="/home" replace />},
 
