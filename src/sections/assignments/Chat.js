@@ -72,7 +72,7 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io("https://inspirylearning.com", {
+    const socket = io(BackEndUrl, {
         'path': '/newSocket',
     });
     const socketRef = useRef(socket);

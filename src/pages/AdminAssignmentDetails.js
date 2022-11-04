@@ -286,7 +286,7 @@ export default function AdminAssignmentDetails() {
                                                         onChange={handleChange}
                                                         input={<OutlinedInput label="Status" id="dialog" />}>
                                                         <option aria-label="None" value="" />
-                                                        <option value={2}>New Request</option>
+                                                        {/* <option value={2} disabled>New Request</option> */}
                                                         <option value={3}>Under Review</option>
                                                         <option value={4}>Pending Payment</option>
                                                         <option value={1}>Work in Progress</option>

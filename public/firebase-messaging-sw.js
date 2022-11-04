@@ -18,13 +18,27 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
-  //console.log('Received background message ', payload);
-
+ // console.log('Received background message ', payload);
   const notificationTitle = payload?.data?.title;
   const notificationOptions = {
     body: payload?.data?.body,
+    data:{
+      clickAction: `https:inspirylearning.com//dashboard/assigmentdetails/:id=${payload?.data?.assignmentId}`
+    }
   };
+
 
   self.registration.showNotification(notificationTitle,
     notificationOptions);
+
+    
 });
+
+self.addEventListener('notificationclick', function(event){
+  var click_action = event.notification.data.clickAction;
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(click_action)
+  );
+});
+

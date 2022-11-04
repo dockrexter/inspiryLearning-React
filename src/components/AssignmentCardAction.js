@@ -16,6 +16,7 @@ const AssignmentCardAction = ({d}) => {
 
 
     const handleCard =(id, deadline) =>{
+        console.log("id=>", id);
         window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
         window.localStorage.setItem('insp_LEARN_deadline', JSON.stringify(deadline));
         dispatch(update({id, deadline}));
