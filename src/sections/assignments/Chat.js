@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { blueGrey } from '@mui/material/colors'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import axios from 'axios';
-import { BackEndUrl } from 'src/url';
+import { BackEndUrl, SocketBackEndUrl } from 'src/url';
 import Draggable from 'react-draggable'
 import { ImageConfig } from '../../../src/ImageConfig';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -72,7 +72,7 @@ export default function Chat() {
     const [messageT, setMessageT] = useState([]);
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const socket = io(BackEndUrl, {
+    const socket = io(SocketBackEndUrl, {
         'path': '/newSocket',
     });
     const socketRef = useRef(socket);
