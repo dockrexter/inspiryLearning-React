@@ -23,7 +23,7 @@ messaging.onBackgroundMessage(function(payload) {
   const notificationOptions = {
     body: payload?.data?.body,
     data:{
-      clickAction: `https:inspirylearning.com/dashboard/assignmentdetailsnotify/?id=${payload?.data?.assignmentId}`
+      clickAction: `https://inspirylearning.com/dashboard/assignmentdetailsnotify/?id=${payload?.data?.assignmentId}`
     }
   };
 
