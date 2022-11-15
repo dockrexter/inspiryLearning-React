@@ -73,7 +73,7 @@ const ChatStyle = styled(Grid)(({ theme }) =>({
 export default function AdminAssignmentDetails() {
     const { user } = useSelector(state => state.user);
     const { assignment } = useSelector(state => state.assignment);
-    const [status, setStatus] = useState(2);
+    const [status, setStatus] = useState(null);
     const [assignData, setAssignData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingAttach, setLoadingAttach] = useState(true);
@@ -178,6 +178,7 @@ export default function AdminAssignmentDetails() {
         );
         if(res.data.status === "ok") {
           setAssignData(res.data.data);
+          setStatus(parseInt(res.data.data.status));
           setLoading(false);
         }
       } 
@@ -208,6 +209,8 @@ export default function AdminAssignmentDetails() {
     if (reason !== 'backdropClick') {
         setFinish(false);
         setOpen(false);
+        if(assignData.status != status && status != null){
+          console.log(assignData.status, status)
             try {
                 const res = await axios.post(`${BackEndUrl}/api/assignments/updateStatus`, {
                     assignment_id: assignment.id, 
@@ -228,6 +231,7 @@ export default function AdminAssignmentDetails() {
                 console.error("Error", error);
                 toast.error("Status Update Failed! Try Again")
               }
+            }
         
     }
   };
@@ -285,8 +289,7 @@ export default function AdminAssignmentDetails() {
                                                         value={status}
                                                         onChange={handleChange}
                                                         input={<OutlinedInput label="Status" id="dialog" />}>
-                                                        <option aria-label="None" value="" />
-                                                        {/* <option value={2} disabled>New Request</option> */}
+                                                        <option value={2} disabled>New Request</option>
                                                         <option value={3}>Under Review</option>
                                                         <option value={4}>Pending Payment</option>
                                                         <option value={1}>Work in Progress</option>
