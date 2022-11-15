@@ -289,8 +289,16 @@ const MessageC = ({data, paymentStatus}) => {
                     <Box sx={{display: "flex", alignItems:"end", justifyContent: "space-between"}}>
                         {data.paymentStatus === 0?
                         <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                          <Button onClick={()=>handlePay(data.amount, data.message, data.id)}>Pay</Button>
-                          <Button onClick={()=>handlereject(data.id)}>Reject</Button> 
+                          {user.role == "user" ?
+                          <>
+                            <Button onClick={()=>handlePay(data.amount, data.message, data.id)}>Pay</Button>
+                            <Button onClick={()=>handlereject(data.id)}>Reject</Button> 
+                          </>
+                          :
+                          <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
+                            <Button onClick={()=>handlereject(data.id)}>WithDraw</Button>
+                          </Box>
+                         } 
                         </Box>
                         : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected/withdrawed</AttachmentSize>} 
       <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>

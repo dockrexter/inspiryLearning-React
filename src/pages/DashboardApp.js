@@ -33,7 +33,8 @@ export default function DashboardApp() {
         }
       });
       if (res.data.status === "ok") {
-        setAssignments(res.data.data);
+        setAssignments(res.data.data.reverse());
+
         setLoading(false);
       }
     }

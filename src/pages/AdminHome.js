@@ -61,7 +61,7 @@ export default function AdminHome() {
           },
           );
           if (res.data.status === "ok") {
-            setAssignmentsUp(res.data.data);
+            setAssignmentsUp(res.data.data.reverse());
             setLoading(false);  
         }
         }
@@ -82,7 +82,7 @@ export default function AdminHome() {
           },
           );
           if (res.status === 200) {
-            setAssignmentsDue(res.data.data);  
+            setAssignmentsDue(res.data.data.reverse());  
         }
         }
         catch (error) {
