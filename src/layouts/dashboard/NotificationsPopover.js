@@ -29,6 +29,7 @@ import { BackEndUrl } from 'src/url';
 import { useDispatch, useSelector } from 'react-redux';
 import EmailIcon from '@mui/icons-material/Email';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useNavigate } from 'react-router-dom';
 import { update } from 'src/redux/assignments';
@@ -255,7 +256,7 @@ function NotificationItem({ notification , totalRead, unRead}) {
           }
         })
         if(res){
-          //console.log("Notification Single Read: ", res);
+         // console.log("Notification Single Read: ", res);
           totalRead(unRead -1);
         }
       } catch (error) {
@@ -267,7 +268,7 @@ function NotificationItem({ notification , totalRead, unRead}) {
    const handleClickNotifi = (id, msgId,data)=>{
      // console.log("id",id,"CHECK NOTI DETAILS: ",msgId);
       if(data?.isRead === false){
-        readSingleNotification(msgId);
+       readSingleNotification(msgId);
       }
       window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
       dispatch(update({id}));
@@ -333,6 +334,12 @@ function renderContent(notification) {
   if (notification?.title === 'New Message') {
     return {
       avatar: <EmailIcon sx={{color:"#0FA958"}}/>,
+      title,
+    };
+  }
+  if (notification?.title === 'New Attachment') {
+    return {
+      avatar: <AttachFileIcon sx={{color:"#0FA958"}}/>,
       title,
     };
   }

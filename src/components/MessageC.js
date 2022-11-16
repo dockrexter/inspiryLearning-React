@@ -177,8 +177,7 @@ const MessageC = ({data, paymentStatus}) => {
         currency: "USD",
         description: message,
         messageId: id,
-        assignmentId: assignment.id
-
+        assignmentId: assignment.id,
       },
   {
     headers: {
@@ -188,13 +187,13 @@ const MessageC = ({data, paymentStatus}) => {
       );
       if (res){
         toast.update(toastid, {isLoading: false, autoClose: 10});
-        window.open(res.data.data.url, '_blank').focus();
-        paymentStaus();
+        window.open(res.data.data.url, '_self').focus();
+       // paymentStatus();
 
       }
     } catch (error) {
       console.error("Something went wrong: ", error);
-      toast.update(toastid, { render: "Can't get Payment link\nRight Now", type: "error", isLoading: false, autoClose: 1000});
+      // toast.update(toastid, { render: "Can't get Payment link\nRight Now", type: "error", isLoading: false, autoClose: 1000});
       
     }
   }
@@ -270,7 +269,7 @@ const MessageC = ({data, paymentStatus}) => {
           <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
           {data.paymentStatus === 0?
                         <Box sx={{display: "flex", alignItems: "end", justifyContent: "space-between" }}>
-                          <Button onClick={()=>handlereject(data.id)}>WithDraw</Button>
+                          <Button onClick={()=>handlereject(data.id)}>Withdraw</Button>
                         </Box>
                         : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected/Withdrawed</AttachmentSize>}
           </Box>
