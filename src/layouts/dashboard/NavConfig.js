@@ -13,12 +13,12 @@ export const navConfigUser = [
     icon: getIcon('bx:task'),
   },
   {
-    title: 'settings',
+    title: 'profile',
     path: '/dashboard/accountsettings',
     icon: getIcon('bytesize:settings'),
   },
   {
-    title: 'change password',
+    title: 'settings',
     path: '/dashboard/changepassword',
     icon: getIcon('ri:lock-password-line'),
   },
@@ -37,12 +37,12 @@ export const navConfigAdmin = [
     icon: getIcon('bx:task'),
   },
   {
-    title: 'settings',
+    title: 'profile',
     path: '/dashboard/accountsettings',
     icon: getIcon('bytesize:settings'),
   },
   {
-    title: 'change password',
+    title: 'settings',
     path: '/dashboard/changepassword',
     icon: getIcon('ri:lock-password-line'),
   },
