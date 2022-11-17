@@ -74,6 +74,8 @@ export default function Chat({assignUser}) {
     const { assignment } = useSelector(state => state.assignment);
     const socket = io(SocketBackEndUrl, {
         'path': '/newSocket',
+        'transports': ['websocket'],
+        'upgrade': false
     });
     const socketRef = useRef(socket);
     const hiddenInputField = useRef(null);
