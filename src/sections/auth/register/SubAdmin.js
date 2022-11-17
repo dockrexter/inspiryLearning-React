@@ -81,7 +81,7 @@ export default function SubAdminRegisterForm() {
         }
       }
       else {
-        toast.warn("Password and Confirm Password must be same");
+        toast.update(toastid, {render: "Complete the Form to continue", type: "warn",isLoading: false,autoClose:5000})
       }
 
     },
