@@ -335,6 +335,7 @@ export default function AdminAssignmentDetails() {
                         
 
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
+                              {user?.role != "user"?
                                 <Stack direction="column" spacing={1}>
                                       <Typography variant="span" sx={{ color: "#4F433C", fontWeight: 500 }}>
                                         Submitted By      
@@ -348,8 +349,7 @@ export default function AdminAssignmentDetails() {
                                       <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
                                           <strong>Phone:</strong> {" "}{assignUser.phone} 
                                       </Typography>
-                                  </Stack>
-
+                                  </Stack>: null}
                                 <Stack direction="column" spacing={2} sx={{marginTop:"10px"}}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
                                     Description      
