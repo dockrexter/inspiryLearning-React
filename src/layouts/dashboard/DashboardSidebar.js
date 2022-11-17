@@ -11,7 +11,7 @@ import useResponsive from '../../hooks/useResponsive';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import {navConfigUser, navConfigAdmin} from './NavConfig';
+import {navConfigUser, navConfigAdmin, navConfigSubAdmin} from './NavConfig';
 import user from 'src/redux/user';
 import { useSelector } from 'react-redux';
 import IconButton from 'src/theme/overrides/IconButton';
@@ -72,7 +72,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           </AccountStyle>
         </Link> */}
       </Box>
-        {user.role === "admin" ? <NavSection navConfig={navConfigAdmin} /> : <NavSection navConfig={navConfigUser} /> }
+        {user.role === "admin" ? <NavSection navConfig={navConfigAdmin} /> : user.role === "subadmin" ? <NavSection navConfig={navConfigSubAdmin} /> : <NavSection navConfig={navConfigUser} /> }
       <Box sx={{ flexGrow: 1 }}/>
       
     </Scrollbar>

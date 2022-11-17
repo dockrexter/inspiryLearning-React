@@ -75,6 +75,7 @@ export default function AdminAssignmentDetails() {
     const { assignment } = useSelector(state => state.assignment);
     const [status, setStatus] = useState(null);
     const [assignData, setAssignData] = useState([]);
+    const [assignUser, setAssignUser] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingAttach, setLoadingAttach] = useState(true);
     let navigate = useNavigate(); 
@@ -177,7 +178,9 @@ export default function AdminAssignmentDetails() {
         },
         );
         if(res.data.status === "ok") {
-          setAssignData(res.data.data);
+          console.log("assignmentBy ID=>",res.data.data)
+          setAssignData(res.data.data.assignments);
+          setAssignUser(res.data.data.user);
           setStatus(parseInt(res.data.data.status));
           setLoading(false);
         }
@@ -275,7 +278,7 @@ export default function AdminAssignmentDetails() {
                         <Grid item xs={12}>
                             <Box display="flex" justifyContent="space-between">
                             <IconButton onClick={handleBack}><ChevronLeftIcon/></IconButton>
-                            {user.role === "admin" ? <>
+                            {user.role === "admin" || user.role === "subadmin"  ? <>
                             <Button onClick={handleClickOpenAssigne}>Add Assignee</Button>
                             <Button onClick={handleClickOpen}>Change Status<ArrowDropDownIcon/></Button>
                                 <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
@@ -332,7 +335,22 @@ export default function AdminAssignmentDetails() {
                         
 
                             <Grid item xs={12} sx={{ marginTop: 5 }}>
-                                <Stack direction="column" spacing={2}>
+                                <Stack direction="column" spacing={1}>
+                                      <Typography variant="span" sx={{ color: "#4F433C", fontWeight: 500 }}>
+                                        Submitted By      
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                          <strong>Name:</strong>{" "}{assignUser.firstName} {" "} {assignUser.lastName} 
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                         <strong>Email: </strong> {" "}{assignUser.email} 
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                          <strong>Phone:</strong> {" "}{assignUser.phone} 
+                                      </Typography>
+                                  </Stack>
+
+                                <Stack direction="column" spacing={2} sx={{marginTop:"10px"}}>
                                     <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
                                     Description      
                                     </Typography>
@@ -375,7 +393,7 @@ export default function AdminAssignmentDetails() {
                 justifyContent="center"
                 sx={{height: "80vh"}}
                 item xs={12} md={6}>
-                    <Chat/>
+                    <Chat assignUser={assignUser}/>
                 </ChatStyle>
             </Grid >
         </DashboardPage>}

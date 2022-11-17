@@ -47,6 +47,33 @@ export const navConfigAdmin = [
     icon: getIcon('ri:lock-password-line'),
   },
   {
+    title: 'Add SubAdmin',
+    path: '/dashboard/addsubadmin',
+    icon: getIcon('subway:admin-1')
+   },
+   {
+    title: 'Logout',
+    path: '/dashboard/logout',
+    icon: getIcon('mdi-light:login')
+   }
+];
+export const navConfigSubAdmin = [
+  {
+    title: 'assignments',
+    path: '/dashboard/admin',
+    icon: getIcon('bx:task'),
+  },
+  {
+    title: 'profile',
+    path: '/dashboard/accountsettings',
+    icon: getIcon('bytesize:settings'),
+  },
+  {
+    title: 'settings',
+    path: '/dashboard/changepassword',
+    icon: getIcon('ri:lock-password-line'),
+  },
+  {
     title: 'Logout',
     path: '/dashboard/logout',
     icon: getIcon('mdi-light:login')

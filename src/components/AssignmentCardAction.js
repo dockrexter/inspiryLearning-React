@@ -70,7 +70,7 @@ const AssignmentCardAction = ({d}) => {
                     width: "65%",
                 }}>
                     {d.subject} </Typography>
-                    {user.role === "admin" ? <Box sx={{display:"flex", flexDirection: "column",width: '28%', wordWrap: "break-word", alignItems: "center"}}>
+                    {user.role === "admin" || user.role === "subadmin"? <Box sx={{display:"flex", flexDirection: "column",width: '28%', wordWrap: "break-word", alignItems: "center"}}>
                         <Typography variant="body2" sx={{
                         color: "#0FA958",
                         fontStyle: "normal",

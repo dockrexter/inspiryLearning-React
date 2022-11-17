@@ -22,7 +22,7 @@ const Logout = () => {
 
   const handleClose = () => {
     setOpen(false);
-    user.role === "admin" ? navigate("/dashboard/admin") : navigate("/dashboard/user");
+    user.role === "admin" || user.role === "subadmin" ? navigate("/dashboard/admin") : navigate("/dashboard/user");
   };
  const removeToken = async() => {
     try {
@@ -58,7 +58,7 @@ const Logout = () => {
     dispatch(clear());
     dispatch(clearToken());
     dispatch(clearAssignment());
-    navigate("/home", { replace: true });
+    navigate("/");
   }
   return (
     <Page title="Logout" sx={{width: "100%", height: "100%"}}>

@@ -63,7 +63,7 @@ export default function LoginForm() {
           dispatch(update(res.data.data));
           dispatch(updateToken({fbTokenClient: JSON.parse(window.localStorage.getItem("insp_LEARN_fbtoken"))}));
           setInValid(false)
-          {user.role === "admin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard/user", { replace: true });}
+          {user.role === "admin" || user.role === "subadmin" ? navigate("/dashboard/admin", { replace: true }) : navigate("/dashboard/user", { replace: true });}
           
         }
         else {

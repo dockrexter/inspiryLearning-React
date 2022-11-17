@@ -276,7 +276,7 @@ import { Grid,
                           <Grid item xs={12}>
                               <Box display="flex" justifyContent="space-between">
                               <IconButton onClick={handleBack}><ChevronLeftIcon/></IconButton>
-                              {user.role === "admin" ? <>
+                              {user.role === "admin" || user.role === "subadmin"? <>
                               <Button onClick={handleClickOpenAssigne}>Add Assignee</Button>
                               <Button onClick={handleClickOpen}>Change Status<ArrowDropDownIcon/></Button>
                                   <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>

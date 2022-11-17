@@ -218,7 +218,7 @@ const MessageC = ({data, paymentStatus}) => {
     ? 
     <MsgBoxLeft>
       <MsgText variant='body2'>{data.message}</MsgText>
-      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
+      <MsgDate>{user.role == "admin" || user.role == "subadmin" ? `${data?.userName} (${data?.userRole}) ` : null}{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
     </MsgBoxLeft> 
     : 
     data.type === 2 && user.id === data.userId
@@ -253,7 +253,7 @@ const MessageC = ({data, paymentStatus}) => {
                     </Box>
                     <Box sx={{display: "flex", alignItems:"center", justifyContent: "space-between"}}>
                       <AttachmentSize>{Math.round(data.fileSize/1024)}KB</AttachmentSize>
-                      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
+                      <MsgDate>{user.role == "admin" || user.role == "subadmin" ? `${data?.userName} (${data?.userRole}) ` : null}{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate>
                     </Box>
     </AttachmentBoxLeft> 
     : 
@@ -300,7 +300,7 @@ const MessageC = ({data, paymentStatus}) => {
                          } 
                         </Box>
                         : data.paymentStatus === 1?<AttachmentSize>Paid</AttachmentSize> :<AttachmentSize>Rejected/withdrawed</AttachmentSize>} 
-      <MsgDate>{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
+      <MsgDate>{user.role == "admin" || user.role == "subadmin" ? `${data?.userName} (${data?.userRole}) ` : null}{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
     <DialogReject open={openRecject} close={handleRecjectClose} id={messageIdR} paymentStatus={paymentStatus}/>

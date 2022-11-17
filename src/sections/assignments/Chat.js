@@ -66,7 +66,7 @@ function PaperComponent(props) {
     );
 }
 
-export default function Chat() {
+export default function Chat({assignUser}) {
     //.......................HOOKS DECALRATION....................//
 
     const [messageT, setMessageT] = useState([]);
@@ -149,10 +149,13 @@ export default function Chat() {
                 paymentStatus: 0,
                 assignmentId: assignment.id,
                 userId: user.id,
+                userName: user?.firstName + " "+ user?.lastName,
+                userRole: user?.role
 
             })
             socketRef.current.on("messageID", data => {
-                setMessageT([...messageT, { message: offerSummary, id: data?.id, userId: user.id, type: 1, createdAt: new Date(), amount: offer, paymentStatus: 0, assignmentId: assignment.id }]);
+                setMessageT([...messageT, { message: offerSummary, id: data?.id, userId: user.id, type: 1, createdAt: new Date(), amount: offer, paymentStatus: 0, assignmentId: assignment.id, userName: user?.firstName + " "+ user?.lastName,
+                userRole: user?.role }]);
                 setOffer(0);
             })
 
@@ -213,11 +216,14 @@ export default function Chat() {
                         type: 2,
                         assignmentId: assignment.id,
                         userId: user.id,
+                        userName: user?.firstName + " "+ user?.lastName,
+                        userRole: user?.role
 
                     })
                     setMessageT([...messageT, {
                         url: res.data.url, userId: user.id, type: 2, createdAt: new Date(), fileName: fileList[i].name,
-                        fileSize: fileList[i].size, amount: 0, assignmentId: assignment.id
+                        fileSize: fileList[i].size, amount: 0, assignmentId: assignment.id,userName: user?.firstName + " "+ user?.lastName,
+                        userRole: user?.role
                     }]);
                     setIsFilePicked(false);
                 }
@@ -261,9 +267,11 @@ export default function Chat() {
             type: 0,
             assignmentId: assignment.id,
             userId: user.id,
+            userName: user?.firstName + " "+ user?.lastName,
+            userRole: user?.role
 
         })
-        setMessageT([...messageT, { message, userId: user.id, createdAt: new Date(), type: 0, assignmentId: assignment.id }]);
+        setMessageT([...messageT, { message, userId: user.id, createdAt: new Date(), type: 0, assignmentId: assignment.id, userName: user?.firstName+" "+user?.lastName, userRole: user.role }]);
         setStat({ message: "" })
 
     }
@@ -276,7 +284,7 @@ export default function Chat() {
         }}>
 
 
-            <Box sx={{ width: "100%", height: "2vmax", background: "#38a585", textAlign: "center", color: "white", padding:'0.1rem' }}>{user.role == 'admin' ? "Chat with User" : "Chat With Professional"}</Box>
+            <Box sx={{ width: "100%", height: "2vmax", background: "#38a585", textAlign: "center", color: "white", padding:'0.1rem' }}>{user.role == 'admin' || user.role == 'subadmin' ? `Chat with ${assignUser? assignUser.firstName + " " + assignUser.lastName : "User" }` : "Chat With Professional"}</Box>
 
             {/*............CHAT BOX MESSAGES AND OTHER ATTACHMENTS..............*/}
 
@@ -305,7 +313,7 @@ export default function Chat() {
                     }}>
                         <>
 
-                            {user.role === "admin" ?
+                            {user.role === "admin" || user.role === "subadmin" ?
                                 <>
                                     <IconButton onClick={handleClickOpen} sx={{ color: blueGrey[50] }}><AttachMoneyIcon /></IconButton>
                                     <Dialog
