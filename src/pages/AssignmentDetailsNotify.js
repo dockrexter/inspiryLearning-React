@@ -76,6 +76,7 @@ import { Grid,
       const { assignment } = useSelector(state => state.assignment);
       const [status, setStatus] = useState(2);
       const [assignData, setAssignData] = useState([]);
+      const [assignUser, setAssignUser] = useState([]);
       const [loading, setLoading] = useState(true);
       const [loadingAttach, setLoadingAttach] = useState(true);
       const dispatch = useDispatch();
@@ -178,7 +179,8 @@ import { Grid,
           },
           );
           if(res.data.status === "ok") {
-            setAssignData(res.data.data);
+            setAssignData(res.data.data.assignments);
+            setAssignUser(res.data.data.user);
             setLoading(false);
           }
         } 
@@ -334,6 +336,21 @@ import { Grid,
                           
   
                               <Grid item xs={12} sx={{ marginTop: 5 }}>
+                              {user?.role != "user"?
+                                <Stack direction="column" spacing={1}>
+                                      <Typography variant="span" sx={{ color: "#4F433C", fontWeight: 500 }}>
+                                        Submitted By      
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                          <strong>Name:</strong>{" "}{assignUser.firstName} {" "} {assignUser.lastName} 
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                         <strong>Email: </strong> {" "}{assignUser.email} 
+                                      </Typography>
+                                      <Typography variant="span" sx={{ color: "#202323", opacity: 0.6 }}>
+                                          <strong>Phone:</strong> {" "}{assignUser.phone} 
+                                      </Typography>
+                                  </Stack>: null}
                                   <Stack direction="column" spacing={2}>
                                       <Typography variant="h5" sx={{ color: "#4F433C", opacity: 0.7, fontWeight: 700 }}>
                                       Description      
@@ -377,7 +394,7 @@ import { Grid,
                   justifyContent="center"
                   sx={{height: "80vh"}}
                   item xs={12} md={6}>
-                      <Chat/>
+                      <Chat assignUser={assignUser}/>
                   </ChatStyle>
               </Grid >
           </DashboardPage>}
