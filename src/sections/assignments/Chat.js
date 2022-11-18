@@ -95,6 +95,9 @@ export default function Chat({assignUser}) {
                         user_id: user.id,
                         assignment_id: assignment.id,
                     })
+                    socketRef.current.on("getChat", (chat) => {
+                        setMessageT(chat);
+                    })
 
                 })
             }
@@ -106,15 +109,16 @@ export default function Chat({assignUser}) {
         }, []);
 
     useEffect(() => {
-        socketRef.current.on("getChat", (chat) => {
-            setMessageT(chat);
-        })
+        //console.log("Called");
         socketRef.current.on("message", (data) => {
-            setMessageT([...messageT, data]);
+                setMessageT(messageT.concat(data));
         })
         socketRef.current.on("paymentUpdate", (newData) => {
             setMessageT(newData);
         })
+        return ()=>{
+            //console.log("Canclled");
+        }
     },[messageT])
 
     const paymentStaus = () =>{
@@ -140,7 +144,8 @@ export default function Chat({assignUser}) {
 
 
     //........................Offer Handle..................//
-    const handleOffer = () => {
+    const handleOffer = (event) => {
+        event.preventDefault();
         try {
             setOpen(false);
             socketRef.current.emit("sendMessage", {
@@ -155,13 +160,13 @@ export default function Chat({assignUser}) {
                 userRole: user?.role
 
             })
-            socketRef.current.on("messageID", data => {
-                setMessageT([...messageT, { message: offerSummary, id: data?.id, userId: user.id, type: 1, createdAt: new Date(), amount: offer, paymentStatus: 0, assignmentId: assignment.id, userName: user?.firstName + " "+ user?.lastName,
-                userRole: user?.role }]);
+            socketRef.current.on("messageID", (data) => {
+                console.log(data)
+                if(data.type === 1){
+                setMessageT( messageT.concat(data.values));
                 setOffer(0);
-            })
-
-
+                }
+            }) 
         } catch (error) {
             console.error("Error in Offer: ", error);
 
@@ -222,11 +227,11 @@ export default function Chat({assignUser}) {
                         userRole: user?.role
 
                     })
-                    setMessageT([...messageT, {
+                    setMessageT(messageT.concat({
                         url: res.data.url, userId: user.id, type: 2, createdAt: new Date(), fileName: fileList[i].name,
                         fileSize: fileList[i].size, amount: 0, assignmentId: assignment.id,userName: user?.firstName + " "+ user?.lastName,
                         userRole: user?.role
-                    }]);
+                    }));
                     setIsFilePicked(false);
                 }
             }
@@ -244,9 +249,9 @@ export default function Chat({assignUser}) {
 
 
 
-    const onTextChange = e => {
-        e.preventDefault();
-        setStat({ [e.target.name]: e.target.value })
+    const onTextChange = event => {
+        event.preventDefault();
+        setStat({ [event.target.name]: event.target.value })
         socketRef.current.emit("typing", {
             typing: true,
             message: user.firstname,
@@ -260,8 +265,17 @@ export default function Chat({assignUser}) {
             })
         }, 2000);
     }
-    const onMessageSubmit = (e) => {
+    const handleOfferSummary = (e) =>{
         e.preventDefault();
+        setOfferSummary(e.target.value)
+
+    }
+    const handleOfferAmmount = (e) => {
+        e.preventDefault();
+        setOffer(e.target.value)
+    }
+    const onMessageSubmit = (event) => {
+        event.preventDefault();
         const { message } = stat
         socketRef.current.emit("sendMessage", {
             message: message,
@@ -273,7 +287,7 @@ export default function Chat({assignUser}) {
             userRole: user?.role
 
         })
-        setMessageT([...messageT, { message, userId: user.id, createdAt: new Date(), type: 0, assignmentId: assignment.id, userName: user?.firstName+" "+user?.lastName, userRole: user.role }]);
+        setMessageT(messageT.concat({ message: message, userId: user.id, createdAt: new Date(), type: 0, assignmentId: assignment.id, userName: user?.firstName+" "+user?.lastName, userRole: user.role }));
         setStat({ message: "" })
 
     }
@@ -292,7 +306,7 @@ export default function Chat({assignUser}) {
 
             <MainBox>
                 <ChatBoxT>
-                    {messageT ? messageT.map((item, i) => <MessageC key={i} data={item} paymentStatus={paymentStaus}/>) : null}
+                    {messageT ? messageT.map((item, i) => <MessageC key={i} data={item} paymentStatus={()=>paymentStaus()}/>) : null}
                 </ChatBoxT>
 
             </MainBox>
@@ -329,10 +343,10 @@ export default function Chat({assignUser}) {
                                         <DialogContent>
                                             <Box sx={{ display: "flex", alignItems: "center", margin: "10px 0" }}>
                                                 <Typography variant='h4'>$</Typography>
-                                                <Input type="number" min="0" onChange={(e) => setOffer(e.target.value)} sx={{ width: "50px", height: "50px" }} />
+                                                <Input type="number" min="0" onChange={(e) => handleOfferAmmount(e)} sx={{ width: "50px", height: "50px" }} />
                                             </Box>
                                             <Typography>Summary</Typography>
-                                            <TextField multiline={true} rows={3} onChange={(e) => setOfferSummary(e.target.value)} sx={{ width: "300px" }}></TextField>
+                                            <TextField multiline={true} rows={3} onChange={(e) =>handleOfferSummary(e) } sx={{ width: "300px" }}></TextField>
                                         </DialogContent>
                                         <DialogActions>
                                             <Button onClick={handleClose}>

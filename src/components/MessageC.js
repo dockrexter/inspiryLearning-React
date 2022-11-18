@@ -188,7 +188,7 @@ const MessageC = ({data, paymentStatus}) => {
       if (res){
         toast.update(toastid, {isLoading: false, autoClose: 10});
         window.open(res.data.data.url, '_self').focus();
-       // paymentStatus();
+        //paymentStatus();
 
       }
     } catch (error) {
@@ -303,7 +303,7 @@ const MessageC = ({data, paymentStatus}) => {
       <MsgDate>{user.role == "admin" || user.role == "subadmin" ? `${data?.userName} (${data?.userRole}) ` : null}{moment(data.createdAt).format('MMM DD YY hh:mm')}</MsgDate></Box>
     </OfferBoxLeft> 
     : <Box sx={{display: "none"}}></Box>}
-    <DialogReject open={openRecject} close={handleRecjectClose} id={messageIdR} paymentStatus={paymentStatus}/>
+    <DialogReject open={openRecject} close={handleRecjectClose} id={messageIdR} paymentStatus={()=>paymentStatus()}/>
     </>
   )
 }
