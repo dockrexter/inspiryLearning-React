@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 
 export default function AssignmentForm() {
   const navigate = useNavigate();
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(null);
   const { user } = useSelector(state => state.user);
   const [fileList, setFileList] = useState([]);
 
@@ -49,45 +49,47 @@ export default function AssignmentForm() {
       subject: '',
       summary: '',
       attachments: [],
-      startdate: '',
-      enddate: ''
     },
     onSubmit: async (values) => {
+      if(!date){
+        toast.warn("Please fill the complete Form", {autoClose: 5000})
+      }
+      else{
+
         const formData = new FormData();
         console.log("FileList=>",fileList);
         if(fileList.length > 0){
           for(var i=0; i<fileList.length; i++){
-          formData.append( 
+            formData.append( 
               "files", 
               fileList[i].file, 
               fileList[i].file.name 
-            );
-          }
-        }
-        formData.append("subject", values.subject);
-        formData.append("summary", values.summary);
-        formData.append("deadline", date);
-      try {
-        const res = await axios.post(`${BackEndUrl}/api/assignments/createUserAssignment`,
-        formData,
-          {
-            headers: {
-              token: user.token
+              );
             }
-          });
-          if(res){
-        toast.success("Assignment Created Successfully!!")
-        setFileList([]);
-        navigate('/dashboard/user', { replace: true });
           }
-
-      }
+          formData.append("subject", values.subject);
+          formData.append("summary", values.summary);
+          formData.append("deadline", date);
+          try {
+            const res = await axios.post(`${BackEndUrl}/api/assignments/createUserAssignment`,
+            formData,
+            {
+              headers: {
+                token: user.token
+              }
+            });
+            if(res){
+              toast.success("Assignment Created Successfully!!")
+              setFileList([]);
+              navigate('/dashboard/user', { replace: true });
+            }
+            
+          }
       catch (error) {
         console.error("Error Adding Assignment: ", error);
-      }
-    },
+      }}},
   });
-
+  
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 
 

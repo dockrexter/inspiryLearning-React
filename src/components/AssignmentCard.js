@@ -27,7 +27,7 @@ const assignmentCard = ({d}) => {
                     }}>
                         Starting Date     </Typography>
                     <Typography variant="body2" >
-                    {moment(d?.created_date).format("MMM DD YYYY LT")}
+                    {moment(d?.createdAt).format("MMM DD YYYY LT")}
                     </Typography>
 
                 </Stack>

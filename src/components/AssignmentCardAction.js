@@ -13,7 +13,7 @@ const AssignmentCardAction = ({d}) => {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.user);
 
-
+    console.log("Assignment Details: ", d)
 
     const handleCard =(id, deadline) =>{
         console.log("id=>", id);
@@ -53,7 +53,7 @@ const AssignmentCardAction = ({d}) => {
                     }}>
                         Starting Date     </Typography>
                     <Typography variant="body2" sx={{color: "black"}}>
-                    {moment(d.created_date).format("MMM DD YYYY LT")}</Typography>
+                    {moment(d.createdAt).format("MMM DD YYYY LT")}</Typography>
 
                 </Stack>
 

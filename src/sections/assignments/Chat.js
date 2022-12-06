@@ -86,6 +86,31 @@ export default function Chat({assignUser}) {
     const [attachOpen, setAttachOpen] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [stat, setStat] = useState({ message: '', userId: '', });
+    // const handleOnIdle = event => {
+    //     console.log('user is idle', event)
+    //     window.location.reload();
+    //     console.log('last active', getLastActiveTime())
+    //     console.log('Disconnected');
+        
+    //   }
+    
+    //   const handleOnActive = event => {
+    //     console.log('user is active', event)
+    //     console.log('time remaining', getRemainingTime())
+    //     console.log('Conneceted Again')
+    //   }
+    
+    //   const handleOnAction = event => {
+    //     console.log('user did something', event)
+    //   }
+    
+    //   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+    //     timeout: 1000 * 60 * 1,
+    //     onIdle: handleOnIdle,
+    //     onActive: handleOnActive,
+    //     onAction: handleOnAction,
+    //     debounce: 500
+    //   },[messageT])
     useEffect(
         () => {
             console.log("Connected")
