@@ -12,9 +12,6 @@ const AssignmentCardAction = ({d}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector(state => state.user);
-
-    console.log("Assignment Details: ", d)
-
     const handleCard =(id, deadline) =>{
         console.log("id=>", id);
         window.localStorage.setItem('insp_LEARN_assignId', JSON.stringify(id));
@@ -53,7 +50,7 @@ const AssignmentCardAction = ({d}) => {
                     }}>
                         Starting Date     </Typography>
                     <Typography variant="body2" sx={{color: "black"}}>
-                    {moment(d.createdAt).format("MMM DD YYYY LT")}</Typography>
+                    {moment(d.createdAt).local().format("MMM DD YYYY, LT")}</Typography>
 
                 </Stack>
 
@@ -96,7 +93,7 @@ const AssignmentCardAction = ({d}) => {
                         Due Date
                     </Typography>
                     <Typography variant="body2" sx={{color: "black"}} >
-                    {moment(d.deadline).format("MMM DD YYYY LT")}</Typography>
+                    {moment(d.deadline).local().format("MMM DD YYYY, LT")}</Typography>
                 </Stack>
 
             </Grid>
